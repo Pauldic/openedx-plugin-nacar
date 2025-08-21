@@ -1,11 +1,11 @@
 # Open edX Plugin Examples
 
-[![Source code](https://img.shields.io/static/v1?logo=github&label=Git&style=flat-square&color=brightgreen&message=Source%20code)](https://github.com/cookiecutter-openedx/openedx-plugin-example)
+[![Source code](https://img.shields.io/static/v1?logo=github&label=Git&style=flat-square&color=brightgreen&message=Source%20code)](https://github.com/cookiecutter-openedx/openedx-plugin-nacar)
 [![Forums](https://img.shields.io/static/v1?logo=discourse&label=Forums&style=flat-square&color=000000&message=discuss.openedx.org)](https://discuss.openedx.org/tag/cookiecutter)
-[![Documentation](https://img.shields.io/static/v1?&label=Documentation&style=flat-square&color=000000&message=Documentation)](https://github.com/cookiecutter-openedx/openedx-plugin-example)
-[![PyPI releases](https://img.shields.io/pypi/v/openedx-plugin-example?logo=python&logoColor=white)](https://pypi.org/project/openedx-plugin-example)
+[![Documentation](https://img.shields.io/static/v1?&label=Documentation&style=flat-square&color=000000&message=Documentation)](https://github.com/cookiecutter-openedx/openedx-plugin-nacar)
+[![PyPI releases](https://img.shields.io/pypi/v/openedx-plugin-nacar?logo=python&logoColor=white)](https://pypi.org/project/openedx-plugin-nacar)
 [![AGPL License](https://img.shields.io/github/license/overhangio/tutor.svg?style=flat-square)](https://www.gnu.org/licenses/agpl-3.0.en.html)
-[![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
+[![hack.d Paul Okeke](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://pauldiconline.com)
 
 An Open edX plugin showcasing a curated collection of code samples for extending and modifying the stock functionality of an Open edX installation using the built-in plugin architecture. This plugin can be installed in any Open edX installation version Juniper or later, independent of the installation method. This plugin currently runs in native builds, tutor installations, and Cookiecutter-openedx Kubernetes, amongst other proprietary installation methodologies.
 
@@ -16,7 +16,7 @@ Open edX official documentation recommends that you leverage its plugin architec
 Usage:
 
 ```bash
-pip install openedx-plugin-example
+pip install openedx-plugin-nacar
 ```
 
 Technical features and coding techniques that are showcased in this repo include:
@@ -103,7 +103,7 @@ See [Installing extra xblocks and requirements](https://docs.tutor.edly.io/confi
 
 ```bash
 tutor config save       # to ensure that tutor's root folder system has been created
-echo "openedx-plugin-example" >> "$(tutor config printroot)/env/build/openedx/requirements/private.txt"
+echo "openedx-plugin-nacar" >> "$(tutor config printroot)/env/build/openedx/requirements/private.txt"
 tutor images build openedx
 tutor local launch
 
@@ -127,13 +127,13 @@ tutor local run cms ./manage.py cms openedx_plugin_cms_init
 
 * Each of these four Open edX plugins use [django-waffle](https://waffle.readthedocs.io/en/stable/) to toggle features on and off. While edx-platform also uses waffle switches, you should note that they separately manage a wrapper project named [edx-toggles](https://edx.readthedocs.io/projects/edx-toggles/en/latest/readme.html), and therefore the source code in this repo interacts with both of these.
 
-* Waffle switches in each of these four plugins are automatically initialized. You'll therefore find the switches in the LMS Django Admin console (admin/waffle/switch/) of your Open edX installation. Additionally, you'll find the raw MySL database records in the waffle_switch table ![MySQL records](https://raw.githubusercontent.com/cookiecutter-openedx/openedx-plugin-example/main/doc/openedx_plugin_waffle_mysql.png)
+* Waffle switches in each of these four plugins are automatically initialized. You'll therefore find the switches in the LMS Django Admin console (admin/waffle/switch/) of your Open edX installation. Additionally, you'll find the raw MySL database records in the waffle_switch table ![MySQL records](https://raw.githubusercontent.com/cookiecutter-openedx/openedx-plugin-nacar/main/doc/openedx_plugin_waffle_mysql.png)
 
-* Look for app startup entries in the LMS app log for diagnostics information about the state of each waffle switch ![app logs](https://raw.githubusercontent.com/cookiecutter-openedx/openedx-plugin-example/main/doc/openedx_plugin_waffle_app_log.png)
+* Look for app startup entries in the LMS app log for diagnostics information about the state of each waffle switch ![app logs](https://raw.githubusercontent.com/cookiecutter-openedx/openedx-plugin-nacar/main/doc/openedx_plugin_waffle_app_log.png)
 
 ### Documentation
 
-Documentation is available here: [Documentation](https://github.com/cookiecutter-openedx/openedx-plugin-example)
+Documentation is available here: [Documentation](https://github.com/cookiecutter-openedx/openedx-plugin-nacar)
 
 ### Support
 
@@ -141,7 +141,7 @@ To get community support, go to the official Open edX discussion forum: [https:/
 
 ### Contributing
 
-We welcome contributions! openedx-plugin-example is part of the [cookiecutter-openedx](https://github.com/cookiecutter-openedx) project. Pull requests are welcome in all repos belonging to this organization. You can also contact [Lawrence McDaniel](https://lawrencemcdaniel.com/contact) directly.
+We welcome contributions! openedx-plugin-nacar is part of the [cookiecutter-openedx](https://github.com/cookiecutter-openedx) project. Pull requests are welcome in all repos belonging to this organization. You can also contact [Paul Okeke](https://pauldiconline.com/contact) directly.
 
 ### Getting Started With Local development
 

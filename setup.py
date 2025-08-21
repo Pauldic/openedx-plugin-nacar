@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel https://lawrencemcdaniel.com
+Paul Okeke https://pauldiconline.com
 
 The style and organizational scheme for this setup.py is largely copied from
 these two projects:
@@ -74,7 +74,7 @@ print("Found packages: {packages}".format(packages=find_packages()))
 print("requirements found: {requirements}".format(requirements=load_requirements("requirements/common.in")))
 
 setup(
-    name="example-plugin",
+    name="nacar-plugin",
     version=ABOUT["__package_version__"],
     packages=find_packages(),
     package_data={"": ["*.html"]},  # include any Mako templates found in this repo.
@@ -83,20 +83,17 @@ setup(
     license="AGPLv3",
     description="Django plugin to enhance feature set of base Open edX platform.",
     long_description=load_readme(),
-    author="Lawrence McDaniel",
-    author_email="lpm0073@gmail.com",
-    url="https://github.com/cookiecutter-openedx/example-openedx-plugin",
+    author="Paul Okeke",
+    author_email="pauldiconline@gmail.com",
+    url="https://nacarlearning.org",
     download_url=("https://github.com/cookiecutter-openedx/cookiecutter-openedx-devops.git"),
     install_requires=load_requirements("requirements/common.in"),
     zip_safe=False,
-    keywords="Django, Open edX, Plugin",
+    keywords="Django, Open edX, Plugin, NACAR",
     classifiers=[  # https://pypi.org/classifiers/
         "Development Status :: 4 - Beta",
         "Framework :: Django",
-        "Framework :: Django :: 2.2",
-        "Framework :: Django :: 3.0",
-        "Framework :: Django :: 3.1",
-        "Framework :: Django :: 3.2",
+        "Framework :: Django :: 4.2",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
         "Natural Language :: English",
@@ -123,6 +120,6 @@ setup(
         ],
     },
     extras_require={
-        "Django": ["Django>=3.2"],
+        "Django": ["Django>=4.2,<=4.2.2"],
     },
 )

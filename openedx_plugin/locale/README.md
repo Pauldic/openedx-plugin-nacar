@@ -1,6 +1,6 @@
 # example Localization Utilities
 
-[![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
+[![hack.d Paul Okeke](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://pauldiconline.com)
 
 These are helper functions called from the example theme mako templates.
 

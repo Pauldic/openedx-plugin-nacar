@@ -48,8 +48,8 @@ this modules begins with hello world, and then adds the following:
 
 - (instructor: [Volunteer to instruct this lesson](./CONTRIBUTORS.md)) A repo with multiple Django apps
 - (instructor: [Volunteer to instruct this lesson](./CONTRIBUTORS.md)) Create custom oauth backend
-- (instructor: [Lawrence McDaniel](https://github.com/lpm0073)) Using middleware to set login page to an upstream platform
-- (instructor: [Lawrence McDaniel](https://github.com/lpm0073)) Using middleware to alter the behavior of lms and cms urls
+- (instructor: [Paul Okeke](https://github.com/lpm0073)) Using middleware to set login page to an upstream platform
+- (instructor: [Paul Okeke](https://github.com/lpm0073)) Using middleware to alter the behavior of lms and cms urls
 - (instructor: [Volunteer to instruct this lesson](./CONTRIBUTORS.md)) Using Django signals to create event-driven custom functionality
 - (instructor: [Volunteer to instruct this lesson](./CONTRIBUTORS.md)) Using Waffle flags to control your custom functionality at run time
 
@@ -58,7 +58,7 @@ this modules begins with hello world, and then adds the following:
 - (instructor: [Volunteer to instruct this lesson](./CONTRIBUTORS.md)) Leveraging the app logs
 - (instructor: [Volunteer to instruct this lesson](./CONTRIBUTORS.md)) Automatically initializing your Django models at app install/startup
 - (instructor: [Volunteer to instruct this lesson](./CONTRIBUTORS.md)) Passing secrets/passwords to your plugin
-- (instructor: [Lawrence McDaniel](https://github.com/lpm0073)) Verifying that your plugins are installed and running, and are correctly configured
+- (instructor: [Paul Okeke](https://github.com/lpm0073)) Verifying that your plugins are installed and running, and are correctly configured
 
 ### Module VII: Taking code quality to the next level
 

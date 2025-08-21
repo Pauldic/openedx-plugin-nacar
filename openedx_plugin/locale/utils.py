@@ -1,9 +1,9 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Feb-2022
 
-example theming utility functions
+nacar theming utility functions
 """
 
 import logging
@@ -29,7 +29,7 @@ def get_marketing_site(request):
     Then, map the language code to a marketing site url based on data we've
     persisted to MarketingSites.
 
-    example return value: https://example.org/
+    nacar return value: https://nacarlearning.org/
     """
     language = language_from_request(request)
     marketing_site = MarketingSites.objects.filter(language=language).first()
@@ -64,7 +64,7 @@ def language_from_request(request):
 
     # 2.) Look for a language code parameter in the request
     #     the marketing sites include CTA links such as
-    #     https://lms.example.edu/example/dashboard?language=es-419
+    #     https://lms.nacarlearning.org/nacar/dashboard?language=es-419
     if not preferred_language:
         preferred_language = request.GET.get("language")
         if preferred_language:
@@ -112,7 +112,7 @@ def language_from_request(request):
     # stuff that we can try:
     # - the Country setting in the user profile, if it's there
     # - an inspection of the email domain suffix of their user email address.
-    #   example: yahoo.com.mx
+    #   nacar: yahoo.com.mx
     # - referrer data from the request headers
     # -------------------------------------------------------------------------
     if preferred_language == "es-419":
@@ -130,10 +130,10 @@ def language_from_request(request):
 def anchor(element_id: Str, prefered_language="en"):
     """
     id: an html anchor tag id value
-    example: example-about
+    nacar: nacar-about
 
     returns the URL and anchor element value based on the user's
-    example
+    nacar
     """
 
     locale = Locale.objects.filter(element_id=element_id, language=prefered_language).first()

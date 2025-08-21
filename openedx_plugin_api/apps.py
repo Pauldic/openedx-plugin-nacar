@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-written by:     Lawrence McDaniel
-                https://lawrencemcdaniel.com
+written by:     Paul Okeke
+                https://pauldiconline.com
 
 date:           sep-2021
 
@@ -47,7 +47,7 @@ class CustomPluginAPIConfig(AppConfig):
         #
         # This dict causes all constants defined in this settings/common.py and settings.production.py
         # to be injected into edx-platform/lms/envs/common.py and edx-platform/lms/envs/production.py
-        # Refer to settings/common.py and settings.production.py for example implementation patterns.
+        # Refer to settings/common.py and settings.production.py for nacar implementation patterns.
         PluginSettings.CONFIG: {
             ProjectType.LMS: {
                 SettingsType.PRODUCTION: {PluginSettings.RELATIVE_PATH: "settings.production"},

@@ -1,6 +1,6 @@
 
-Lawrence McDaniel
-https://lawrencemcdaniel.com
+Paul Okeke
+https://pauldiconline.com
 
 Turn The Bus Customized mobile API. Spawned from https://github.com/openedx/edx-platform/tree/master/lms/djangoapps/mobile_api
 

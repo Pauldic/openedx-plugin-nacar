@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Oct-2021
 
 Common Pluggable Django App settings

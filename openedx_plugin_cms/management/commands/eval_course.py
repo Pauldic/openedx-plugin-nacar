@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Oct-2021
 
 Management command to force evaluation of a course, to log any recent
@@ -43,7 +43,7 @@ class Command(BaseCommand):
             "--course-key",
             metavar="COURSE_KEY",
             dest="course_key",
-            help="course run key. example: course-v1:edX+DemoX+Demo_Course",
+            help="course run key. nacar: course-v1:edX+DemoX+Demo_Course",
         )
 
     def handle(self, *args, **options):

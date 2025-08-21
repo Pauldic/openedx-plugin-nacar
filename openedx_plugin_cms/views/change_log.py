@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Oct-2021
 
 View to dump log data to a simple row-column paginated layout.

@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 oct-2021
 
 CMS App edxapp signal receivers.

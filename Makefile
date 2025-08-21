@@ -4,7 +4,7 @@
 .PHONY: build requirements deps-update deps-init
 
 dev-db:
-	mysql -uroot -p < openedx_plugin_example/scripts/init-db.sql
+	mysql -uroot -p < openedx_plugin_nacar/scripts/init-db.sql
 
 dev-up:
 	brew services start mysql
@@ -19,8 +19,8 @@ django-server:
 
 django-migrate:
 	./manage.py migrate
-	./manage.py makemigrations openedx_plugin_example
-	./manage.py migrate openedx_plugin_example
+	./manage.py makemigrations openedx_plugin_nacar
+	./manage.py migrate openedx_plugin_nacar
 
 django-shell:
 	./manage.py shell_plus
@@ -68,7 +68,7 @@ build:
 
 	if [ -d "./build" ]; then sudo rm -r build; fi
 	if [ -d "./dist" ]; then sudo rm -r dist; fi
-	if [ -d "./openedx_plugin_example.egg-info" ]; then sudo rm -r openedx_plugin_example.egg-info; fi
+	if [ -d "./openedx_plugin_nacar.egg-info" ]; then sudo rm -r openedx_plugin_nacar.egg-info; fi
 
 	python3 -m build --sdist ./
 	python3 -m build --wheel ./
@@ -79,7 +79,7 @@ build:
 
 # -------------------------------------------------------------------------
 # upload to PyPi Test
-# https://test.pypi.org/project/openedx-plugin-example/0.2.0/
+# https://test.pypi.org/project/openedx-plugin-nacar/0.2.0/
 # -------------------------------------------------------------------------
 release-test:
 	make build
@@ -87,7 +87,7 @@ release-test:
 
 # -------------------------------------------------------------------------
 # upload to PyPi
-# https://pypi.org/project/openedx-plugin-example/
+# https://pypi.org/project/openedx-plugin-nacar/
 # -------------------------------------------------------------------------
 release-prod:
 	make build

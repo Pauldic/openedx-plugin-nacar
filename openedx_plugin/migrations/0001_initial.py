@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "example_host",
+                    "nacar_host",
                     models.URLField(
                         blank=True,
                         help_text="the URL pointing to some server.",
@@ -126,9 +126,9 @@ class Migration(migrations.Migration):
                 (
                     "site_url",
                     models.URLField(
-                        default="https://example.org",
+                        default="https://nacarlearning.org",
                         help_text=(
-                            "URL for for anchor tag for this language. Example:" " https://example.org/contact/"
+                            "URL for for anchor tag for this language. Example:" " https://nacarlearning.org/contact/"
                         ),
                     ),
                 ),
@@ -168,7 +168,7 @@ class Migration(migrations.Migration):
                 (
                     "element_id",
                     models.CharField(
-                        help_text="An html element id. Example: example-locale-contact",
+                        help_text="An html element id. Example: nacar-locale-contact",
                         max_length=255,
                     ),
                 ),
@@ -187,7 +187,7 @@ class Migration(migrations.Migration):
                 (
                     "url",
                     models.URLField(
-                        help_text=("URL for for anchor tag for this language. Example:" " https://example.org/contact/")
+                        help_text=("URL for for anchor tag for this language. Example:" " https://nacarlearning.org/contact/")
                     ),
                 ),
                 (

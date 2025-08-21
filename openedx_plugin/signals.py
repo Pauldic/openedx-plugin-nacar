@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-written by:     Lawrence McDaniel
-                https://lawrencemcdaniel.com
+written by:     Paul Okeke
+                https://pauldiconline.com
 
 date:           feb-2022
 
@@ -41,7 +41,7 @@ def signals_enabled() -> bool:
 """
 
 
-@receiver(user_logged_in, dispatch_uid="example_user_logged_in")
+@receiver(user_logged_in, dispatch_uid="nacar_user_logged_in")
 def post_login(sender, request, user, **kwargs):  # lint-amnesty, pylint: disable=unused-argument
     if not signals_enabled():
         return
@@ -49,7 +49,7 @@ def post_login(sender, request, user, **kwargs):  # lint-amnesty, pylint: disabl
     log.info("openedx_plugin received user_logged_in signal for {username}".format(username=user.username))
 
 
-@receiver(user_logged_out, dispatch_uid="example_user_logged_out")
+@receiver(user_logged_out, dispatch_uid="nacar_user_logged_out")
 def post_logout(sender, request, user, **kwargs):  # lint-amnesty, pylint: disable=unused-argument
     if not signals_enabled():
         return
@@ -57,7 +57,7 @@ def post_logout(sender, request, user, **kwargs):  # lint-amnesty, pylint: disab
     log.info("openedx_plugin received user_logged_out signal for {username}".format(username=user.username))
 
 
-@receiver(REGISTER_USER, dispatch_uid="example_REGISTER_USER")
+@receiver(REGISTER_USER, dispatch_uid="nacar_REGISTER_USER")
 def register_user(sender, user, registration, **kwargs):  # pylint: disable=unused-argument
     if not signals_enabled():
         return
@@ -91,11 +91,11 @@ def student_registration_completed(user, **kwargs):  # pylint: disable=unused-ar
     event_description: emitted when the user registration process in the LMS is completed.
     event_data: UserData
 
-    example user and kwargs data:
+    nacar user and kwargs data:
     'user_id': 39,
     'user_is_active': True,
     'user_pii_username': 'test',
-    'user_pii_email': 'test@example.com',
+    'user_pii_email': 'education@nacarlearning.com',
     'user_pii_name': 'test',
     'event_metadata_id': UUID('b1be2fac-1af1-11ec-bdf4-0242ac12000b'),
     'event_metadata_event_type': 'org.openedx.learning.student.registration.completed.v1',
@@ -164,12 +164,12 @@ def course_enrollment_created(enrollment, **kwargs):
     event_description: emitted when the user's enrollment process is completed.
     event_data: CourseEnrollmentData
 
-    example enrollment and kwargs data:
+    nacar enrollment and kwargs data:
     'enrollment_user_id': 42,
     'enrollment_user_is_active': True,
-    'enrollment_user_pii_username': 'test',
-    'enrollment_user_pii_email': 'test@example.com',
-    'enrollment_user_pii_name': 'test',
+    'enrollment_user_pii_username': 'education',
+    'enrollment_user_pii_email': 'education@nacarlearning.com',
+    'enrollment_user_pii_name': 'education',
     'enrollment_course_course_key': 'course-v1:edX+100+2021',
     'enrollment_course_display_name':'Demonstration Course',
     'enrollment_course_start': None,
@@ -379,7 +379,7 @@ def persistent_grade_summary_changed(grade, **kwargs):
     event_description: emitted when a grade changes in the course
     event_data: PersistentCourseGradeData
 
-    example grade and kwargs data:
+    nacar grade and kwargs data:
     'grade_user_id': 42,
     'grade_course_course_key': 'course-v1:edX+100+2021',
     'grade_course_display_name': 'Demonstration Course',

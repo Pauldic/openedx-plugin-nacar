@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Oct-2021
 
 Common Pluggable Django App settings
@@ -8,7 +8,7 @@ Common Pluggable Django App settings
 from path import Path as path
 
 APP_ROOT = path(__file__).abspath().dirname().dirname()  # /openedx_plugin_cms
-REPO_ROOT = APP_ROOT.dirname()  # openedx-plugin-example
+REPO_ROOT = APP_ROOT.dirname()  # openedx-plugin-nacar
 TEMPLATES_DIR = APP_ROOT / "templates"
 
 

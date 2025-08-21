@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-written by: Lawrence McDaniel
-            https://lawrencemcdaniel.com
+written by: Paul Okeke
+            https://pauldiconline.com
 
 date:       jun-2019
 

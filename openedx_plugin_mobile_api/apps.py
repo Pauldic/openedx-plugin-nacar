@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-written by:     Lawrence McDaniel
-                https://lawrencemcdaniel.com
+written by:     Paul Okeke
+                https://pauldiconline.com
 
 date:           dec-2022
 
@@ -28,8 +28,8 @@ OPENEDX_MOBILE_API_PREFIX_RE = "/api/mobile/(?P<api_version>v(1|0.5))/"
 
 class MobileApiConfig(AppConfig):
     """
-    Lawrence McDaniel
-    https://lawrencemcdaniel.com
+    Paul Okeke
+    https://pauldiconline.com
 
     Configuration class for the Turn The Bus customized mobile_api Django application.
     Spawned from https://github.com/openedx/edx-platform/tree/master/lms/djangoapps/mobile_api
@@ -65,7 +65,7 @@ class MobileApiConfig(AppConfig):
         #
         # This dict causes all constants defined in this settings/common.py and settings.production.py
         # to be injected into edx-platform/lms/envs/common.py and edx-platform/lms/envs/production.py
-        # Refer to settings/common.py and settings.production.py for example implementation patterns.
+        # Refer to settings/common.py and settings.production.py for nacar implementation patterns.
         PluginSettings.CONFIG: {
             ProjectType.LMS: {
                 SettingsType.COMMON: {PluginSettings.RELATIVE_PATH: "settings.common"},

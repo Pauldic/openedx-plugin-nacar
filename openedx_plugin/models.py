@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-written by:     Lawrence McDaniel
-                https://lawrencemcdaniel.com
+written by:     Paul Okeke
+                https://pauldiconline.com
 
 date:           dec-2022
 
@@ -33,10 +33,10 @@ class MarketingSites(TimeStampedModel):
     Registers a marketing site by language code.
     Examples:
     -------------------
-    es-419  maps to https://example.org
-    es-MX   maps to https://example.org
-    en      maps to https://example.org
-    en-US   maps to https://example.org
+    es-419  maps to https://nacarlearning.org
+    es-MX   maps to https://nacarlearning.org
+    en      maps to https://nacarlearning.org
+    en-US   maps to https://nacarlearning.org
     """
 
     class Meta:
@@ -57,10 +57,10 @@ class MarketingSites(TimeStampedModel):
         ),
     )
     site_url = models.URLField(
-        default="https://example.org",
+        default="https://nacarlearning.org",
         blank=False,
         help_text=_(
-            "URL for for anchor tag for this language.                     Example:" " https://example.org/contact/"
+            "URL for for anchor tag for this language.                     Example:" " https://nacarlearning.org/contact/"
         ),
     )
 
@@ -71,7 +71,7 @@ class MarketingSites(TimeStampedModel):
 class Locale(TimeStampedModel):
     """
     Stores localized urls and translated html tag element values by language
-    code Used in conjunction with Mako templates to localize example
+    code Used in conjunction with Mako templates to localize nacar
     specific page content such as footer links.
     """
 
@@ -81,7 +81,7 @@ class Locale(TimeStampedModel):
     element_id = models.CharField(
         blank=False,
         max_length=255,
-        help_text=_("An html element id. Example: example-locale-contact"),
+        help_text=_("An html element id. Example: nacar-locale-contact"),
     )
     language = models.CharField(
         blank=False,
@@ -92,7 +92,7 @@ class Locale(TimeStampedModel):
     url = models.URLField(
         blank=False,
         help_text=_(
-            "URL for for anchor tag for this language.                 Example:" " https://example.org/contact/"
+            "URL for for anchor tag for this language.                 Example:" " https://nacarlearning.org/contact/"
         ),
     )
     value = models.CharField(
@@ -128,7 +128,7 @@ class Configuration(TimeStampedModel):
         unique=True,
         help_text=_("Type of Open edX environment in which this configuration                " " will be used."),
     )
-    example_host = models.URLField(max_length=255, blank=True, help_text=_("the URL pointing to some server."))
+    nacar_host = models.URLField(max_length=255, blank=True, help_text=_("the URL pointing to some server."))
 
     def __str__(self):
         return self.type

@@ -1,11 +1,11 @@
 # coding=utf-8
 """
-written by:     Lawrence McDaniel
-                https://lawrencemcdaniel.com
+written by:     Paul Okeke
+                https://pauldiconline.com
 
 date:           sep-2021
 
-usage:          example custom Django model for
+usage:          nacar custom Django model for
                 openedx_plugin_api plugin
 """
 from django.db import models

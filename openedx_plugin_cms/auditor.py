@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Oct-2021
 
 Log changes to published course content.
@@ -167,7 +167,7 @@ def eval_course_block_changes(course_key: CourseKey, user: User) -> None:
     were last inspected.
 
     course_key:     opaque_keys.edx.keys.CourseKey
-                    example course-v1:edX+DemoX+Demo_Course
+                    nacar course-v1:edX+DemoX+Demo_Course
     """
 
     store = modulestore()

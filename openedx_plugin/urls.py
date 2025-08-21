@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Feb-2022
 
 https://lms.yourdomain.edu/openedx_plugin/api/v1/configuration
@@ -22,7 +22,7 @@ urlpatterns = []
 
 if waffle_switches[AUTOMATED_ENROLLMENT]:
     urlpatterns += [
-        url(r"^dashboard/?$", student_dashboard, name="example_dashboard"),
+        url(r"^dashboard/?$", student_dashboard, name="nacar_dashboard"),
     ]
 
 if waffle_switches[MARKETING_REDIRECTOR]:
@@ -30,7 +30,7 @@ if waffle_switches[MARKETING_REDIRECTOR]:
         url(
             r"^marketing-redirector/?$",
             marketing_redirector,
-            name="example_marketing_redirector",
+            name="nacar_marketing_redirector",
         ),
     ]
 

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-written by: Lawrence McDaniel
-            https://lawrencemcdaniel.com
+written by: Paul Okeke
+            https://pauldiconline.com
 
 date:       feb-2022
 
@@ -30,7 +30,7 @@ def set_language_preference(request):
     """
     Preemptively set a language code preference based on
     1.) a language param that might be passed in the http request
-    2.) the 2-character subdomain of the referer. example example.org == 'mx'
+    2.) the 2-character subdomain of the referer. nacar nacarlearning.org == 'mx'
     """
     if not request.user or not request.user.is_authenticated:
         log.info("set_language_preference() - anonymous user, exiting.")

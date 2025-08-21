@@ -1,9 +1,9 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Feb-2022
 
-example theming utility functions
+nacar theming utility functions
 """
 import logging
 from urllib.parse import urljoin
@@ -20,15 +20,15 @@ def marketing_redirector(request):
     Receives urls from MKTG_URL_OVERRIDES such as
 
     MKTG_URL_OVERRIDES: {
-        "COURSES": "https://lms.example.edu/marketing-redirector?example_page=learning-content",
+        "COURSES": "https://lms.nacarlearning.org/marketing-redirector?nacar_page=learning-content",
     }
 
     analyzes the request object to determine the best marketing site to redirect to.
-    example: example.org/learning-content
+    nacar: nacarlearning.org/learning-content
 
     """
     url = get_marketing_site(request)
-    example_page = request.GET.get("example_page") or ""
-    redirect_to = urljoin(url, example_page)
+    nacar_page = request.GET.get("nacar_page") or ""
+    redirect_to = urljoin(url, nacar_page)
 
     return redirect(redirect_to)

@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             model_name="locale",
             name="url",
             field=models.URLField(
-                help_text="URL for for anchor tag for this language.                 Example: https://example.org/contact/"
+                help_text="URL for for anchor tag for this language.                 Example: https://nacarlearning.org/contact/"
             ),
         ),
         migrations.AlterField(
@@ -44,8 +44,8 @@ class Migration(migrations.Migration):
             model_name="marketingsites",
             name="site_url",
             field=models.URLField(
-                default="https://example.org",
-                help_text="URL for for anchor tag for this language.                     Example: https://example.org/contact/",
+                default="https://nacarlearning.org",
+                help_text="URL for for anchor tag for this language.                     Example: https://nacarlearning.org/contact/",
             ),
         ),
     ]

@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-Written by: Lawrence McDaniel
-            https://lawrencemcdaniel.com
+Written by: Paul Okeke
+            https://pauldiconline.com
 
 Date:   Feb-2022
 
@@ -45,11 +45,11 @@ def student_dashboard(request):
     prior to opening the Open edX dashboard view.
 
     Defined params:
-    "language": the default language for this referrer. example: es-419
+    "language": the default language for this referrer. nacar: es-419
     "enroll": a CourseKey. we should attempt to enroll the user in this course
 
-    example url:
-    https://lms.example.edu/example/dashboard?language=en-US&enroll=course-v1%3AedX%2BDemoX%2BDemo_Course
+    nacar url:
+    https://lms.nacarlearning.org/nacar/dashboard?language=en-US&enroll=course-v1%3AedX%2BDemoX%2BDemo_Course
     """
 
     enroll_in = request.GET.get("enroll")
@@ -61,7 +61,7 @@ def student_dashboard(request):
 
     # this is a sneaky way of inferring that the user had to authenticate
     # while en route to this view, due to the @login_required.
-    if referer.netloc == "lms.example.edu":
+    if referer.netloc == "lms.nacarlearning.org":
         log.info(
             "student_dashboard() - initiating after user authentication for {username}".format(
                 username=request.user.username
@@ -71,7 +71,7 @@ def student_dashboard(request):
         log.info("student_dashboard() - initiating after referral {referer}".format(referer=referer.netloc))
 
     log.info(
-        "student_dashboard() - user {username} is accessing example via                "
+        "student_dashboard() - user {username} is accessing nacar via                "
         " {platform}. Referer is {referer}. Received a language                "
         " preference of {language_param} and a pre-enrollment                 course"
         " key of {enroll_in}".format(

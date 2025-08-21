@@ -1,6 +1,6 @@
 # Custom Course Content Audit Report for Course Management Studio
 
-[![hack.d Lawrence McDaniel](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://lawrencemcdaniel.com)
+[![hack.d Paul Okeke](https://img.shields.io/badge/hack.d-Lawrence%20McDaniel-orange.svg)](https://pauldiconline.com)
 
 A change log for Course Content. Triggered by Django signals tied to Course content management when publishing, editing and deleting course content from Course Management Studio. write change data into its own Django model. Provides a simple columnar view that is accessible in Course Management Studio via the urls below.
 
@@ -12,7 +12,7 @@ cd ~
 source edxapp_env
 source venvs/edxapp/bin/activate
 cd edx-platform
-pip install -e /the/file/path/to/openedx-plugin-example
+pip install -e /the/file/path/to/openedx-plugin-nacar
 ./manage.py cms makemigrations openedx_plugin_cms
 ./manage.py cms migrate
 ```

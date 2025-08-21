@@ -18,8 +18,8 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 APP_ROOT = (
     path(__file__).abspath().dirname().dirname()
-)  # /blah/blah/blah/.../openedx-plugin-example/openedx_plugin_mobile_api
-REPO_ROOT = APP_ROOT.dirname()  # /blah/blah/blah/.../openedx-plugin-example
+)  # /blah/blah/blah/.../openedx-plugin-nacar/openedx_plugin_mobile_api
+REPO_ROOT = APP_ROOT.dirname()  # /blah/blah/blah/.../openedx-plugin-nacar
 
 
 def plugin_settings(settings):

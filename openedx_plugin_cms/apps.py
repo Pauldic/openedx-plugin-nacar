@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Lawrence McDaniel - https://lawrencemcdaniel.com
+Paul Okeke - https://pauldiconline.com
 Oct-2021
 
 CMS App
@@ -49,7 +49,7 @@ class CustomPluginCMSConfig(AppConfig):
         #
         # This dict causes all constants defined in this settings/common.py and settings.production.py
         # to be injected into edx-platform/lms/envs/common.py and edx-platform/lms/envs/production.py
-        # Refer to settings/common.py and settings.production.py for example implementation patterns.
+        # Refer to settings/common.py and settings.production.py for nacar implementation patterns.
         PluginSettings.CONFIG: {
             ProjectType.CMS: {
                 SettingsType.PRODUCTION: {PluginSettings.RELATIVE_PATH: "settings.production"},
