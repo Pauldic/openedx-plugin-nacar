@@ -8,7 +8,7 @@ https://lms.yourdomain.edu/openedx_plugin/dashboard
 https://lms.yourdomain.edu/openedx_plugin/dashboard?language=es-419
 """
 # Django
-from django.conf.urls import url
+from django.urls import re_path
 
 # this repo
 from openedx_plugin.dashboard.views import student_dashboard
@@ -22,12 +22,12 @@ urlpatterns = []
 
 if waffle_switches[AUTOMATED_ENROLLMENT]:
     urlpatterns += [
-        url(r"^dashboard/?$", student_dashboard, name="nacar_dashboard"),
+        re_path(r"^dashboard/?$", student_dashboard, name="nacar_dashboard"),
     ]
 
 if waffle_switches[MARKETING_REDIRECTOR]:
     urlpatterns += [
-        url(
+        re_path(
             r"^marketing-redirector/?$",
             marketing_redirector,
             name="nacar_marketing_redirector",
