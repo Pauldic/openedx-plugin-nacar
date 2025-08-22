@@ -46,7 +46,9 @@ try:
     from xmodule.modulestore.django import (
         modulestore,
     )  # lint-amnesty, pylint: disable=wrong-import-order
-    from xmodule.course_module import DEFAULT_START_DATE, CourseFields
+    # from xmodule.course_module import DEFAULT_START_DATE, CourseFields
+    from openedx.core.djangoapps.course_date_signals.utils import DEFAULT_START_DATE
+    from xmodule.course_metadata_utils import CourseFields
 except ImportError:
     # for backward compatibility with nutmeg and earlier
     from common.lib.xmodule.xmodule.modulestore.django import (
