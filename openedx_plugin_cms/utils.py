@@ -27,16 +27,27 @@ from opaque_keys.edx.keys import UsageKey
 # open edx stuff
 from cms.djangoapps.contentstore.utils import get_lms_link_for_item
 
+# try:
+#     # for olive and later
+#     from xmodule.modulestore.django import modulestore
+#     from xmodule.course_module import (
+#         CourseBlock,
+#     )  # lint-amnesty, pylint: disable=wrong-import-order
+# except ImportError:
+#     # for backward compatibility with nutmeg and earlier
+#     from common.lib.xmodule.xmodule.modulestore.django import modulestore
+#     from common.lib.xmodule.xmodule.course_module import (
+#         CourseBlock,
+#     )  # lint-amnesty, pylint: disable=wrong-import-order
+
 try:
+    # for Teak and later
+    from xmodule.modulestore.django import modulestore
+    from xmodule.course_block import CourseBlock
+except ImportError:
     # for olive and later
     from xmodule.modulestore.django import modulestore
     from xmodule.course_module import (
-        CourseBlock,
-    )  # lint-amnesty, pylint: disable=wrong-import-order
-except ImportError:
-    # for backward compatibility with nutmeg and earlier
-    from common.lib.xmodule.xmodule.modulestore.django import modulestore
-    from common.lib.xmodule.xmodule.course_module import (
         CourseBlock,
     )  # lint-amnesty, pylint: disable=wrong-import-order
 
