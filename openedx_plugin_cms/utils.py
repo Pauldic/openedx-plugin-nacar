@@ -31,7 +31,8 @@ try:
     # for Teak and later
     from xmodule.modulestore.django import modulestore
     try:
-        from xmodule.course_block import CourseBlock
+        from xmodule.blocks.course_block import CourseBlock
+        # from xmodule.course_block import CourseBlock
     except ImportError:
         # for olive and later
         from xmodule.course_module import (

@@ -55,19 +55,23 @@ try:
         ModuleStoreEnum,
     )  # lint-amnesty, pylint: disable=wrong-import-order
     try:
-        from xmodule.course_module import (
-            CourseBlock,
-        )  # lint-amnesty, pylint: disable=wrong-import-order
+        from xmodule.blocks.course_block import CourseBlock
+        from xmodule.blocks.sequence import SequenceBlock, SectionBlock
+        from xmodule.blocks.vertical import VerticalBlock
+        from xmodule.blocks.unit import UnitBlock  # Units are verticals
+        # from xmodule.course_module import (
+        #     CourseBlock,
+        # )  # lint-amnesty, pylint: disable=wrong-import-order
     except ImportError:
         from xmodule.course_block import CourseBlock
-    from xmodule.seq_module import (
-        SequenceBlock,
-        SectionBlock,
-    )  # lint-amnesty, pylint: disable=wrong-import-order
-    from xmodule.vertical_block import (
-        VerticalBlock,
-    )  # lint-amnesty, pylint: disable=wrong-import-order
-    from xmodule.unit_block import UnitBlock  # Units are verticals.
+        from xmodule.seq_module import (
+            SequenceBlock,
+            SectionBlock,
+        )  # lint-amnesty, pylint: disable=wrong-import-order
+        from xmodule.vertical_block import (
+            VerticalBlock,
+        )  # lint-amnesty, pylint: disable=wrong-import-order
+        from xmodule.unit_block import UnitBlock  # Units are verticals.
 except ImportError:
     # for backward compatibility with nutmeg and earlier
     from common.lib.xmodule.xmodule.modulestore.django import (
