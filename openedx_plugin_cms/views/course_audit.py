@@ -54,9 +54,12 @@ try:
     from xmodule.modulestore import (
         ModuleStoreEnum,
     )  # lint-amnesty, pylint: disable=wrong-import-order
-    from xmodule.course_module import (
-        CourseBlock,
-    )  # lint-amnesty, pylint: disable=wrong-import-order
+    try:
+        from xmodule.course_module import (
+            CourseBlock,
+        )  # lint-amnesty, pylint: disable=wrong-import-order
+    except ImportError:
+        from xmodule.course_block import CourseBlock
     from xmodule.seq_module import (
         SequenceBlock,
         SectionBlock,
