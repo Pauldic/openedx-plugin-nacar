@@ -55,15 +55,12 @@ try:
         ModuleStoreEnum,
     )  # lint-amnesty, pylint: disable=wrong-import-order
     try:
-        from xmodule.blocks.course_block import CourseBlock
-        from xmodule.blocks.sequence import SequenceBlock, SectionBlock
-        from xmodule.blocks.vertical import VerticalBlock
-        from xmodule.blocks.unit import UnitBlock  # Units are verticals
-        # from xmodule.course_module import (
-        #     CourseBlock,
-        # )  # lint-amnesty, pylint: disable=wrong-import-order
-    except ImportError:
         from xmodule.course_block import CourseBlock
+        # from xmodule.blocks.sequence import SequenceBlock, SectionBlock
+        # from xmodule.blocks.vertical import VerticalBlock
+        # from xmodule.blocks.unit import UnitBlock  # Units are verticals
+    except ImportError:
+        from xmodule.course_module import CourseBlock
         from xmodule.seq_module import (
             SequenceBlock,
             SectionBlock,
@@ -217,9 +214,12 @@ def get_chapter_dict(i: int, course: CourseBlock, chapter: SectionBlock) -> Dict
 
 def get_sequence_dict(
     i: int,
-    course: CourseBlock,
-    chapter: SectionBlock,
-    sequence: SequenceBlock,
+    # course: CourseBlock,
+    # chapter: SectionBlock,
+    # sequence: SequenceBlock,
+    course: XBlock,
+    chapter: XBlock,
+    sequence: XBlock,
 ) -> Dict:
     row = get_chapter_dict(i, course, chapter)
     row["d_section"] = sequence.display_name
@@ -233,10 +233,14 @@ def get_sequence_dict(
 
 def get_vertical_dict(
     i: int,
-    course: CourseBlock,
-    chapter: SectionBlock,
-    sequence: SequenceBlock,
-    vertical: VerticalBlock,
+    # course: CourseBlock,
+    # chapter: SectionBlock,
+    # sequence: SequenceBlock,
+    # vertical: VerticalBlock,
+    course: XBlock,
+    chapter: XBlock,
+    sequence: XBlock,
+    vertical: XBlock,
 ) -> Dict:
     row = get_sequence_dict(i, course, chapter, sequence)
     row["e_unit"] = vertical.display_name
@@ -251,10 +255,14 @@ def get_vertical_dict(
 
 def get_vertical_child_dict(
     i: int,
-    course: CourseBlock,
-    chapter: SectionBlock,
-    sequence: SequenceBlock,
-    vertical: VerticalBlock,
+    # course: CourseBlock,
+    # chapter: SectionBlock,
+    # sequence: SequenceBlock,
+    # vertical: VerticalBlock,
+    course: XBlock,
+    chapter: XBlock,
+    sequence: XBlock,
+    vertical: XBlock,
     child: XBlock,
     advanced_component_types: list,
 ) -> Dict:
