@@ -201,7 +201,8 @@ def get_blank_dict() -> Dict:
     return row
 
 
-def get_chapter_dict(i: int, course: CourseBlock, chapter: SectionBlock) -> Dict:
+# def get_chapter_dict(i: int, course: CourseBlock, chapter: SectionBlock) -> Dict:
+def get_chapter_dict(i: int, course: XBlock, chapter: XBlock) -> Dict:
     row = get_blank_dict()
     row["a_order"] = str(i)
     row["b_course"] = course.display_name

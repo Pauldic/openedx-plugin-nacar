@@ -48,7 +48,6 @@ try:
     )  # lint-amnesty, pylint: disable=wrong-import-order
     try:
         from xmodule.course_metadata_utils import DEFAULT_START_DATE
-        # from xmodule.blocks.course_block import CourseFields  # Am suspecting it could be this based on other seen pattern
         from xmodule.course_block import CourseFields
     except ImportError:
         # for olive and later
