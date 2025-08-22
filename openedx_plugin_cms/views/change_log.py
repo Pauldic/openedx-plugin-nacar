@@ -24,12 +24,19 @@ from common.djangoapps.util.views import ensure_valid_course_key
 from common.djangoapps.edxmako.shortcuts import render_to_response
 from opaque_keys.edx.keys import CourseKey
 
+# try:
+#     # for olive and later
+#     from xmodule.course_module import CourseSummary
+# except ImportError:
+#     # for backward compatibility with nutmeg and earlier
+#     from common.lib.xmodule.xmodule.course_module import CourseSummary
+    
 try:
+    # for Teak and later
+    from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
+except ImportError:
     # for olive and later
     from xmodule.course_module import CourseSummary
-except ImportError:
-    # for backward compatibility with nutmeg and earlier
-    from common.lib.xmodule.xmodule.course_module import CourseSummary
 
 # our stuff
 from openedx_plugin_cms.models import CourseChangeLog
@@ -109,7 +116,8 @@ def plugin_cms_change_csv(request, course_id=None, **kwargs):
     if course_id:
         course_key = CourseKey.from_string(course_id)
         change_log = CourseChangeLog.objects.filter(course_id=course_key).order_by("-id")
-        course_display_name = CourseSummary(course_key).display_name
+        # course_display_name = CourseSummary(course_key).display_name
+        course_display_name = CourseOverview.get_from_id(course_key).display_name
     else:
         course_display_name = ""
         change_log = CourseChangeLog.objects.all().select_related("published_by", "edited_by").order_by("-id")
@@ -129,7 +137,10 @@ def plugin_cms_change_csv(request, course_id=None, **kwargs):
                 log_entry.location,
                 log_entry.category,
                 log_entry.course_id,
-                str(course_display_name if course_id else CourseSummary(log_entry.course_id).display_name).replace(
+                # str(course_display_name if course_id else CourseSummary(log_entry.course_id).display_name).replace(
+                #     "Empty", ""
+                # ),
+                str(course_display_name if course_id else CourseOverview.get_from_id(CourseKey.from_string(log_entry.course_id)).display_name).replace(
                     "Empty", ""
                 ),
                 log_entry.parent_url,
