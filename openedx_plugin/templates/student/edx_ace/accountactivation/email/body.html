@@ -1,3 +1,5 @@
+{% load debug_email_template %}
+{% log_template_use "accountactivation/email/body.html" %}
 {% extends 'ace_common/edx_ace/common/base_body.html' %}
 
 {% load django_markup %}
@@ -26,6 +28,9 @@
                 {% filter force_escape %}
                     {% comment %} {% blocktrans %}You're almost there! Use the link below to activate your account to access engaging, high-quality {{ platform_name }} courses. Note that you will not be able to log back into your account until you have activated it.{% endblocktrans %} {% endcomment %}
                     {% blocktrans %}You’re 555 almost there! Please click the link below to activate your account in order to access your online rescue e-learning courses.{% endblocktrans %}
+                    <p style="color: rgba(0,0,0,.75);">
+                    This is a **TEST** version of the activation email.
+                    </p>
                 {% endfilter %}
                 <br />
             </p>
