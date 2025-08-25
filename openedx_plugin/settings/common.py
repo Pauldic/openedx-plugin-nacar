@@ -14,10 +14,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 
-APP_ROOT = (
-    path(__file__).abspath().dirname().dirname()
-)  # /blah/blah/blah/.../nacar-digital-learning-openedx/openedx_plugin
+APP_ROOT = (path(__file__).abspath().dirname().dirname())  # /blah/blah/blah/.../nacar-digital-learning-openedx/openedx_plugin
 REPO_ROOT = APP_ROOT.dirname()  # /blah/blah/blah/.../nacar-digital-learning-openedx
+TEMPLATES_DIR = APP_ROOT / "templates"
+STATIC_DIR = APP_ROOT / "static"
 
 
 def plugin_settings(settings):
@@ -29,3 +29,18 @@ def plugin_settings(settings):
 
     # settings.SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    
+    # settings.MAKO_TEMPLATE_DIRS_BASE.extend([TEMPLATES_DIR])    
+    # 1. Mako templates (keep this if you have any Mako-based templates)
+    if hasattr(settings, "MAKO_TEMPLATE_DIRS_BASE"):
+        settings.MAKO_TEMPLATE_DIRS_BASE = list(settings.MAKO_TEMPLATE_DIRS_BASE)  # ensure mutable
+        settings.MAKO_TEMPLATE_DIRS_BASE.insert(0, TEMPLATES_DIR)  # prepend to have priority
+
+    # 2. Django templates (for render_to_string / email templates)
+    if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
+        settings.TEMPLATES[0]['DIRS'] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]['DIRS'])
+
+    # 3. Optional: static files directory if your plugin has static assets
+    if hasattr(settings, "STATICFILES_DIRS"):
+        settings.STATICFILES_DIRS = list(settings.STATICFILES_DIRS)
+        settings.STATICFILES_DIRS.insert(0, str(APP_ROOT / "static"))
