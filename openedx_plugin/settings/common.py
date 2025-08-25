@@ -5,21 +5,27 @@ Common Pluggable Django App settings
 Handling of environment variables, see: https://django-environ.readthedocs.io/en/latest/
 to convert .env to yml see: https://django-environ.readthedocs.io/en/latest/tips.html#docker-style-file-based-variables
 """
-from path import Path as path
-import environ
 import os
+import environ
+from path import Path as path
 
-# path to this file.
+# -------------------------------
+# Paths
+# -------------------------------
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-
+# -------------------------------
+# Paths
+# -------------------------------
 APP_ROOT = (path(__file__).abspath().dirname().dirname())  # /blah/blah/blah/.../nacar-digital-learning-openedx/openedx_plugin
 REPO_ROOT = APP_ROOT.dirname()  # /blah/blah/blah/.../nacar-digital-learning-openedx
 TEMPLATES_DIR = APP_ROOT / "templates"
 STATIC_DIR = APP_ROOT / "static"
 
-
+# -------------------------------
+# Plugin Settings Injection
+# -------------------------------
 def plugin_settings(settings):
     """
     Injects local settings into django settings
@@ -43,4 +49,23 @@ def plugin_settings(settings):
     # 3. Optional: static files directory if your plugin has static assets
     if hasattr(settings, "STATICFILES_DIRS"):
         settings.STATICFILES_DIRS = list(settings.STATICFILES_DIRS)
-        settings.STATICFILES_DIRS.insert(0, str(APP_ROOT / "static"))
+        settings.STATICFILES_DIRS.insert(0, str(STATIC_DIR))
+
+    # 4. Dummy request & user for Celery tasks
+    # This avoids 'VariableDoesNotExist' errors when rendering templates in background
+    if not hasattr(settings, "PLUGIN_DUMMY_CONTEXT"):
+        from types import SimpleNamespace
+        from django.contrib.sites.models import Site
+        from django.contrib.auth import get_user_model
+
+        dummy_user = SimpleNamespace(id=None, is_authenticated=False, is_staff=False)
+        dummy_site = Site(domain="example.com", name="Example")
+        dummy_message = SimpleNamespace(app_label="openedx_plugin")
+
+        settings.PLUGIN_DUMMY_CONTEXT = {
+            "request": SimpleNamespace(user=dummy_user, site=dummy_site),
+            "user": dummy_user,
+            "site": dummy_site,
+            "message": dummy_message,
+        }
+

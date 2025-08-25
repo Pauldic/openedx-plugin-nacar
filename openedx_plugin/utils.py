@@ -8,9 +8,12 @@ date:           feb-2022
 usage:          utility and convenience functions for openedx_plugin
 """
 import json
-from dateutil.parser import parse, ParserError
+from django.conf import settings
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 from collections.abc import MutableMapping
+from dateutil.parser import parse, ParserError
+from django.template.loader import render_to_string
 
 from opaque_keys.edx.locator import CourseLocator
 
@@ -97,3 +100,31 @@ class PluginJSONEncoder(json.JSONEncoder):
         except Exception:  # noqa: B902
             # obj probably is not json serializable.
             return ""
+
+
+def render_plugin_template(template_name, context=None, request=None):
+    """
+    Wrapper around render_to_string that injects a dummy request/context for Celery tasks.
+    
+    Usage:
+        html = render_plugin_template(
+            "student/edx_ace/accountactivation/email/body.html",
+            context={"confirm_activation_link": "https://example.com/activate"}
+        )
+    """
+    # Start with an empty context if none provided
+    context = dict(context) if context else {}
+
+    # Use actual request if available, otherwise inject dummy context
+    if request is None:
+        dummy_context = getattr(settings, "PLUGIN_DUMMY_CONTEXT", {})
+        # Merge dummy_context into context without overwriting existing keys
+        for key, value in dummy_context.items():
+            context.setdefault(key, value)
+    else:
+        # Include request explicitly in context
+        context.setdefault("request", request)
+        context.setdefault("user", getattr(request, "user", None))
+        context.setdefault("site", getattr(request, "site", None))
+
+    return render_to_string(template_name, context=context)
