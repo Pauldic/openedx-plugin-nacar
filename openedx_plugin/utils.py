@@ -102,7 +102,7 @@ class PluginJSONEncoder(json.JSONEncoder):
             return ""
 
 
-def render_plugin_template(template_name, context=None, request=None):
+def render_plugin_template(template_name, context=None):
     """
     Wrapper around render_to_string that injects a dummy request/context for Celery tasks.
     
@@ -114,18 +114,21 @@ def render_plugin_template(template_name, context=None, request=None):
     """
     # Start with an empty context if none provided
     context = dict(context) if context else {}
+    print("\n\n >>>>>>>>>>>>>>>>>>> 0 <<<<<<<<<<<<<<<<<<< ")
 
-    print("=====>>> ", request)
     # Use actual request if available, otherwise inject dummy context
-    if request is None:
+    if "request" not in context:
+        # if request is None:
         dummy_context = getattr(settings, "PLUGIN_DUMMY_CONTEXT", {})
         # Merge dummy_context into context without overwriting existing keys
         for key, value in dummy_context.items():
             context.setdefault(key, value)
+        print("\n\n=====>>> 1 <<< ", context)
     else:
         # Include request explicitly in context
         context.setdefault("request", request)
         context.setdefault("user", getattr(request, "user", None))
         context.setdefault("site", getattr(request, "site", None))
+        print("\n\n=====>>> 2 <<< ", context)
 
     return render_to_string(template_name, context=context)

@@ -26,10 +26,6 @@ REPO_ROOT = APP_ROOT.dirname()  # /blah/blah/blah/.../nacar-digital-learning-ope
 TEMPLATES_DIR = APP_ROOT / "templates"
 STATIC_DIR = APP_ROOT / "static"
 
-# Ensure LOCALE_PATHS is a list
-if not hasattr(settings, "LOCALE_PATHS") or settings.LOCALE_PATHS is None:
-    settings.LOCALE_PATHS = []
-
 # -------------------------------
 # Plugin Settings Injection
 # -------------------------------
@@ -51,21 +47,12 @@ def plugin_settings(settings):
 
     # 2. Django templates (for render_to_string / email templates)
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        settings.TEMPLATES[0]['DIRS'] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]['DIRS'])
+        settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
 
     # 3. Optional: static files directory if your plugin has static assets
     if hasattr(settings, "STATICFILES_DIRS"):
         settings.STATICFILES_DIRS = list(settings.STATICFILES_DIRS)
         settings.STATICFILES_DIRS.insert(0, str(STATIC_DIR))
-
-    # Ensure LOCALE_PATHS is a list
-    if not hasattr(settings, "LOCALE_PATHS") or settings.LOCALE_PATHS is None:
-        settings.LOCALE_PATHS = []
-
-    # or, if you have plugin-specific locale dirs:
-    PLUGIN_LOCALE_DIR = APP_ROOT / "locale"
-    if str(PLUGIN_LOCALE_DIR) not in settings.LOCALE_PATHS:
-        settings.LOCALE_PATHS.insert(0, str(PLUGIN_LOCALE_DIR))
 
     # 4. Dummy request & user for Celery tasks
     # This avoids 'VariableDoesNotExist' errors when rendering templates in background
