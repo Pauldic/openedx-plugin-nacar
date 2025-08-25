@@ -115,6 +115,7 @@ def render_plugin_template(template_name, context=None, request=None):
     # Start with an empty context if none provided
     context = dict(context) if context else {}
 
+    print("=====>>> ", request)
     # Use actual request if available, otherwise inject dummy context
     if request is None:
         dummy_context = getattr(settings, "PLUGIN_DUMMY_CONTEXT", {})

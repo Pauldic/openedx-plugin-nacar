@@ -8,6 +8,9 @@ to convert .env to yml see: https://django-environ.readthedocs.io/en/latest/tips
 import os
 import environ
 from path import Path as path
+from types import SimpleNamespace
+from django.contrib.sites.models import Site
+from django.contrib.auth.models import AnonymousUser
 
 # -------------------------------
 # Paths
@@ -22,6 +25,10 @@ APP_ROOT = (path(__file__).abspath().dirname().dirname())  # /blah/blah/blah/...
 REPO_ROOT = APP_ROOT.dirname()  # /blah/blah/blah/.../nacar-digital-learning-openedx
 TEMPLATES_DIR = APP_ROOT / "templates"
 STATIC_DIR = APP_ROOT / "static"
+
+# Ensure LOCALE_PATHS is a list
+if not hasattr(settings, "LOCALE_PATHS") or settings.LOCALE_PATHS is None:
+    settings.LOCALE_PATHS = []
 
 # -------------------------------
 # Plugin Settings Injection
@@ -51,21 +58,25 @@ def plugin_settings(settings):
         settings.STATICFILES_DIRS = list(settings.STATICFILES_DIRS)
         settings.STATICFILES_DIRS.insert(0, str(STATIC_DIR))
 
+    # Ensure LOCALE_PATHS is a list
+    if not hasattr(settings, "LOCALE_PATHS") or settings.LOCALE_PATHS is None:
+        settings.LOCALE_PATHS = []
+
+    # or, if you have plugin-specific locale dirs:
+    PLUGIN_LOCALE_DIR = APP_ROOT / "locale"
+    if str(PLUGIN_LOCALE_DIR) not in settings.LOCALE_PATHS:
+        settings.LOCALE_PATHS.insert(0, str(PLUGIN_LOCALE_DIR))
+
     # 4. Dummy request & user for Celery tasks
     # This avoids 'VariableDoesNotExist' errors when rendering templates in background
     if not hasattr(settings, "PLUGIN_DUMMY_CONTEXT"):
-        from types import SimpleNamespace
-        from django.contrib.sites.models import Site
-        from django.contrib.auth import get_user_model
-
-        dummy_user = SimpleNamespace(id=None, is_authenticated=False, is_staff=False)
         dummy_site = Site(domain="example.com", name="Example")
+        dummy_request = SimpleNamespace(user=AnonymousUser(), site=dummy_site)
         dummy_message = SimpleNamespace(app_label="openedx_plugin")
 
         settings.PLUGIN_DUMMY_CONTEXT = {
-            "request": SimpleNamespace(user=dummy_user, site=dummy_site),
-            "user": dummy_user,
+            "request": dummy_request,
+            "user": dummy_request.user,
             "site": dummy_site,
             "message": dummy_message,
         }
-
