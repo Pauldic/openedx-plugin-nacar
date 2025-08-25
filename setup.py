@@ -77,7 +77,13 @@ setup(
     name="nacar-plugin",
     version=ABOUT["__package_version__"],
     packages=find_packages(),
-    package_data={"": ["*.html"]},  # include any Mako templates found in this repo.
+    # package_data={"": ["*.html"]},  # include any Mako templates found in this repo.
+    package_data={
+        "openedx_plugin": ["templates/**/*.html"],
+        "openedx_plugin_api": ["templates/**/*.html"],
+        "openedx_plugin_cms": ["templates/**/*.html"],
+        "openedx_plugin_mobile_api": ["templates/**/*.html"],
+    },
     include_package_data=True,
     license_files=("LICENSE.txt",),
     license="AGPLv3",
