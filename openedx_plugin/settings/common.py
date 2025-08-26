@@ -44,7 +44,8 @@ def plugin_settings(settings):
 
     # 2. Django templates (for render_to_string / email templates)
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
+        settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
+        # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
 
     # 3. Optional: static files directory if your plugin has static assets
     if hasattr(settings, "STATICFILES_DIRS"):
@@ -53,18 +54,21 @@ def plugin_settings(settings):
 
     # 4. Dummy request & user for Celery tasks
     # This avoids 'VariableDoesNotExist' errors when rendering templates in background
-    if not hasattr(settings, "PLUGIN_DUMMY_CONTEXT"):        
-        from types import SimpleNamespace
-        from django.contrib.sites.models import Site
-        from django.contrib.auth.models import AnonymousUser
-        
-        dummy_site = Site(domain="example.com", name="Example")
-        dummy_request = SimpleNamespace(user=AnonymousUser(), site=dummy_site)
-        dummy_message = SimpleNamespace(app_label="openedx_plugin")
+    if not hasattr(settings, "PLUGIN_DUMMY_CONTEXT_FACTORY"):
+        def dummy_context():
+            from types import SimpleNamespace
+            from django.contrib.sites.models import Site
+            from django.contrib.auth.models import AnonymousUser
 
-        settings.PLUGIN_DUMMY_CONTEXT = {
-            "request": dummy_request,
-            "user": dummy_request.user,
-            "site": dummy_site,
-            "message": dummy_message,
-        }
+            dummy_site = Site(domain="example.com", name="Example")
+            dummy_request = SimpleNamespace(user=AnonymousUser(), site=dummy_site)
+            dummy_message = SimpleNamespace(app_label="openedx_plugin")
+
+            return {
+                "request": dummy_request,
+                "user": dummy_request.user,
+                "site": dummy_site,
+                "message": dummy_message,
+            }
+
+        settings.PLUGIN_DUMMY_CONTEXT_FACTORY = dummy_context
