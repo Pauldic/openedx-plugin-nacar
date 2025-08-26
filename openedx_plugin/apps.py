@@ -10,10 +10,8 @@ usage:          Django app and Open edX plugin configuration
 import json
 import logging
 
-from django.conf import settings
 from django.apps import AppConfig
-from types import SimpleNamespace
-from django.contrib.sites.models import Site
+
 
 # see: https://github.com/openedx/edx-django-utils/blob/master/edx_django_utils/plugins/
 from edx_django_utils.plugins import PluginSettings, PluginURLs
@@ -149,7 +147,7 @@ class CustomPluginConfig(AppConfig):
         # -------------------------------
         # Inject plugin-specific settings
         # -------------------------------
-        self._inject_plugin_settings()
+        # self._inject_plugin_settings()
         
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         log.info(
@@ -166,6 +164,9 @@ class CustomPluginConfig(AppConfig):
         """
         Injects plugin-specific directories and dummy context for Celery tasks.
         """
+        from django.contrib.sites.models import Site
+        from django.conf import settings
+        from types import SimpleNamespace
 
         # Paths
         APP_ROOT = path(__file__).abspath().dirname().dirname()

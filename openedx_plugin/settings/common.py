@@ -8,9 +8,6 @@ to convert .env to yml see: https://django-environ.readthedocs.io/en/latest/tips
 import os
 import environ
 from path import Path as path
-from types import SimpleNamespace
-from django.contrib.sites.models import Site
-from django.contrib.auth.models import AnonymousUser
 
 # -------------------------------
 # Paths
@@ -56,7 +53,11 @@ def plugin_settings(settings):
 
     # 4. Dummy request & user for Celery tasks
     # This avoids 'VariableDoesNotExist' errors when rendering templates in background
-    if not hasattr(settings, "PLUGIN_DUMMY_CONTEXT"):
+    if not hasattr(settings, "PLUGIN_DUMMY_CONTEXT"):        
+        from types import SimpleNamespace
+        from django.contrib.sites.models import Site
+        from django.contrib.auth.models import AnonymousUser
+        
         dummy_site = Site(domain="example.com", name="Example")
         dummy_request = SimpleNamespace(user=AnonymousUser(), site=dummy_site)
         dummy_message = SimpleNamespace(app_label="openedx_plugin")
