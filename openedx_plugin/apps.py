@@ -143,11 +143,6 @@ class CustomPluginConfig(AppConfig):
         from .__about__ import __version__
         from .waffle import waffle_init
         from .utils import PluginJSONEncoder
-
-        # -------------------------------
-        # Inject plugin-specific settings
-        # -------------------------------
-        # self._inject_plugin_settings()
         
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         log.info(
@@ -159,42 +154,3 @@ class CustomPluginConfig(AppConfig):
         waffle_init()
         IS_READY = True
 
-
-    def _inject_plugin_settings(self):
-        """
-        Injects plugin-specific directories and dummy context for Celery tasks.
-        """
-        from django.contrib.sites.models import Site
-        from django.conf import settings
-        from types import SimpleNamespace
-
-        # Paths
-        APP_ROOT = path(__file__).abspath().dirname().dirname()
-        TEMPLATES_DIR = APP_ROOT / "templates"
-        STATIC_DIR = APP_ROOT / "static"
-
-        # 1. Mako templates
-        if hasattr(settings, "MAKO_TEMPLATE_DIRS_BASE"):
-            settings.MAKO_TEMPLATE_DIRS_BASE = list(settings.MAKO_TEMPLATE_DIRS_BASE)
-            settings.MAKO_TEMPLATE_DIRS_BASE.insert(0, str(TEMPLATES_DIR))
-
-        # 2. Django templates
-        if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-            settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
-
-        # 3. Static files
-        if hasattr(settings, "STATICFILES_DIRS"):
-            settings.STATICFILES_DIRS = list(settings.STATICFILES_DIRS)
-            settings.STATICFILES_DIRS.insert(0, str(STATIC_DIR))
-
-        # 4. Dummy context for Celery / background tasks
-        if not hasattr(settings, "PLUGIN_DUMMY_CONTEXT"):
-            dummy_user = SimpleNamespace(id=None, is_authenticated=False, is_staff=False)
-            dummy_site = Site(domain="example.com", name="Example")
-            dummy_message = SimpleNamespace(app_label="openedx_plugin")
-            settings.PLUGIN_DUMMY_CONTEXT = {
-                "request": SimpleNamespace(user=dummy_user, site=dummy_site),
-                "user": dummy_user,
-                "site": dummy_site,
-                "message": dummy_message,
-            }
