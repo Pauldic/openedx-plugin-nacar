@@ -1,4 +1,3 @@
-{% log_template_use "accountactivation/email/body.html" %}
 {% extends 'ace_common/edx_ace/common/base_body.html' %}
 
 {% load django_markup %}
@@ -43,7 +42,6 @@
         <td>
             <p style="color: rgba(0,0,0,.75);">
                 {% filter force_escape %}
-                    {% comment %} {% blocktrans %}Enjoy learning with {{ platform_name }}.{% endblocktrans %} {% endcomment %}
                     {% blocktrans %}Enjoy learning with your new online rescue education portal!{% endblocktrans %}
                 {% endfilter %}
                 <br />
