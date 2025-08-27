@@ -12,9 +12,15 @@ import json
 import logging
 from attr import asdict
 
+from types import SimpleNamespace
+from django.utils import translation
 from django.dispatch import receiver
+from django.contrib.sites.models import Site
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from common.djangoapps.student.message_types import AccountActivation
 
+from edx_ace import ace
+from edx_ace.message import Message, Recipient
 from openedx.core.djangoapps.user_authn.views.register import REGISTER_USER
 from .utils import serialize_course_key, PluginJSONEncoder, masked_dict
 from .waffle import waffle_switches, SIGNALS
@@ -57,12 +63,73 @@ def post_logout(sender, request, user, **kwargs):  # lint-amnesty, pylint: disab
     log.info("openedx_plugin received user_logged_out signal for {username}".format(username=user.username))
 
 
+# @receiver(REGISTER_USER, dispatch_uid="nacar_REGISTER_USER")
+# def register_user(sender, user, registration, **kwargs):  # pylint: disable=unused-argument
+#     if not signals_enabled():
+#         return
+
+#     log.info("openedx_plugin received REGISTER_USER signal for {username}".format(username=user.username))
+
+
 @receiver(REGISTER_USER, dispatch_uid="nacar_REGISTER_USER")
 def register_user(sender, user, registration, **kwargs):  # pylint: disable=unused-argument
+    """
+    Sends a custom Account Activation email whenever a user registers.
+
+    Args:
+        sender: Signal sender (unused)
+        user: Django User object
+        registration: Registration object containing activation_key
+        kwargs: Additional keyword arguments
+    """
     if not signals_enabled():
         return
 
-    log.info("openedx_plugin received REGISTER_USER signal for {username}".format(username=user.username))
+    log.info(f"openedx_plugin received REGISTER_USER signal for {user.username}")
+
+    try:
+        # --- Prepare fake request and site ---
+        fake_request = SimpleNamespace(user=user, site=Site.objects.get_current())
+
+        # --- Prepare Recipient ---
+        recipient = Recipient(lms_user_id=user.id, email_address=user.email)
+
+        # --- Prepare user context for email template ---
+        language = getattr(user, "preferred_language", None) or "en"
+        user_context = {
+            "user": user,
+            "request": fake_request,
+            "site": fake_request.site,
+            "route_enabled": False,
+            "routed_user": "",
+            "routed_user_email": "",
+            "routed_profile_name": "",
+            "header_msg": "Account activation 123",
+            "platform_name": "Nacar Learning",
+            "confirm_activation_link": f"http://local.openedx.io/activate/{registration.activation_key}",
+            "support_url": "http://local.openedx.io/support",
+            "support_email": "devoicetester@gmail.com",
+            "lms_url": "http://local.openedx.io",
+        }
+
+        # --- Create Message object ---
+        msg = Message(
+            name="accountactivation",
+            app_label="student",
+            recipient=recipient,
+            context=user_context,
+        )
+
+        # --- Personalize message with your custom template ---
+        personalized_msg = AccountActivation.personalize(msg, recipient, language, user_context)
+
+        # --- Send the email ---
+        ace.send(personalized_msg)
+
+        log.info(f"Custom Account Activation email sent to {user.email} in language '{language}'")
+
+    except Exception as e:
+        log.error(f"Failed to send custom activation email for {user.username}: {str(e)}", exc_info=True)
 
 
 """
@@ -82,28 +149,28 @@ def register_user(sender, user, registration, **kwargs):  # pylint: disable=unus
 def student_registration_completed(user, **kwargs):  # pylint: disable=unused-argument
     """
 
-    see apps.py plugin_app["signals_config"]["lms.djangoapp"]["receivers"]
-    signal_path: openedx_events.learning.signals.STUDENT_REGISTRATION_COMPLETED
-    https://github.com/openedx/openedx-events/blob/main/openedx_events/learning/signals.py#L25
+        see apps.py plugin_app["signals_config"]["lms.djangoapp"]["receivers"]
+        signal_path: openedx_events.learning.signals.STUDENT_REGISTRATION_COMPLETED
+        https://github.com/openedx/openedx-events/blob/main/openedx_events/learning/signals.py#L25
 
-    event_type: org.openedx.learning.student.registration.completed.v1
-    event_name: STUDENT_REGISTRATION_COMPLETED
-    event_description: emitted when the user registration process in the LMS is completed.
-    event_data: UserData
+        event_type: org.openedx.learning.student.registration.completed.v1
+        event_name: STUDENT_REGISTRATION_COMPLETED
+        event_description: emitted when the user registration process in the LMS is completed.
+        event_data: UserData
 
-    nacar user and kwargs data:
-    'user_id': 39,
-    'user_is_active': True,
-    'user_pii_username': 'test',
-    'user_pii_email': 'education@nacarlearning.com',
-    'user_pii_name': 'test',
-    'event_metadata_id': UUID('b1be2fac-1af1-11ec-bdf4-0242ac12000b'),
-    'event_metadata_event_type': 'org.openedx.learning.student.registration.completed.v1',
-    'event_metadata_minorversion': 0,
-    'event_metadata_source': 'openedx/lms/web',
-    'event_metadata_sourcehost': 'lms.devstack.edx',
-    'event_metadata_time': datetime.datetime(2021, 9, 21, 15, 36, 31, 311506),
-    'event_metadata_sourcelib': [0, 6, 0]
+        nacar user and kwargs data:
+        'user_id': 39,
+        'user_is_active': True,
+        'user_pii_username': 'test',
+        'user_pii_email': 'education@nacarlearning.com',
+        'user_pii_name': 'test',
+        'event_metadata_id': UUID('b1be2fac-1af1-11ec-bdf4-0242ac12000b'),
+        'event_metadata_event_type': 'org.openedx.learning.student.registration.completed.v1',
+        'event_metadata_minorversion': 0,
+        'event_metadata_source': 'openedx/lms/web',
+        'event_metadata_sourcehost': 'lms.devstack.edx',
+        'event_metadata_time': datetime.datetime(2021, 9, 21, 15, 36, 31, 311506),
+        'event_metadata_sourcelib': [0, 6, 0]
 
     """
     if not signals_enabled():
