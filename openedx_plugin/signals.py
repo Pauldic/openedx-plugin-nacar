@@ -104,7 +104,7 @@ def register_user(sender, user, registration, **kwargs):  # pylint: disable=unus
             "routed_user": "",
             "routed_user_email": "",
             "routed_profile_name": "",
-            "header_msg": "Account activation 123",
+            "header_msg": "Account activation Signal",
             "platform_name": "Nacar Learning",
             "confirm_activation_link": f"http://local.openedx.io/activate/{registration.activation_key}",
             "support_url": "http://local.openedx.io/support",
