@@ -161,7 +161,7 @@ class CustomPluginConfig(AppConfig):
             student_message_types.AccountActivation = CustomAccountActivation
             log.info(">>>>>>>>>>>>  Patched LMS AccountActivation to use custom template")
         except Exception:
-            log.exception("Failed to patch LMS AccountActivation")
+            log.exception(">>>>>>>>>>>>  Failed to patch LMS AccountActivation")
             
         IS_READY = True
 
