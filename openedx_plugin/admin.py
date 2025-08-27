@@ -87,6 +87,3 @@ class CustomUserAdmin(DefaultUserAdmin):
 admin.site.register(MarketingSites, MarketingSitesAdmin)
 admin.site.register(Locale, LocaleAdmin)
 admin.site.register(Configuration, ConfigurationAdmin)
-
-admin.site.unregister(User)
-admin.site.register(User, CustomUserAdmin)

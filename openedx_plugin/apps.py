@@ -11,6 +11,8 @@ import json
 import logging
 
 from django.apps import AppConfig
+from django.contrib import admin
+from django.contrib.auth.models import User
 
 
 # see: https://github.com/openedx/edx-django-utils/blob/master/edx_django_utils/plugins/
@@ -143,7 +145,10 @@ class CustomPluginConfig(AppConfig):
         from .__about__ import __version__
         from .waffle import waffle_init
         from .utils import PluginJSONEncoder
-        import .admin
+        from .admin import CustomUserAdmin
+        
+        admin.site.unregister(User)
+        admin.site.register(User, CustomUserAdmin)
         
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         log.info(
