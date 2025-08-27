@@ -143,6 +143,7 @@ class CustomPluginConfig(AppConfig):
         from .__about__ import __version__
         from .waffle import waffle_init
         from .utils import PluginJSONEncoder
+        import admin
         
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         log.info(
