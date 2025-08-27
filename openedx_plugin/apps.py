@@ -159,7 +159,7 @@ class CustomPluginConfig(AppConfig):
             from .message_types import CustomAccountActivation
 
             student_message_types.AccountActivation = CustomAccountActivation
-            log.info("Patched LMS AccountActivation to use custom template")
+            log.info(">>>>>>>>>>>>  Patched LMS AccountActivation to use custom template")
         except Exception:
             log.exception("Failed to patch LMS AccountActivation")
             
