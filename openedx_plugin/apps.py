@@ -144,12 +144,17 @@ class CustomPluginConfig(AppConfig):
         from .waffle import waffle_init
         from .utils import PluginJSONEncoder
         
-        # from django.contrib import admin
-        # from django.contrib.auth.models import User
-        # from .admin import CustomUserAdmin
+        from django.contrib import admin
+        from django.contrib.auth import get_user_model
+        from .admin import CustomUserAdmin
         
-        # admin.site.unregister(User)
-        # admin.site.register(User, CustomUserAdmin)
+        User = get_user_model()  # pylint:disable=invalid-name
+        
+        try:
+            admin.site.unregister(User)
+        except NotRegistered:
+            pass
+        admin.site.register(User, CustomUserAdmin)
         
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         log.info(

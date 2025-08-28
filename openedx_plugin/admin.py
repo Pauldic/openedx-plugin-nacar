@@ -31,13 +31,14 @@ admin.site.register(Configuration, ConfigurationAdmin)
 
 from django.urls import path
 from django.contrib import messages
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
+from django.contrib.auth import get_user_model
+from common.djangoapps.student.admin import UserAdmin as OpenEdxUserAdmin
 from django.shortcuts import redirect
 
+User = get_user_model()  # pylint:disable=invalid-name
 
-class CustomUserAdmin(DefaultUserAdmin):
-    list_display = DefaultUserAdmin.list_display + ('resend_activation_button',)
+class CustomUserAdmin(OpenEdxUserAdmin):
+    list_display = OpenEdxUserAdmin.list_display + ('resend_activation_button',)
     actions = ['bulk_resend_activation']
     
     # Add a row-level button
@@ -73,7 +74,7 @@ class CustomUserAdmin(DefaultUserAdmin):
 
         for user in queryset:
             try:
-                # resend_activation_email(user)
+                resend_activation_email(user)
                 sent_count += 1
             except Exception as e:
                 failed_count += 1
