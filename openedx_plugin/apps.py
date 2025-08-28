@@ -11,8 +11,6 @@ import json
 import logging
 
 from django.apps import AppConfig
-from django.contrib import admin
-from django.contrib.auth.models import User
 
 
 # see: https://github.com/openedx/edx-django-utils/blob/master/edx_django_utils/plugins/
@@ -145,10 +143,13 @@ class CustomPluginConfig(AppConfig):
         from .__about__ import __version__
         from .waffle import waffle_init
         from .utils import PluginJSONEncoder
-        from .admin import CustomUserAdmin
         
-        admin.site.unregister(User)
-        admin.site.register(User, CustomUserAdmin)
+        # from django.contrib import admin
+        # from django.contrib.auth.models import User
+        # from .admin import CustomUserAdmin
+        
+        # admin.site.unregister(User)
+        # admin.site.register(User, CustomUserAdmin)
         
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         log.info(
@@ -160,14 +161,14 @@ class CustomPluginConfig(AppConfig):
         waffle_init()
         
         # Patch LMS AccountActivation
-        try:
-            from common.djangoapps.student import message_types as student_message_types
-            from .message_types import CustomAccountActivation
+        # try:
+        #     from common.djangoapps.student import message_types as student_message_types
+        #     from .message_types import CustomAccountActivation
 
-            student_message_types.AccountActivation = CustomAccountActivation
-            log.info(">>>>>>>>>>>>  Patched LMS AccountActivation to use custom template")
-        except Exception:
-            log.exception(">>>>>>>>>>>>  Failed to patch LMS AccountActivation")
+        #     student_message_types.AccountActivation = CustomAccountActivation
+        #     log.info(">>>>>>>>>>>>  Patched LMS AccountActivation to use custom template")
+        # except Exception:
+        #     log.exception(">>>>>>>>>>>>  Failed to patch LMS AccountActivation")
             
         IS_READY = True
 

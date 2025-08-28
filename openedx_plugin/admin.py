@@ -7,11 +7,7 @@ date:           dec-2022
 
 usage:          register the custom Django models in LMS Django Admin
 """
-from django.contrib import admin, messages
-from django.contrib.auth.models import User
-from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
-from django.shortcuts import redirect
-from django.urls import path
+from django.contrib import admin
 from .models import Configuration, Locale, MarketingSites
 
 
@@ -25,6 +21,19 @@ class LocaleAdmin(admin.ModelAdmin):
 
 class ConfigurationAdmin(admin.ModelAdmin):
     list_display = [f.name for f in Configuration._meta.get_fields()]
+
+
+admin.site.register(MarketingSites, MarketingSitesAdmin)
+admin.site.register(Locale, LocaleAdmin)
+admin.site.register(Configuration, ConfigurationAdmin)
+
+
+
+from django.urls import path
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
+from django.shortcuts import redirect
 
 
 class CustomUserAdmin(DefaultUserAdmin):
@@ -83,7 +92,3 @@ class CustomUserAdmin(DefaultUserAdmin):
     bulk_resend_activation.short_description = "Resend activation email to selected users"
     
 
-
-admin.site.register(MarketingSites, MarketingSitesAdmin)
-admin.site.register(Locale, LocaleAdmin)
-admin.site.register(Configuration, ConfigurationAdmin)
