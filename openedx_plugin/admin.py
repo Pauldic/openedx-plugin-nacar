@@ -92,4 +92,8 @@ class CustomUserAdmin(OpenEdxUserAdmin):
 
     bulk_resend_activation.short_description = "Resend activation email to selected users"
     
-
+try:
+    admin.site.unregister(User)
+except NotRegistered:
+    pass
+admin.site.register(User, CustomUserAdmin)

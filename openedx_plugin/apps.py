@@ -146,15 +146,15 @@ class CustomPluginConfig(AppConfig):
         
         from django.contrib import admin
         from django.contrib.auth import get_user_model
-        from .admin import CustomUserAdmin
+        # from .admin import CustomUserAdmin
         
-        User = get_user_model()  # pylint:disable=invalid-name
+        # User = get_user_model()  # pylint:disable=invalid-name
         
-        try:
-            admin.site.unregister(User)
-        except NotRegistered:
-            pass
-        admin.site.register(User, CustomUserAdmin)
+        # try:
+        #     admin.site.unregister(User)
+        # except NotRegistered:
+        #     pass
+        # admin.site.register(User, CustomUserAdmin)
         
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         log.info(
