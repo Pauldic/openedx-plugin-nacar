@@ -47,7 +47,7 @@ def plugin_settings(settings):
     # 2. Django templates (for render_to_string / email templates)t 
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
         # settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
-        print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]["DIRS"]}")
+        print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]['DIRS']}")
         settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
         # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
 
