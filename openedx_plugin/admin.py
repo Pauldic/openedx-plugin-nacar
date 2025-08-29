@@ -35,7 +35,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
 
 
 class CustomUserAdmin(OpenEdxUserAdmin):
-    list_display = OpenEdxUserAdmin.list_display + ('resend_activation_button',)
+    # list_display = OpenEdxUserAdmin.list_display + ('resend_activation_button',)
     actions = ['bulk_resend_activation']
     
     # Add a row-level button
