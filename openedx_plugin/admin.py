@@ -39,10 +39,10 @@ class CustomUserAdmin(OpenEdxUserAdmin):
     actions = ['bulk_resend_activation']
     
     # Add a row-level button
-    def resend_activation_button(self, obj):
-        return "Activated" if obj.is_active else mark_safe(f'<a class="button" href="/admin/resend-activation/{obj.pk}/">Resend Activation</a>')
-    resend_activation_button.short_description = 'Activation'
-    resend_activation_button.allow_tags = True  # required for raw HTML links
+    # def resend_activation_button(self, obj):
+    #     return "Activated" if obj.is_active else mark_safe(f'<a class="button" href="/admin/resend-activation/{obj.pk}/">Resend Activation</a>')
+    # resend_activation_button.short_description = 'Activation'
+    # resend_activation_button.allow_tags = True  # required for raw HTML links
 
     # Register custom admin view
     def get_urls(self):

@@ -38,9 +38,9 @@ def load_about() -> Dict[str, str]:
 
 def load_requirements(*requirements_paths) -> List[str]:
     """
-    Load all requirements from the specified requirements files.
-    Returns:
-        list: Requirements file relative path strings
+        Load all requirements from the specified requirements files.
+        Returns:
+            list: Requirements file relative path strings
     """
     requirements = set()
     for path in requirements_paths:
@@ -70,8 +70,8 @@ README = open(os.path.join(os.path.dirname(__file__), "README.md")).read()
 CHANGELOG = open(os.path.join(os.path.dirname(__file__), "CHANGELOG.md")).read()
 ABOUT = load_about()
 
-print("Found packages: {packages}".format(packages=find_packages()))
-print("requirements found: {requirements}".format(requirements=load_requirements("requirements/common.in")))
+print("\n >>>>>>>>>>>>>>>>>>>>>>>>> Found packages: {packages}".format(packages=find_packages()))
+print("\n >>>>>>>>>>>>>>>>>>>>>>>>> requirements found: {requirements}".format(requirements=load_requirements("requirements/common.in")))
 
 setup(
     name="nacar-plugin",
@@ -99,7 +99,7 @@ setup(
     download_url=("https://github.com/cookiecutter-openedx/cookiecutter-openedx-devops.git"),
     install_requires=load_requirements("requirements/common.in"),
     zip_safe=False,
-    keywords="Django, Open edX, Plugin, NACAR",
+    keywords="Python, Django, Open edX, NACAR, NACAR Learning, Plugin, REST API",
     classifiers=[  # https://pypi.org/classifiers/
         "Development Status :: 4 - Beta",
         "Framework :: Django",

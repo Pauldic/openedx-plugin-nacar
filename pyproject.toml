@@ -27,7 +27,7 @@ name = "openedx-plugin-nacar"
 version = "0.2.1"
 license = {file = "LICENSE.txt"}
 authors = [
-  { name="Paul Okeke", email="devoicetester@gmail.com" }
+  { name="Paul Okeke", email="pauldiconline@gmail.com" }
 ]
 description = "A Django plugin to modify and enhance the feature set of the Open edX learning management system"
 readme = "README.md"
@@ -52,7 +52,7 @@ dependencies = [
   "django-environ"
 ]
 
-keywords = ["Python", "Django", "Open edX", "Plugin", "REST API"]
+keywords = ["Python", "Django", "Open edX", "NACAR", "NACAR Learning", "Plugin", "REST API"]
 
 [project.urls]
 Homepage = "https://github.com/cookiecutter-openedx/openedx-plugin-nacar"
