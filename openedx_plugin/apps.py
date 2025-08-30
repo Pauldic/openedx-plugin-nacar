@@ -146,15 +146,6 @@ class CustomPluginConfig(AppConfig):
         
         from django.contrib import admin
         from django.contrib.auth import get_user_model
-        # from .admin import CustomUserAdmin
-        
-        # User = get_user_model()  # pylint:disable=invalid-name
-        
-        # try:
-        #     admin.site.unregister(User)
-        # except NotRegistered:
-        #     pass
-        # admin.site.register(User, CustomUserAdmin)
         
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         log.info(
@@ -171,9 +162,8 @@ class CustomPluginConfig(AppConfig):
             from .message_types import CustomAccountActivation
 
             student_message_types.AccountActivation = CustomAccountActivation
-            log.info(">>>>>>>>>>>>  Patched LMS AccountActivation to use custom template")
         except Exception:
-            log.exception(">>>>>>>>>>>>  Failed to patch LMS AccountActivation")
+            log.exception(">>>>>>>>>>>>  Failed to patch LMS CustomAccountActivation")
             
         IS_READY = True
 
