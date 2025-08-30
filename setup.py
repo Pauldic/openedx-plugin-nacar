@@ -79,10 +79,14 @@ setup(
     packages=find_packages(),
     # package_data={"": ["*.html"]},  # include any Mako templates found in this repo.
     package_data={
+        "openedx_plugin": ["templates/**/*.txt"],
         "openedx_plugin": ["templates/**/*.html"],
+        "openedx_plugin_api": ["templates/**/*.txt"],
         "openedx_plugin_api": ["templates/**/*.html"],
+        "openedx_plugin_cms": ["templates/**/*.txt"],
         "openedx_plugin_cms": ["templates/**/*.html"],
-        "openedx_plugin_mobile_api": ["templates/**/*.html"],
+        "openedx_plugin_mobile_api": ["templates/**/*.txt"],
+        "openedx_plugin_mobile_api": ["templates/**/*.html"]
     },
     include_package_data=True,
     license_files=("LICENSE.txt",),
