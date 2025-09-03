@@ -47,7 +47,7 @@ classifiers = [
     "Topic :: Education :: Computer Aided Instruction (CAI)",
 ]
 dependencies = [
-  "Django>=4.2,<=4.2.2",
+  # "Django>=4.2,<=4.2.2",
   "validators",
   "django-environ"
 ]
