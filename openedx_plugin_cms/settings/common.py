@@ -10,6 +10,7 @@ from path import Path as path
 APP_ROOT = path(__file__).abspath().dirname().dirname()  # /openedx_plugin_cms
 REPO_ROOT = APP_ROOT.dirname()  # openedx-plugin-nacar
 TEMPLATES_DIR = APP_ROOT / "templates"
+STATIC_DIR = APP_ROOT / "static"
 
 
 # -------------------------------
