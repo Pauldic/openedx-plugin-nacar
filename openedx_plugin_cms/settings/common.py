@@ -31,12 +31,16 @@ def plugin_settings(settings):
 
     # 2. Django templates (for render_to_string / email templates)
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
+        # Get current DIRS and normalize them
         current_dirs = settings.TEMPLATES[0].get("DIRS", [])
-        # Normalize into a list safely
-        if isinstance(current_dirs, (list, tuple)):
-            dirs = list(current_dirs)
-        else:
-            dirs = [current_dirs] if current_dirs else []
+        dirs = []
+        for d in current_dirs:
+            if isinstance(d, (list, tuple)):
+                dirs.extend(str(x) for x in d if x)
+            elif d:
+                dirs.append(str(d))
+
+        # Always prepend our plugin's templates dir
         dirs.insert(0, str(TEMPLATES_DIR))
         settings.TEMPLATES[0]["DIRS"] = dirs
 
