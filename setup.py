@@ -70,9 +70,6 @@ README = open(os.path.join(os.path.dirname(__file__), "README.md")).read()
 CHANGELOG = open(os.path.join(os.path.dirname(__file__), "CHANGELOG.md")).read()
 ABOUT = load_about()
 
-print("\n >>>>>>>>>>>>>>>>>>>>>>>>> Found packages: {packages}".format(packages=find_packages()))
-print("\n >>>>>>>>>>>>>>>>>>>>>>>>> requirements found: {requirements}".format(requirements=load_requirements("requirements/common.in")))
-
 setup(
     name="nacar-plugin",
     version=ABOUT["__package_version__"],
@@ -130,6 +127,6 @@ setup(
         ],
     },
     extras_require={
-        "Django": ["Django>=4.2,<=4.2.2"],
+        # "Django": ["Django>=4.2,<=4.2.2"],
     },
 )
