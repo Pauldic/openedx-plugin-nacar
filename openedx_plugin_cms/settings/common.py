@@ -31,7 +31,11 @@ def plugin_settings(settings):
     # 2. Django templates (for render_to_string / email templates)
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
         current_dirs = settings.TEMPLATES[0].get("DIRS", [])
-        dirs = list(current_dirs) if current_dirs else []
+        # Normalize into a list safely
+        if isinstance(current_dirs, (list, tuple)):
+            dirs = list(current_dirs)
+        else:
+            dirs = [current_dirs] if current_dirs else []
         dirs.insert(0, str(TEMPLATES_DIR))
         settings.TEMPLATES[0]["DIRS"] = dirs
 
