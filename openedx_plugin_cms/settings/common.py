@@ -5,8 +5,19 @@ Oct-2021
 
 Common Pluggable Django App settings
 """
+import os
+import environ
 from path import Path as path
 
+# -------------------------------
+# Paths
+# -------------------------------
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+
+# -------------------------------
+# Paths
+# -------------------------------
 APP_ROOT = path(__file__).abspath().dirname().dirname()  # /openedx_plugin_cms
 REPO_ROOT = APP_ROOT.dirname()  # openedx-plugin-nacar
 TEMPLATES_DIR = APP_ROOT / "templates"
@@ -44,7 +55,7 @@ def plugin_settings(settings):
     #     dirs.insert(0, str(TEMPLATES_DIR))
     #     settings.TEMPLATES[0]["DIRS"] = dirs
 
-    # 3. Optional: static files directory if your plugin has static assets
-    if hasattr(settings, "STATICFILES_DIRS"):
-        settings.STATICFILES_DIRS = list(settings.STATICFILES_DIRS)
-        settings.STATICFILES_DIRS.insert(0, str(STATIC_DIR))
+    # # 3. Optional: static files directory if your plugin has static assets
+    # if hasattr(settings, "STATICFILES_DIRS"):
+    #     settings.STATICFILES_DIRS = list(settings.STATICFILES_DIRS)
+    #     settings.STATICFILES_DIRS.insert(0, str(STATIC_DIR))
