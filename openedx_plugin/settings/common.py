@@ -5,15 +5,7 @@ Common Pluggable Django App settings
 Handling of environment variables, see: https://django-environ.readthedocs.io/en/latest/
 to convert .env to yml see: https://django-environ.readthedocs.io/en/latest/tips.html#docker-style-file-based-variables
 """
-import os
-import environ
 from path import Path as path
-
-# -------------------------------
-# Paths
-# -------------------------------
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 # -------------------------------
 # Paths

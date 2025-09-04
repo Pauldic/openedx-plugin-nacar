@@ -1,61 +1,21 @@
 # coding=utf-8
 """
-Paul Okeke - https://pauldiconline.com
+Lawrence McDaniel - https://lawrencemcdaniel.com
 Oct-2021
 
 Common Pluggable Django App settings
 """
-import os
-import environ
 from path import Path as path
 
-# -------------------------------
-# Paths
-# -------------------------------
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
-
-# -------------------------------
-# Paths
-# -------------------------------
 APP_ROOT = path(__file__).abspath().dirname().dirname()  # /openedx_plugin_cms
-REPO_ROOT = APP_ROOT.dirname()  # openedx-plugin-nacar
+REPO_ROOT = APP_ROOT.dirname()  # openedx-plugin-example
 TEMPLATES_DIR = APP_ROOT / "templates"
-STATIC_DIR = APP_ROOT / "static"
 
 
-# -------------------------------
-# Plugin Settings Injection
-# -------------------------------
 def plugin_settings(settings):
     """
-        Injects local settings into django settings
-
-        see: https://stackoverflow.com/questions/56129708/how-to-force-redirect-uri-to-use-https-with-python-social-app
+    Injects local settings into django settings
     """
-
-    # settings.MAKO_TEMPLATE_DIRS_BASE.extend([TEMPLATES_DIR])  
-    # 1. Mako templates (keep this if you have any Mako-based templates)
-    if hasattr(settings, "MAKO_TEMPLATE_DIRS_BASE"):
-        settings.MAKO_TEMPLATE_DIRS_BASE = list(settings.MAKO_TEMPLATE_DIRS_BASE)  # ensure mutable
-        settings.MAKO_TEMPLATE_DIRS_BASE.insert(0, TEMPLATES_DIR)  # prepend to have priority
-
-    # # 2. Django templates (for render_to_string / email templates)
-    # if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-    #     # Get current DIRS and normalize them
-    #     current_dirs = settings.TEMPLATES[0].get("DIRS", [])
-    #     dirs = []
-    #     for d in current_dirs:
-    #         if isinstance(d, (list, tuple)):
-    #             dirs.extend(str(x) for x in d if x)
-    #         elif d:
-    #             dirs.append(str(d))
-
-    #     # Always prepend our plugin's templates dir
-    #     dirs.insert(0, str(TEMPLATES_DIR))
-    #     settings.TEMPLATES[0]["DIRS"] = dirs
-
-    # # 3. Optional: static files directory if your plugin has static assets
-    # if hasattr(settings, "STATICFILES_DIRS"):
-    #     settings.STATICFILES_DIRS = list(settings.STATICFILES_DIRS)
-    #     settings.STATICFILES_DIRS.insert(0, str(STATIC_DIR))
+    # Add the template directory for this package to
+    # to the search path for Mako.
+    settings.MAKO_TEMPLATE_DIRS_BASE.extend([TEMPLATES_DIR])
