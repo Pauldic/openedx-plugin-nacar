@@ -35,7 +35,7 @@ def plugin_settings(settings):
 
     # 2. Django templates (for render_to_string / email templates)t 
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        print(f"TEMPLATES 1: >>>>>>>>>>>>>>> {type(settings.TEMPLATES[0]["DIRS"])}  settings.TEMPLATES ", settings.TEMPLATES)  
+        print(f"TEMPLATES 1: >>>>>>>>>>>>>>>  settings.TEMPLATES ", settings.TEMPLATES)  
         if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):      
             dirs = list(settings.TEMPLATES[0]["DIRS"])
             print(f"TEMPLATES 2: >>>>>>>>>>>>>>>  settings.TEMPLATES (List): ", dirs)
