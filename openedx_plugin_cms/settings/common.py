@@ -28,23 +28,40 @@ def plugin_settings(settings):
     # 1. Mako templates (keep this if you have any Mako-based templates)
     if hasattr(settings, "MAKO_TEMPLATE_DIRS_BASE"):
         print(f" MAKO: >>>>>>>>>>>>>>>  {type(settings.MAKO_TEMPLATE_DIRS_BASE)} settings.MAKO_TEMPLATE_DIRS_BASE ", settings.MAKO_TEMPLATE_DIRS_BASE)
-        settings.MAKO_TEMPLATE_DIRS_BASE = list(settings.MAKO_TEMPLATE_DIRS_BASE)  # ensure mutable
-        # print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding AA {TEMPLATES_DIR} to {settings.MAKO_TEMPLATE_DIRS_BASE}")
-        settings.MAKO_TEMPLATE_DIRS_BASE.insert(0, TEMPLATES_DIR)  # prepend to have priority
-        # settings.MAKO_TEMPLATE_DIRS_BASE.append(TEMPLATES_DIR)  # postpend to have priority
+        # settings.MAKO_TEMPLATE_DIRS_BASE = list(settings.MAKO_TEMPLATE_DIRS_BASE)  # ensure mutable
+        # settings.MAKO_TEMPLATE_DIRS_BASE.insert(0, TEMPLATES_DIR)  # prepend to have priority
+        # # settings.MAKO_TEMPLATE_DIRS_BASE.append(TEMPLATES_DIR)  # postpend to have priority
+        mako_value = settings.MAKO_TEMPLATE_DIRS_BASE
+        if hasattr(mako_value, "original"):
+            mako_value = mako_value.original
+        mako_dirs = list(mako_value)
+        if str(TEMPLATES_DIR) not in mako_dirs:
+            mako_dirs.insert(0, str(TEMPLATES_DIR))
+        settings.MAKO_TEMPLATE_DIRS_BASE = mako_dirs
 
     # 2. Django templates (for render_to_string / email templates)t 
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        print(f"TEMPLATES 1: >>>>>>>>>>>>>>>  settings.TEMPLATES ", settings.TEMPLATES)  
-        if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):      
-            dirs = list(settings.TEMPLATES[0]["DIRS"])
-            print(f"TEMPLATES 2: >>>>>>>>>>>>>>>  settings.TEMPLATES (List): ", dirs)
-            dirs.insert(0, str(TEMPLATES_DIR))
-            settings.TEMPLATES[0]["DIRS"] = dirs
-        else:            
-            # print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]['DIRS']}")
+        # print(f"TEMPLATES 1: >>>>>>>>>>>>>>>  settings.TEMPLATES ", settings.TEMPLATES)  
+        # if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):      
+        #     dirs = list(settings.TEMPLATES[0]["DIRS"])
+        #     print(f"TEMPLATES 2: >>>>>>>>>>>>>>>  settings.TEMPLATES (List): ", dirs)
+        #     dirs.insert(0, str(TEMPLATES_DIR))
+        #     settings.TEMPLATES[0]["DIRS"] = dirs
+        # else:            
+        #     # print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]['DIRS']}")
+        #     settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
+        #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
+        #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
+        if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):
+            settings.TEMPLATES[0]["DIRS"] = Derived(add_plugin_template_dirs)
+        else:
             settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
-            # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
-            # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
 
+def add_plugin_template_dirs(settings):
+    dirs = list(settings.TEMPLATES[0]["DIRS"].original
+                if hasattr(settings.TEMPLATES[0]["DIRS"], "original")
+                else settings.TEMPLATES[0]["DIRS"])
+    if str(TEMPLATES_DIR) not in dirs:
+        dirs.insert(0, str(TEMPLATES_DIR))
+    return dirs
 
