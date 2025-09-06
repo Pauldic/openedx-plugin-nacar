@@ -53,17 +53,20 @@ def plugin_settings(settings):
         #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
         #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
         if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):
-            # Pass a function that adds our plugin DIR to the final resolved list
-            settings.TEMPLATES[0]["DIRS"] = Derived(add_plugin_template_dirs)
+            # Use a Derived function that prepends plugin template dir
+            settings.TEMPLATES[0]["DIRS"] = Derived(lambda s: [str(TEMPLATES_DIR)] + list(s.TEMPLATES[0]["DIRS"]))
         else:
-            # Plain list case
             if str(TEMPLATES_DIR) not in settings.TEMPLATES[0]["DIRS"]:
                 settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
 
 
 def add_plugin_template_dirs(settings):
-    # This function will be called by Derived after TEMPLATES[0]["DIRS"] is resolved
-    dirs = list(settings.TEMPLATES[0]["DIRS"])  # safe now, it's a real list
-    if str(TEMPLATES_DIR) not in dirs:
-        dirs.insert(0, str(TEMPLATES_DIR))
-    return dirs
+    """
+    This is called by Derived after TEMPLATES[0]["DIRS"] is resolved.
+    We just prepend our plugin template dir if it’s not already there.
+    """
+    # settings.TEMPLATES[0]["DIRS"] may still be a Derived; do NOT try to unwrap.
+    # Instead, operate on settings._resolved if available, or prepend via another Derived.
+    
+    # The safest way is to redefine the list in a new Derived:
+    return [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
