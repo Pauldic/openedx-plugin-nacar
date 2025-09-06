@@ -52,14 +52,14 @@ def plugin_settings(settings):
         #     settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
         #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
         #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
-        def prepend_plugin_dir(resolved_dirs):
-            """resolved_dirs is already the resolved list, not a Derived"""
-            if str(TEMPLATES_DIR) not in resolved_dirs:
-                resolved_dirs = [str(TEMPLATES_DIR)] + list(resolved_dirs)
-            return resolved_dirs
+        def prepend_plugin_dir(settings):
+            # Ensure settings.TEMPLATES[0]["DIRS"] is a list
+            dirs = list(settings.TEMPLATES[0]["DIRS"]) if isinstance(settings.TEMPLATES[0]["DIRS"], list) else []
+            if str(TEMPLATES_DIR) not in dirs:
+                dirs.insert(0, str(TEMPLATES_DIR))
+            return dirs
 
-        # Wrap it in Derived regardless of current type
-        settings.TEMPLATES[0]["DIRS"] = Derived(prepend_plugin_dir, settings.TEMPLATES[0]["DIRS"])
+        settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
 
 
 def add_plugin_template_dirs(settings):
