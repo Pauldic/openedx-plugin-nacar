@@ -60,13 +60,6 @@ def plugin_settings(settings):
             if str(TEMPLATES_DIR) not in settings.TEMPLATES[0]["DIRS"]:
                 settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
 
-def add_plugin_template_dirs(settings):
-    dirs = list(settings.TEMPLATES[0]["DIRS"].original
-                if hasattr(settings.TEMPLATES[0]["DIRS"], "original")
-                else settings.TEMPLATES[0]["DIRS"])
-    if str(TEMPLATES_DIR) not in dirs:
-        dirs.insert(0, str(TEMPLATES_DIR))
-    return dirs
 
 def add_plugin_template_dirs(settings):
     # This function will be called by Derived after TEMPLATES[0]["DIRS"] is resolved
