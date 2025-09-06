@@ -11,7 +11,6 @@ from path import Path as path
 # Paths
 # -------------------------------
 APP_ROOT = (path(__file__).abspath().dirname().dirname())  # /blah/blah/blah/.../nacar-digital-learning-openedx/openedx_plugin
-REPO_ROOT = APP_ROOT.dirname()  # /blah/blah/blah/.../nacar-digital-learning-openedx
 TEMPLATES_DIR = APP_ROOT / "templates"
 STATIC_DIR = APP_ROOT / "static"
 
