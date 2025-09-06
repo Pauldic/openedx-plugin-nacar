@@ -53,9 +53,12 @@ def plugin_settings(settings):
         #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
         #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
         if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):
+            # Pass a function that adds our plugin DIR to the final resolved list
             settings.TEMPLATES[0]["DIRS"] = Derived(add_plugin_template_dirs)
         else:
-            settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
+            # Plain list case
+            if str(TEMPLATES_DIR) not in settings.TEMPLATES[0]["DIRS"]:
+                settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
 
 def add_plugin_template_dirs(settings):
     dirs = list(settings.TEMPLATES[0]["DIRS"].original
@@ -65,3 +68,9 @@ def add_plugin_template_dirs(settings):
         dirs.insert(0, str(TEMPLATES_DIR))
     return dirs
 
+def add_plugin_template_dirs(settings):
+    # This function will be called by Derived after TEMPLATES[0]["DIRS"] is resolved
+    dirs = list(settings.TEMPLATES[0]["DIRS"])  # safe now, it's a real list
+    if str(TEMPLATES_DIR) not in dirs:
+        dirs.insert(0, str(TEMPLATES_DIR))
+    return dirs
