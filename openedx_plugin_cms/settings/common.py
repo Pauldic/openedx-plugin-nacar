@@ -27,7 +27,7 @@ def plugin_settings(settings):
     # settings.MAKO_TEMPLATE_DIRS_BASE.extend([TEMPLATES_DIR])    
     # 1. Mako templates (keep this if you have any Mako-based templates)
     if hasattr(settings, "MAKO_TEMPLATE_DIRS_BASE"):
-        print(f" MAKO: >>>>>>>>>>>>>>>  {type(settings.MAKO_TEMPLATE_DIRS_BASE)} settings.MAKO_TEMPLATE_DIRS_BASE ", settings.MAKO_TEMPLATE_DIRS_BASE)
+        # print(f" MAKO: >>>>>>>>>>>>>>>  {type(settings.MAKO_TEMPLATE_DIRS_BASE)} settings.MAKO_TEMPLATE_DIRS_BASE ", settings.MAKO_TEMPLATE_DIRS_BASE)
         # settings.MAKO_TEMPLATE_DIRS_BASE = list(settings.MAKO_TEMPLATE_DIRS_BASE)  # ensure mutable
         # settings.MAKO_TEMPLATE_DIRS_BASE.insert(0, TEMPLATES_DIR)  # prepend to have priority
         # # settings.MAKO_TEMPLATE_DIRS_BASE.append(TEMPLATES_DIR)  # postpend to have priority
@@ -64,8 +64,8 @@ def plugin_settings(settings):
 
 def add_plugin_template_dirs(settings):
     """
-    This is called by Derived after TEMPLATES[0]["DIRS"] is resolved.
-    We just prepend our plugin template dir if it’s not already there.
+        This is called by Derived after TEMPLATES[0]["DIRS"] is resolved.
+        We just prepend our plugin template dir if it’s not already there.
     """
     # settings.TEMPLATES[0]["DIRS"] may still be a Derived; do NOT try to unwrap.
     # Instead, operate on settings._resolved if available, or prepend via another Derived.
