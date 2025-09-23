@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+  <h1>Enroll users into selected courses</h1>
+
+  {% if courses %}
+    <p><strong>Selected courses:</strong></p>
+    <ul>
+      {% for course in courses %}
+        <li>{{ course.display_name }} — {{ course.id }}</li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No courses selected.</p>
+  {% endif %}
+
+  <form method="post">{% csrf_token %}
+    <p>Enter one user email per line (users must already exist in the system):</p>
+    {{ form.as_p }}
+    <input type="submit" value="Enroll users" class="default">
+    <a href="/admin/content/course_overviews/courseoverview/" class="button">Cancel</a>
+  </form>
+{% endblock %}
