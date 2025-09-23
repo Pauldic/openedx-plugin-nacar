@@ -133,6 +133,11 @@ class EnrollUsersForm(forms.Form):
     )
 
 
+try:
+    admin.site.unregister(CourseOverview)
+except NotRegistered:
+    pass
+
 @admin.register(CourseOverview)
 class CourseOverviewAdmin(admin.ModelAdmin):
     """
@@ -252,8 +257,3 @@ try:
 except NotRegistered:
     pass
 admin.site.register(User, CustomUserAdmin)
-# try:
-#     admin.site.unregister(CourseOverview)
-# except NotRegistered:
-#     pass
-# admin.site.register(CourseOverview, CourseOverviewAdmin)
