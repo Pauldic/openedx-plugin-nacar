@@ -140,15 +140,16 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
         When chosen, you are redirected to a simple form to paste emails (one per line).
         Those users will be enrolled into the selected courses.
     """
-    # list_display = [
-    #     'id',
-    #     'display_name',
-    #     'version',
-    #     'enrollment_start',
-    #     'enrollment_end',
-    #     'created',
-    #     'modified',
-    # ]
+    list_display = [
+        'id',
+        'display_name',
+        'org',
+        'version',
+        'enrollment_start',
+        'enrollment_end',
+        'created',
+        'modified',
+    ]
     # search_fields = ['id', 'display_name']
     actions = ["enroll_selected_courses"]
 
