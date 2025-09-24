@@ -8,7 +8,6 @@ date:           dec-2022
 usage:          register the custom Django models in LMS Django Admin
 """
 
-from django import forms
 from django.urls import path
 from django.shortcuts import redirect, render
 from django.contrib import admin, messages
@@ -23,6 +22,7 @@ from openedx.core.djangoapps.enrollments.data import create_course_enrollment
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from openedx.core.djangoapps.content.course_overviews.admin import CourseOverviewAdmin as OpenEdxCourseOverviewAdmin
 
+from .forms import EnrollUsersForm
 from .models import Configuration, Locale, MarketingSites
 
 
@@ -121,18 +121,6 @@ class CustomUserAdmin(OpenEdxUserAdmin):
 # ---------------------------------------------------------------------
 # Course-side bulk enroll (select courses -> enroll user(s) by email)
 # ---------------------------------------------------------------------
-
-class EnrollUsersForm(forms.Form):
-    emails = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                "rows": 6,
-                "placeholder": "user1@example.com\nuser2@example.com\n(one email per line)",
-            }
-        ),
-        help_text="Enter one email per line (users must already exist).",
-    )
-
 
 class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
     """
