@@ -157,12 +157,10 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
             which is standard for CourseOverview in Open edX.
         """
         ids = [str(i) for i in queryset.values_list("id", flat=True)]
-        print("0 >>>>>>>>>>>>>>>>>>>>>> ", ids)
         if not ids:
             self.message_user(request, "No courses selected.", level=messages.WARNING)
             return
         qs = "&".join([f"ids={quote(str(i), safe='')}" for i in ids])
-        print("1 >>>>>>>>>>>>>>>>>>>>>> ", qs)
         return redirect(f"/admin/course_overviews/courseoverview/bulk-enroll/?{qs}")
 
     enroll_selected_courses.short_description = "Enroll users into selected courses"
@@ -182,6 +180,7 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
                 enrolled_count = 0
                 email_count = 0
                 errors = []
+                print(f"3 >>>>>>>>>>>>>>>>>>>>>> ", emails)
 
                 for email in emails:
                     try:
@@ -201,7 +200,7 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
                                 cid,
                                 mode="honor",
                                 is_active=True,
-                                force_enrollment=True,
+                                force_enrollment=True
                             )
                             enrolled_count += 1
                         except Exception as exc:
