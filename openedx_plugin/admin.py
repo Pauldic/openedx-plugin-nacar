@@ -9,8 +9,9 @@ usage:          register the custom Django models in LMS Django Admin
 """
 
 from django.urls import path
-from django.shortcuts import redirect, render
+from urllib.parse import quote
 from django.contrib import admin, messages
+from django.shortcuts import redirect, render
 from django.utils.safestring import mark_safe
 from django.contrib.auth import get_user_model
 from django.contrib.admin.sites import NotRegistered
@@ -156,10 +157,12 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
             which is standard for CourseOverview in Open edX.
         """
         ids = [str(i) for i in queryset.values_list("id", flat=True)]
+        print("0 >>>>>>>>>>>>>>>>>>>>>> ", ids)
         if not ids:
             self.message_user(request, "No courses selected.", level=messages.WARNING)
             return
-        qs = "&".join([f"ids={i}" for i in ids])
+        qs = "&".join([f"ids={quote(str(i), safe='')}" for i in ids])
+        print("1 >>>>>>>>>>>>>>>>>>>>>> ", qs)
         return redirect(f"/admin/course_overviews/courseoverview/bulk-enroll/?{qs}")
 
     enroll_selected_courses.short_description = "Enroll users into selected courses"
@@ -169,6 +172,7 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
             The admin view that shows the form. Expects query param ids=<course_id>&ids=<course_id>...
         """
         course_ids = request.GET.getlist("ids")
+        print("2 >>>>>>>>>>>>>>>>>>>>>> ", course_ids)
         courses = CourseOverview.objects.filter(id__in=course_ids)
 
         if request.method == "POST":
