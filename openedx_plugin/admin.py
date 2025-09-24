@@ -161,7 +161,7 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
             return
         # Join ids into querystring param "ids=..."
         qs = "&".join([f"ids={i}" for i in ids])
-        return redirect(f"/admin/content/course_overviews/courseoverview/bulk-enroll/?{qs}")
+        return redirect(f"/admin/course_overviews/courseoverview/bulk-enroll/?{qs}")
 
     enroll_selected_courses.short_description = "Enroll users into selected courses"
 
