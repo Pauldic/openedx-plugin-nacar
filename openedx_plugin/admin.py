@@ -155,11 +155,10 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
             NOTE: the redirect path assumes the admin URL layout /admin/content/course_overviews/courseoverview/bulk-enroll/
             which is standard for CourseOverview in Open edX.
         """
-        ids = list(queryset.values_list("id", flat=True))
+        ids = [str(i) for i in queryset.values_list("id", flat=True)]
         if not ids:
             self.message_user(request, "No courses selected.", level=messages.WARNING)
             return
-        # Join ids into querystring param "ids=..."
         qs = "&".join([f"ids={i}" for i in ids])
         return redirect(f"/admin/course_overviews/courseoverview/bulk-enroll/?{qs}")
 
