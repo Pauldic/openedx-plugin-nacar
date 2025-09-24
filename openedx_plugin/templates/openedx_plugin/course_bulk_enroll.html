@@ -6,7 +6,7 @@
     <p><strong>Selected courses:</strong></p>
     <ul>
       {% for course in courses %}
-        <li>{{ course.display_name }} — {{ course.id }}</li>
+        <ol>{{ course.display_name }} — {{ course.id }}</ol>
       {% endfor %}
     </ul>
   {% else %}
@@ -17,6 +17,7 @@
     <p>Enter one user email per line (users must already exist in the system):</p>
     {{ form.as_p }}
     <input type="submit" value="Enroll users" class="default">
-    <a href="/admin/content/course_overviews/courseoverview/" class="button">Cancel</a>
+    <a href="/admin/course_overviews/courseoverview/" class="button">Cancel</a>
   </form>
+
 {% endblock %}

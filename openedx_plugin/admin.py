@@ -172,7 +172,7 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
             The admin view that shows the form. Expects query param ids=<course_id>&ids=<course_id>...
         """
         course_ids = request.GET.getlist("ids")
-        print("2 >>>>>>>>>>>>>>>>>>>>>> ", course_ids)
+        print(f"2 >>>>>>>>>>>>>>>>>>>>>>  {request.method} ", course_ids)
         courses = CourseOverview.objects.filter(id__in=course_ids)
 
         if request.method == "POST":
@@ -217,7 +217,7 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
                     self.message_user(request, err, level=messages.ERROR)
 
                 # go back to CourseOverview changelist
-                return redirect("/admin/content/course_overviews/courseoverview/")
+                return redirect("/admin/course_overviews/courseoverview/")
         else:
             form = EnrollUsersForm()
 
