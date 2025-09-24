@@ -134,7 +134,6 @@ class EnrollUsersForm(forms.Form):
     )
 
 
-@admin.register(CourseOverview)
 class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
     """
         Adds an action to CourseOverview admin: "Enroll users into selected courses".
