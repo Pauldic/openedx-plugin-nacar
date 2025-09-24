@@ -21,6 +21,7 @@ from common.djangoapps.student.views import compose_and_send_activation_email
 # Course & enrollment imports
 from openedx.core.djangoapps.enrollments.data import create_course_enrollment
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
+from openedx.core.djangoapps.content.course_overviews.admin import CourseOverviewAdmin as OpenEdxCourseOverviewAdmin
 
 from .models import Configuration, Locale, MarketingSites
 
@@ -133,29 +134,23 @@ class EnrollUsersForm(forms.Form):
     )
 
 
-try:
-    admin.site.unregister(CourseOverview)
-except NotRegistered:
-    pass
-
 @admin.register(CourseOverview)
-class CourseOverviewAdmin(admin.ModelAdmin):
+class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
     """
         Adds an action to CourseOverview admin: "Enroll users into selected courses".
         When chosen, you are redirected to a simple form to paste emails (one per line).
         Those users will be enrolled into the selected courses.
     """
-    list_display = [
-        'id',
-        'display_name',
-        'version',
-        'enrollment_start',
-        'enrollment_end',
-        'created',
-        'modified',
-    ]
-
-    search_fields = ['id', 'display_name']
+    # list_display = [
+    #     'id',
+    #     'display_name',
+    #     'version',
+    #     'enrollment_start',
+    #     'enrollment_end',
+    #     'created',
+    #     'modified',
+    # ]
+    # search_fields = ['id', 'display_name']
     actions = ["enroll_selected_courses"]
 
     # Add the custom admin view URL (this will be under the CourseOverview admin path)
@@ -254,6 +249,8 @@ admin.site.register(Configuration, ConfigurationAdmin)
 
 try:
     admin.site.unregister(User)
+    admin.site.unregister(CourseOverview)
 except NotRegistered:
     pass
 admin.site.register(User, CustomUserAdmin)
+admin.site.register(CourseOverview, CustomCourseOverviewAdmin)
