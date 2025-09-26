@@ -180,7 +180,6 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
                 enrolled_count = 0
                 email_count = 0
                 errors = []
-                print(f"3 >>>>>>>>>>>>>>>>>>>>>> ", emails)
 
                 for email in emails:
                     try:
@@ -191,7 +190,7 @@ class CustomCourseOverviewAdmin(OpenEdxCourseOverviewAdmin):
 
                     email_count += 1
                     for course in courses:
-                        cid = course.id  # course-v1:Org+Code+Run
+                        cid = str(course.id)  # course-v1:Org+Code+Run (convert CourseLocator to string)
                         try:
                             # create_course_enrollment accepts username (or user id in some setups),
                             # here we use username which is safe for typical Open edX installs.
