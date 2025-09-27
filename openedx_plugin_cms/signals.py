@@ -71,6 +71,8 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
     try:
         course_overview, created = CourseOverview.get_or_create(course_key)
         
+        log.info(f">>>>>>>> Applying defaults: created={created}, current_visibility={course_overview.catalog_visibility}")
+        
         # Only apply defaults if this is effectively a new course
         # (either just created, or still using default "both" visibility)
         if created or course_overview.catalog_visibility == "both":
@@ -78,8 +80,8 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
             course_overview.invitation_only = True
             course_overview.save(update_fields=["catalog_visibility", "invitation_only"])
             log.info(
-                f"Auto-configured course {course_key}: "
-                f"catalog_visibility='about', invitation_only=True"
+                f">>>>>>  Auto-configured course {course_key}: "
+                f">>>>>>  catalog_visibility='about', invitation_only=True"
             )
     except Exception as e:
         log.error(f"Failed to set default visibility for course {course_key}: {str(e)}")
