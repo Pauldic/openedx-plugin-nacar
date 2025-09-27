@@ -17,7 +17,6 @@ import logging
 from django.dispatch import receiver
 from celery import shared_task
 from edx_django_utils.monitoring import set_code_owner_attribute
-from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 
 # Open edX stuff
 from opaque_keys.edx.keys import CourseKey
@@ -25,16 +24,10 @@ from opaque_keys.edx.keys import CourseKey
 try:
     # for olive and later
     # see: https://discuss.openedx.org/t/django-plugin-app-works-with-some-django-signals-but-not-others/5949/3
-    from xmodule.modulestore.django import SignalHandler
-    from xmodule.modulestore.django import (
-        modulestore,
-    )  # lint-amnesty, pylint: disable=wrong-import-order
+    from xmodule.modulestore.django import modulestore, SignalHandler
 except ImportError:
     # for backward compatibility with nutmeg and earlier
-    from common.lib.xmodule.xmodule.modulestore.django import SignalHandler
-    from common.lib.xmodule.xmodule.modulestore.django import (
-        modulestore,
-    )  # lint-amnesty, pylint: disable=wrong-import-order
+    from common.lib.xmodule.xmodule.modulestore.django import modulestore, SignalHandler
 
 # this repo
 from .auditor import (
@@ -61,31 +54,49 @@ def _course_publisher_hander(course_key_str):
 @receiver(SignalHandler.course_published, dispatch_uid="plugin_course_publish")
 def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: disable=unused-argument
     """
-    Receives publishing signal and logs block meta data and the user and    
-    On first course publish, ensure catalog_visibility='about' and invitation_only=True.
-    This ensures students only see courses they're enrolled in.
+        On course publish, set default values for:
+        - catalog_visibility = 'about'        (Course Visibility in Catalog)
+        - invitation_only = True              (Invitation Only)
+        But only if the course still uses the default settings.
+        This ensures new courses are private by default. 
+        Receives publishing signal and logs block meta data and the user 
     """
+    try:
+        store = modulestore()
+        course_usage_key = course_key.make_usage_key('course', 'course')
+        course_block = store.get_item(course_usage_key)
+
+        # Check current values (with defaults if missing)
+        current_invitation = getattr(course_block, 'invitation_only', False)
+        current_visibility = getattr(course_block, 'catalog_visibility', 'both')
+
+        log.info(
+            f">>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}"
+        )
+
+        # Only apply defaults if still using system defaults
+        needs_update = False
+        if current_invitation == False:
+            course_block.invitation_only = True
+            needs_update = True
+        if current_visibility == 'both':
+            course_block.catalog_visibility = 'about'
+            needs_update = True
+
+        if needs_update:
+            user_id = kwargs.get('user_id') or 0  # 0 is safe fallback for system actions
+            store.update_item(course_block, user_id=user_id)
+            log.info(
+                f">>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'"
+            )
+
+    except Exception as e:
+        log.exception(f"Failed to apply default settings to course {course_key}: {e}")
+
     user_id = kwargs.get("user_id")
     eval_course_block_changes(course_key, get_user(user_id))
+    return result
     
-    try:
-        course_overview, created = CourseOverview.get_or_create(course_key)
-        
-        log.info(f">>>>>>>> Applying defaults: created={created}, current_visibility={course_overview.catalog_visibility}")
-        
-        # Only apply defaults if this is effectively a new course
-        # (either just created, or still using default "both" visibility)
-        if created or course_overview.catalog_visibility == "both":
-            course_overview.catalog_visibility = "about"
-            course_overview.invitation_only = True
-            course_overview.save(update_fields=["catalog_visibility", "invitation_only"])
-            log.info(
-                f">>>>>>  Auto-configured course {course_key}: "
-                f">>>>>>  catalog_visibility='about', invitation_only=True"
-            )
-    except Exception as e:
-        log.error(f"Failed to set default visibility for course {course_key}: {str(e)}")
-    return
   
 
 @receiver(SignalHandler.course_deleted, dispatch_uid="plugin_course_delete")
