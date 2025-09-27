@@ -17,6 +17,7 @@ import logging
 from django.dispatch import receiver
 from celery import shared_task
 from edx_django_utils.monitoring import set_code_owner_attribute
+from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 
 # Open edX stuff
 from opaque_keys.edx.keys import CourseKey
@@ -60,12 +61,30 @@ def _course_publisher_hander(course_key_str):
 @receiver(SignalHandler.course_published, dispatch_uid="plugin_course_publish")
 def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: disable=unused-argument
     """
-    Receives publishing signal and logs block meta data and the user
+    Receives publishing signal and logs block meta data and the user and    
+    On first course publish, ensure catalog_visibility='about' and invitation_only=True.
+    This ensures students only see courses they're enrolled in.
     """
     user_id = kwargs.get("user_id")
     eval_course_block_changes(course_key, get_user(user_id))
+    
+    try:
+        course_overview, created = CourseOverview.get_or_create(course_key)
+        
+        # Only apply defaults if this is effectively a new course
+        # (either just created, or still using default "both" visibility)
+        if created or course_overview.catalog_visibility == "both":
+            course_overview.catalog_visibility = "about"
+            course_overview.invitation_only = True
+            course_overview.save(update_fields=["catalog_visibility", "invitation_only"])
+            log.info(
+                f"Auto-configured course {course_key}: "
+                f"catalog_visibility='about', invitation_only=True"
+            )
+    except Exception as e:
+        log.error(f"Failed to set default visibility for course {course_key}: {str(e)}")
     return
-
+  
 
 @receiver(SignalHandler.course_deleted, dispatch_uid="plugin_course_delete")
 def _plugin_listen_for_course_delete(sender, course_key, **kwargs):  # pylint: disable=unused-argument
