@@ -19,6 +19,7 @@ from common.djangoapps.student.admin import UserAdmin as OpenEdxUserAdmin
 from common.djangoapps.student.views import compose_and_send_activation_email
 
 # Course & enrollment imports
+# from common.djangoapps.student.models import CourseEnrollment
 from openedx.core.djangoapps.enrollments.data import create_course_enrollment
 from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 from openedx.core.djangoapps.content.course_overviews.admin import CourseOverviewAdmin as OpenEdxCourseOverviewAdmin
