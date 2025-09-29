@@ -10,6 +10,7 @@ from openedx.core.lib.derived import Derived
 
 APP_ROOT = (path(__file__).abspath().dirname().dirname())  # /blah/blah/blah/.../nacar-digital-learning-openedx/openedx_plugin
 TEMPLATES_DIR = APP_ROOT / "templates"
+COURSE_TEMPLATE_DIR = APP_ROOT / "templates" / "course_template"
 
 # -------------------------------
 # Plugin Settings Injection
@@ -61,7 +62,17 @@ def plugin_settings(settings):
 
         settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
 
-
+    # 3. Course templates (for Studio "Create Course" templates)
+    if hasattr(settings, "COURSE_TEMPLATES_DIRS"):
+        if str(COURSE_TEMPLATE_DIR) not in settings.COURSE_TEMPLATES_DIRS:
+            settings.COURSE_TEMPLATES_DIRS.insert(0, str(COURSE_TEMPLATE_DIR))
+    else:
+        settings.COURSE_TEMPLATES_DIRS = [str(COURSE_TEMPLATE_DIR)]
+        
+    # Optional: Make 'private' the default template
+    settings.COURSE_CREATION_SETTINGS = getattr(settings, 'COURSE_CREATION_SETTINGS', {})
+    settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private')
+    
 def add_plugin_template_dirs(settings):
     """
         This is called by Derived after TEMPLATES[0]["DIRS"] is resolved.
