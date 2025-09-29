@@ -1,5 +1,5 @@
 {
   "display_name": "Private Course",
-  "invitation_only": true,
+  "invitation_only": false,
   "catalog_visibility": "about"
 }
