@@ -69,9 +69,9 @@ def plugin_settings(settings):
     else:
         settings.COURSE_TEMPLATES_DIRS = [str(COURSE_TEMPLATE_DIR)]
         
-    # Optional: Make 'private' the default template
+    # Optional: Make 'private' the default template (This avoids requiring authors to manually pick your template.)
     settings.COURSE_CREATION_SETTINGS = getattr(settings, 'COURSE_CREATION_SETTINGS', {})
-    settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private')
+    # settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private')
     
 def add_plugin_template_dirs(settings):
     """
