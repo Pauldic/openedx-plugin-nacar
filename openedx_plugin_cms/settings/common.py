@@ -67,11 +67,17 @@ def plugin_settings(settings):
         if str(COURSE_TEMPLATE_DIR) not in settings.COURSE_TEMPLATES_DIRS:
             settings.COURSE_TEMPLATES_DIRS.insert(0, str(COURSE_TEMPLATE_DIR))
     else:
-        settings.COURSE_TEMPLATES_DIRS = [str(COURSE_TEMPLATE_DIR)]
-        
+        settings.COURSE_TEMPLATES_DIRS = [str(COURSE_TEMPLATE_DIR)]        
     # Optional: Make 'private' the default template (This avoids requiring authors to manually pick your template.)
     settings.COURSE_CREATION_SETTINGS = getattr(settings, 'COURSE_CREATION_SETTINGS', {})
     # settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private')
+    
+    # 4. Allow your domain for course intro videos
+    settings.VIDEO_IMAGE_SETTINGS = getattr(settings, 'VIDEO_IMAGE_SETTINGS', {})
+    hosting_sites = settings.VIDEO_IMAGE_SETTINGS.get("VIDEO_HOSTING_SITES", [])
+    if settings.LMS_BASE not in hosting_sites:
+        hosting_sites.append(settings.LMS_BASE)
+    settings.VIDEO_IMAGE_SETTINGS["VIDEO_HOSTING_SITES"] = hosting_sites
     
 def add_plugin_template_dirs(settings):
     """
