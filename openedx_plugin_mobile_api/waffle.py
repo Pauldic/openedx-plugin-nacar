@@ -130,5 +130,5 @@ def waffle_init():
                 )
             )
         else:
-            Switch.objects.create(name=switch_name, active=False)
+            Switch.objects.get_or_create(name=switch_name, defaults={"active": False})
             log.info("Initialized WaffleSwitch object {switch_name}".format(switch_name=switch_name))
