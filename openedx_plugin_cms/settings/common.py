@@ -70,7 +70,7 @@ def plugin_settings(settings):
         settings.COURSE_TEMPLATES_DIRS = [str(COURSE_TEMPLATE_DIR)]        
     # Optional: Make 'private' the default template (This avoids requiring authors to manually pick your template.)
     settings.COURSE_CREATION_SETTINGS = getattr(settings, 'COURSE_CREATION_SETTINGS', {})
-    # settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private')
+    settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private')
     
     # 4. Allow your domain for course intro videos
     settings.VIDEO_IMAGE_SETTINGS = getattr(settings, 'VIDEO_IMAGE_SETTINGS', {})
