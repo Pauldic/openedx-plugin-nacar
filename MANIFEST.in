@@ -1,0 +1,14 @@
+# MANIFEST.in
+
+# Include all plugin templates (HTML, TXT, JSON, etc.)
+recursive-include openedx_plugin/templates *
+recursive-include openedx_plugin_api/templates *
+recursive-include openedx_plugin_cms/templates *
+recursive-include openedx_plugin_mobile_api/templates *
+
+# Ensure policy.json and similar are packaged
+recursive-include openedx_plugin_cms/templates/course_template *
+
+# Include license and readme
+include LICENSE.txt
+include README.md
