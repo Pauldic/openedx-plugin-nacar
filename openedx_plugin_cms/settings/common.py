@@ -10,7 +10,8 @@ from openedx.core.lib.derived import Derived
 
 APP_ROOT = (path(__file__).abspath().dirname().dirname())  # /blah/blah/blah/.../nacar-digital-learning-openedx/openedx_plugin
 TEMPLATES_DIR = APP_ROOT / "templates"
-COURSE_TEMPLATE_DIR = APP_ROOT / "templates" / "course_template"
+COURSE_TEMPLATE_DIR = APP_ROOT / "templates"
+# COURSE_TEMPLATE_DIR = APP_ROOT / "templates" / "course_template"
 
 # -------------------------------
 # Plugin Settings Injection
@@ -70,7 +71,8 @@ def plugin_settings(settings):
         settings.COURSE_TEMPLATES_DIRS = [str(COURSE_TEMPLATE_DIR)]        
     # Optional: Make 'private' the default template (This avoids requiring authors to manually pick your template.)
     settings.COURSE_CREATION_SETTINGS = getattr(settings, 'COURSE_CREATION_SETTINGS', {})
-    settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private')
+    settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE'] = 'private'
+    # settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private') # won’t replace it
     
     # 4. Allow your domain for course intro videos
     settings.VIDEO_IMAGE_SETTINGS = getattr(settings, 'VIDEO_IMAGE_SETTINGS', {})
