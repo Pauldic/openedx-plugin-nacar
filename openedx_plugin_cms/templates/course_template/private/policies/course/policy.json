@@ -1,5 +1,9 @@
 {
-  "display_name": "Private Course",
-  "invitation_only": true,
-  "catalog_visibility": "about"
+  "course": {
+    "catalog_visibility": "about",
+    "display_name": "Private Course Title",
+    "invitation_only": true,
+    "language": "en",
+    "start": "2026-01-01T00:00:00Z"
+  }
 }
