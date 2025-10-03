@@ -1,5 +1,5 @@
 {
-  "course": {
+  "course/nacar_course": {
     "catalog_visibility": "about",
     "display_name": "Private Course Title",
     "invitation_only": true,
