@@ -20,7 +20,7 @@ from edx_django_utils.monitoring import set_code_owner_attribute
 
 # Open edX stuff
 from opaque_keys.edx.keys import CourseKey
-from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
+# from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 
 try:
     # for olive and later
@@ -55,46 +55,47 @@ def _course_publisher_hander(course_key_str):
 @receiver(SignalHandler.course_published, dispatch_uid="plugin_course_publish")
 def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: disable=unused-argument
     """
-        On FIRST course publish (i.e., course creation), set default private settings.
-        Avoids overriding user changes on subsequent publishes. 
-        Receives publishing signal and logs block meta data and the user 
+    On FIRST course publish (i.e., course creation), set default private settings.
     """
+    store = modulestore()
     try:
-        # If CourseOverview already exists, this is NOT the first publish 
-        if CourseOverview.objects.filter(id=course_key).exists():
-            log.info(f" >>>>>>>>> Course {course_key} already exists; skipping default settings.")
-            return
-
-        store = modulestore()
-        course_usage_key = course_key.make_usage_key('course', 'course')
-        course_block = store.get_item(course_usage_key)
-
-        # Apply defaults only if not already set
-        needs_update = False
-        if getattr(course_block, 'invitation_only', False) != True:
-            course_block.invitation_only = True
-            needs_update = True
-        if getattr(course_block, 'catalog_visibility', 'both') != 'about':
-            course_block.catalog_visibility = 'about'
-            needs_update = True
-
-        log.info(
-            f"1. >>>>> Course {course_key} settings: invitation_only={course_block.invitation_only}, catalog_visibility={course_block.catalog_visibility}"
+        # Try to load the published course
+        published_course = store.get_item(
+            course_key.make_usage_key('course', 'course'),
+            revision='published'
         )
+        # If we get here, the course has been published before → skip
+        log.info(f">>>>>>>>>>> Course {course_key} has been published before; skipping defaults.")
+        return
+    except ItemNotFoundError:
+        # This is the FIRST publish → apply defaults
+        pass
+
+    try:
+        # Load the draft course (which must exist at this point)
+        draft_course = store.get_item(course_key.make_usage_key('course', 'course'))
+
+        needs_update = False
+        if getattr(draft_course, 'invitation_only', False) != True:
+            draft_course.invitation_only = True
+            needs_update = True
+        if getattr(draft_course, 'catalog_visibility', 'both') != 'about':
+            draft_course.catalog_visibility = 'about'
+            needs_update = True
+
         if needs_update:
             user_id = kwargs.get('user_id') or 0
-            store.update_item(course_block, user_id=user_id)
-            log.info(
-                f"2. >>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'"
-            )
+            store.update_item(draft_course, user_id=user_id)
+            log.info(f">>>>>>>>>>> Applied private defaults to new course {course_key}")
+        else:
+            log.info(f">>>>>>>>>>> Course {course_key} already has correct defaults.")
 
     except Exception as e:
-        log.exception(f"Failed to apply default settings to course {course_key}: {e}")
+        log.exception(f">>>>>>>>>>> Failed to apply defaults to course {course_key}: {e}")
 
-    # Now trigger your auditor
+    # Run your auditor
     user_id = kwargs.get("user_id")
     eval_course_block_changes(course_key, get_user(user_id))
-    return 
     
   
 @receiver(SignalHandler.course_deleted, dispatch_uid="plugin_course_delete")
