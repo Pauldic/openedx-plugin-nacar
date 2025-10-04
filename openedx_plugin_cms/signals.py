@@ -55,49 +55,49 @@ def _course_publisher_hander(course_key_str):
 
 @receiver(SignalHandler.course_published, dispatch_uid="plugin_course_publish")
 def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: disable=unused-argument
+    	"""
+        On course publish, set default values for:
+        - catalog_visibility = 'about'        (Course Visibility in Catalog)
+        - invitation_only = True              (Invitation Only)
+        But only if the course still uses the default settings.
+        This ensures new courses are private by default. 
+        Receives publishing signal and logs block meta data and the user 
     """
-    On FIRST course publish (i.e., course creation), set default private settings.
-    """
-    store = modulestore()
     try:
-        # Try to load the published course
-        published_course = store.get_item(
-            course_key.make_usage_key('course', 'course'),
-            revision='published'
+        store = modulestore()
+        course_usage_key = course_key.make_usage_key('course', 'course')
+        course_block = store.get_item(course_usage_key)
+
+        # Check current values (with defaults if missing)
+        current_invitation = getattr(course_block, 'invitation_only', False)
+        current_visibility = getattr(course_block, 'catalog_visibility', 'both')
+
+        log.info(
+            f"1. >>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}"
         )
-        # If we get here, the course has been published before → skip
-        log.info(f">>>>>>>>>>> Course {course_key} has been published before; skipping defaults.")
-        return
-    except ItemNotFoundError:
-        # This is the FIRST publish → apply defaults
-        pass
 
-    try:
-        # Load the draft course (which must exist at this point)
-        draft_course = store.get_item(course_key.make_usage_key('course', 'course'))
-
+        # Only apply defaults if still using system defaults
         needs_update = False
-        if getattr(draft_course, 'invitation_only', False) != True:
-            draft_course.invitation_only = True
+        if current_invitation == False:
+            course_block.invitation_only = True
             needs_update = True
-        if getattr(draft_course, 'catalog_visibility', 'both') != 'about':
-            draft_course.catalog_visibility = 'about'
+        if current_visibility == 'both':
+            course_block.catalog_visibility = 'about'
             needs_update = True
 
         if needs_update:
-            user_id = kwargs.get('user_id') or 0
-            store.update_item(draft_course, user_id=user_id)
-            log.info(f">>>>>>>>>>> Applied private defaults to new course {course_key}")
-        else:
-            log.info(f">>>>>>>>>>> Course {course_key} already has correct defaults.")
+            user_id = kwargs.get('user_id') or 0  # 0 is safe fallback for system actions
+            store.update_item(course_block, user_id=user_id)
+            log.info(
+                f"2. >>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'"
+            )
 
     except Exception as e:
-        log.exception(f">>>>>>>>>>> Failed to apply defaults to course {course_key}: {e}")
+        log.exception(f"Failed to apply default settings to course {course_key}: {e}")
 
-    # Run your auditor
     user_id = kwargs.get("user_id")
     eval_course_block_changes(course_key, get_user(user_id))
-    
+        
   
 @receiver(SignalHandler.course_deleted, dispatch_uid="plugin_course_delete")
 def _plugin_listen_for_course_delete(sender, course_key, **kwargs):  # pylint: disable=unused-argument
