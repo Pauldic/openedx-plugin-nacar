@@ -55,7 +55,7 @@ def _course_publisher_hander(course_key_str):
 
 @receiver(SignalHandler.course_published, dispatch_uid="plugin_course_publish")
 def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: disable=unused-argument
-    	"""
+    """
         On course publish, set default values for:
         - catalog_visibility = 'about'        (Course Visibility in Catalog)
         - invitation_only = True              (Invitation Only)
