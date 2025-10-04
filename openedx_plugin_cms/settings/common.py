@@ -77,13 +77,14 @@ def plugin_settings(settings):
     # # Optional: Make 'private' the default template (This avoids requiring authors to manually pick your template.)
     # settings.COURSE_CREATION_SETTINGS = getattr(settings, 'COURSE_CREATION_SETTINGS', {})
     # settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE'] = 'private'
-    if hasattr(settings, "COURSE_TEMPLATES_DIRS"):
-        settings.COURSE_TEMPLATES_DIRS = []
+    
+    # if hasattr(settings, "COURSE_TEMPLATES_DIRS"):
+    #     settings.COURSE_TEMPLATES_DIRS = []
 
-    if hasattr(settings, "COURSE_CREATION_SETTINGS"):
-        if hasattr(settings.COURSE_CREATION_SETTINGS, "DEFAULT_COURSE_TEMPLATE"):
-            if settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE'] == 'private':
-                del settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE']
+    # if hasattr(settings, "COURSE_CREATION_SETTINGS"):
+    #     if hasattr(settings.COURSE_CREATION_SETTINGS, "DEFAULT_COURSE_TEMPLATE"):
+    #         if settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE'] == 'private':
+    #             del settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE']
         
     # 4. Allow your domain for course intro videos
     settings.VIDEO_IMAGE_SETTINGS = getattr(settings, 'VIDEO_IMAGE_SETTINGS', {})
