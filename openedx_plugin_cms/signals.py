@@ -20,6 +20,7 @@ from edx_django_utils.monitoring import set_code_owner_attribute
 
 # Open edX stuff
 from opaque_keys.edx.keys import CourseKey
+from openedx.core.djangoapps.content.course_overviews.models import CourseOverview
 
 try:
     # for olive and later
