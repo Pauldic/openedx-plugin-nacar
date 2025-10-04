@@ -54,51 +54,49 @@ def _course_publisher_hander(course_key_str):
 @receiver(SignalHandler.course_published, dispatch_uid="plugin_course_publish")
 def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: disable=unused-argument
     """
-        On course publish, set default values for:
-        - catalog_visibility = 'about'        (Course Visibility in Catalog)
-        - invitation_only = True              (Invitation Only)
-        But only if the course still uses the default settings.
-        This ensures new courses are private by default. 
+        On FIRST course publish (i.e., course creation), set default private settings.
+        Avoids overriding user changes on subsequent publishes. 
         Receives publishing signal and logs block meta data and the user 
     """
-    # try:
-    #     store = modulestore()
-    #     course_usage_key = course_key.make_usage_key('course', 'course')
-    #     course_block = store.get_item(course_usage_key)
+    try:
+        # If CourseOverview already exists, this is NOT the first publish 
+        if CourseOverview.objects.filter(id=course_key).exists():
+            log.info(f" >>>>>>>>> Course {course_key} already exists; skipping default settings.")
+            return
 
-    #     # Check current values (with defaults if missing)
-    #     current_invitation = getattr(course_block, 'invitation_only', False)
-    #     current_visibility = getattr(course_block, 'catalog_visibility', 'both')
+        store = modulestore()
+        course_usage_key = course_key.make_usage_key('course', 'course')
+        course_block = store.get_item(course_usage_key)
 
-    #     log.info(
-    #         f"1. >>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}"
-    #     )
+        # Apply defaults only if not already set
+        needs_update = False
+        if getattr(course_block, 'invitation_only', False) != True:
+            course_block.invitation_only = True
+            needs_update = True
+        if getattr(course_block, 'catalog_visibility', 'both') != 'about':
+            course_block.catalog_visibility = 'about'
+            needs_update = True
 
-    #     # Only apply defaults if still using system defaults
-    #     needs_update = False
-    #     if current_invitation == False:
-    #         course_block.invitation_only = True
-    #         needs_update = True
-    #     if current_visibility == 'both':
-    #         course_block.catalog_visibility = 'about'
-    #         needs_update = True
+        log.info(
+            f"1. >>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}"
+        )
+        if needs_update:
+            user_id = kwargs.get('user_id') or 0
+            store.update_item(course_block, user_id=user_id)
+            log.info(
+                f"2. >>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'"
+            )
 
-    #     if needs_update:
-    #         user_id = kwargs.get('user_id') or 0  # 0 is safe fallback for system actions
-    #         store.update_item(course_block, user_id=user_id)
-    #         log.info(
-    #             f"2. >>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'"
-    #         )
+    except Exception as e:
+        log.exception(f"Failed to apply default settings to course {course_key}: {e}")
 
-    # except Exception as e:
-    #     log.exception(f"Failed to apply default settings to course {course_key}: {e}")
-
+    log.info(f">>>>> >> >>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}")
+    # Now trigger your auditor
     user_id = kwargs.get("user_id")
     eval_course_block_changes(course_key, get_user(user_id))
     return 
     
   
-
 @receiver(SignalHandler.course_deleted, dispatch_uid="plugin_course_delete")
 def _plugin_listen_for_course_delete(sender, course_key, **kwargs):  # pylint: disable=unused-argument
     """

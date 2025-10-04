@@ -1,7 +1,7 @@
 {
-  "course/course": {
+  "{{ org }}/{{ course }}": {
     "catalog_visibility": "about",
-    "display_name": "Public Course Title",
+    "display_name": "Private Course Title",
     "invitation_only": true,
     "language": "en",
     "start": "2025-01-01T00:00:00Z"

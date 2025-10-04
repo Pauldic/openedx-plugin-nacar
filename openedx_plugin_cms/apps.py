@@ -57,6 +57,7 @@ class CustomPluginCMSConfig(AppConfig):
             }
         },
     }
+    
 
     def ready(self):
         """

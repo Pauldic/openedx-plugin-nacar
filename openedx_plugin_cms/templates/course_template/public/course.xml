@@ -1,2 +1,3 @@
-<!-- <course url_name="course" run="2026_T1" org="NACAR" course="YourCourse" /> -->
-<course url_name="course" />
+<course org="{{ org }}" course="{{ course }}" run="{{ run }}" url_name="course">
+    <chapter url_name="week_1"/>
+</course>

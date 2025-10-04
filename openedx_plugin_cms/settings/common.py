@@ -6,9 +6,7 @@ Oct-2021
 Common Pluggable Django App settings
 """
 
-# Python stuff
-import logging
-
+from datetime import datetime
 from path import Path as path
 from openedx.core.lib.derived import Derived
 
@@ -17,9 +15,9 @@ TEMPLATES_DIR = APP_ROOT / "templates"
 # COURSE_TEMPLATE_DIR = APP_ROOT / "templates"
 COURSE_TEMPLATE_DIR = APP_ROOT / "templates" / "course_template"
 
-log = logging.getLogger(__name__)
-log.info(" >>>>>> >> >>>>>>> openedx_plugin_cms.settings.common loaded")
-
+print(f" >>>>>> >> >>>>>>> openedx_plugin_cms.settings.common loaded {datetime.now().isoformat()}")
+with open("/tmp/nacar_debug.txt", "a") as f:
+    f.write(f"\n----------------------------------------\nplugin_settings() called at startup {datetime.now().isoformat()}\n")
 # -------------------------------
 # Plugin Settings Injection
 # -------------------------------
@@ -71,22 +69,22 @@ def plugin_settings(settings):
         settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
 
     # 3. Course templates (for Studio "Create Course" templates)
+    # if hasattr(settings, "COURSE_TEMPLATES_DIRS"):
+    #     if str(COURSE_TEMPLATE_DIR) not in settings.COURSE_TEMPLATES_DIRS:
+    #         settings.COURSE_TEMPLATES_DIRS.insert(0, str(COURSE_TEMPLATE_DIR))
+    # else:
+    #     settings.COURSE_TEMPLATES_DIRS = [str(COURSE_TEMPLATE_DIR)]
+    # # Optional: Make 'private' the default template (This avoids requiring authors to manually pick your template.)
+    # settings.COURSE_CREATION_SETTINGS = getattr(settings, 'COURSE_CREATION_SETTINGS', {})
+    # settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE'] = 'private'
     if hasattr(settings, "COURSE_TEMPLATES_DIRS"):
-        log.info(f" >>>>>> A >>>>>>> COURSE_TEMPLATES_DIRS: {settings.COURSE_TEMPLATES_DIRS}")
-        if str(COURSE_TEMPLATE_DIR) not in settings.COURSE_TEMPLATES_DIRS:
-            settings.COURSE_TEMPLATES_DIRS.insert(0, str(COURSE_TEMPLATE_DIR))
-            log.info(f" >>>>>> A1 >>>>>>> Just added: {str(COURSE_TEMPLATE_DIR)} >> {settings.COURSE_TEMPLATES_DIRS}")
-        else:
-            log.info(f" >>>>>> A2 >>>>>>> Already Exists: {settings.COURSE_TEMPLATES_DIRS}")
-    else:
-        settings.COURSE_TEMPLATES_DIRS = [str(COURSE_TEMPLATE_DIR)]
-        log.info(f" >>>>>> B >>>>>>> COURSE_TEMPLATES_DIRS: {settings.COURSE_TEMPLATES_DIRS}")
-    # Optional: Make 'private' the default template (This avoids requiring authors to manually pick your template.)
-    settings.COURSE_CREATION_SETTINGS = getattr(settings, 'COURSE_CREATION_SETTINGS', {})
-    log.info(f" >>>>>> C >>>>>>> COURSE_CREATION_SETTINGS: {settings.COURSE_CREATION_SETTINGS}")
-    settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE'] = 'private'
-    # settings.COURSE_CREATION_SETTINGS.setdefault('DEFAULT_COURSE_TEMPLATE', 'private') # won’t replace it
-    
+        settings.COURSE_TEMPLATES_DIRS = []
+
+    if hasattr(settings, "COURSE_CREATION_SETTINGS"):
+        if hasattr(settings.COURSE_CREATION_SETTINGS, "DEFAULT_COURSE_TEMPLATE"):
+            if settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE'] == 'private':
+                del settings.COURSE_CREATION_SETTINGS['DEFAULT_COURSE_TEMPLATE']
+        
     # 4. Allow your domain for course intro videos
     settings.VIDEO_IMAGE_SETTINGS = getattr(settings, 'VIDEO_IMAGE_SETTINGS', {})
     hosting_sites = settings.VIDEO_IMAGE_SETTINGS.get("VIDEO_HOSTING_SITES", [])
