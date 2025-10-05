@@ -72,7 +72,7 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
         current_invitation = getattr(course_block, 'invitation_only', False)
         current_visibility = getattr(course_block, 'catalog_visibility', 'both')
 
-        log.info(f"1. >>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}")
+        # log.info(f"1. >>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}")
 
         # Only apply defaults if still using system defaults
         needs_update = False
@@ -89,8 +89,12 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
             log.info(f"2. >>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'")
     except Exception as e:
         log.exception(f"Failed to apply default settings to course {course_key}: {e}")
-    user_id = kwargs.get("user_id")
-    eval_course_block_changes(course_key, get_user(user_id))
+    
+    try:
+        user_id = kwargs.get("user_id")
+        eval_course_block_changes(course_key, get_user(user_id))
+    except Exception as e:
+        log.exception(f"Failed to apply eval_course_block_changes({course_key}, {user_id}): {e}")
         
   
 @receiver(SignalHandler.course_deleted, dispatch_uid="plugin_course_delete")
