@@ -68,7 +68,7 @@ class CustomPluginConfig(AppConfig):
         PluginURLs.CONFIG: {
             ProjectType.LMS: {
                 PluginURLs.NAMESPACE: name,
-                PluginURLs.REGEX: "^openedx_plugin/",
+                # PluginURLs.REGEX: "^openedx_plugin/",
                 PluginURLs.RELATIVE_PATH: "urls",
             }
         },

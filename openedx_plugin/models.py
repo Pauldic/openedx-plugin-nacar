@@ -60,7 +60,7 @@ class MarketingSites(TimeStampedModel):
         default="https://nacarlearning.org",
         blank=False,
         help_text=_(
-            "URL for for anchor tag for this language.                     Example:" " https://nacarlearning.org/contact/"
+            "URL for for anchor tag for this language. Example:" " https://nacarlearning.org/contact/"
         ),
     )
 
