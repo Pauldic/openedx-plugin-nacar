@@ -16,6 +16,8 @@ from openedx_plugin.locale.views import marketing_redirector
 from openedx_plugin.api.urls import urlpatterns as api_urlpatterns
 from .waffle import waffle_switches, AUTOMATED_ENROLLMENT, MARKETING_REDIRECTOR
 
+from . import views
+
 app_name = "openedx_plugin"
 
 urlpatterns = [    
