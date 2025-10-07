@@ -1,0 +1,48 @@
+<!-- openedx-plugin-nacar/openedx_plugin/templates/openedx_plugin/enrollment_list.html -->
+{% extends "instructor/instructor_template.html" %}
+
+{% block title %}Enrollment List - {{ course.display_name }}{% endblock %}
+
+{% block content %}
+<div class="container wrapper-course-instructor">
+    <h2>Enrolled Students ({{ students|length }})</h2>
+    
+    <div class="search-box mb-3">
+        <input type="text" id="search" class="form-control" placeholder="Search by username, email, or name...">
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped" id="enrollment-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Enrollment Date</th>
+                    <th>Mode</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.username }}</td>
+                    <td>{{ student.full_name }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>{{ student.enrollment_date|date:"Y-m-d H:i" }}</td>
+                    <td>{{ student.mode }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+document.getElementById('search').addEventListener('keyup', function() {
+    const term = this.value.toLowerCase();
+    document.querySelectorAll('#enrollment-table tbody tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+    });
+});
+</script>
+{% endblock %}
