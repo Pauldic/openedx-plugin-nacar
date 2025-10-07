@@ -16,8 +16,7 @@ TEMPLATES_DIR = APP_ROOT / "templates"
 COURSE_TEMPLATE_DIR = APP_ROOT / "templates" / "course_template"
 
 print(f" >>>>>> >> >>>>>>> openedx_plugin_cms.settings.common loaded {datetime.now().isoformat()}")
-with open("/tmp/nacar_debug.txt", "a") as f:
-    f.write(f"\n----------------------------------------\nplugin_settings() called at startup {datetime.now().isoformat()}\n")
+    
 # -------------------------------
 # Plugin Settings Injection
 # -------------------------------

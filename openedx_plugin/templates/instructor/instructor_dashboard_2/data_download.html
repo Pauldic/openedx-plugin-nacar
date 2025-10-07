@@ -6,6 +6,22 @@ from openedx.core.djangolib.markup import HTML, Text
 %>
 
 <div class="data-download-container action-type-container">
+    <!-- In your overridden data_download.html -->
+    <fieldset class="instructor-dashboard-section">
+    <h3>${_("Other Data")}</h3>
+    <div class="field">
+        <a href="/courses/${course.id | u}/instructor/enrollment_list/"
+        class="btn btn-secondary"
+        target="_blank"
+        rel="noopener">
+        ${_("Enrollment List")}
+        </a>
+        <p class="help-block">
+        ${_("Live, searchable list of all enrolled students.")}
+        </p>
+    </div>
+    </fieldset>
+
   <div class="request-response-error msg msg-error copy" id="data-request-response-error"></div>
 
 

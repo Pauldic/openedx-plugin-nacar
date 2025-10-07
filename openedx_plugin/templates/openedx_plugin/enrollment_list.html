@@ -1,18 +1,26 @@
 <!-- openedx-plugin-nacar/openedx_plugin/templates/openedx_plugin/enrollment_list.html -->
-{% extends "instructor/instructor_template.html" %}
+{% extends "lms/main.html" %}
 
 {% block title %}Enrollment List - {{ course.display_name }}{% endblock %}
 
 {% block content %}
-<div class="container wrapper-course-instructor">
+<div class="container wrapper-course-instructor" style="margin-top: 20px;">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ course_about_page_url }}">{{ course.display_name }}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'instructor_dashboard' course.id %}">Instructor Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Enrollment List</li>
+        </ol>
+    </nav>
+
     <h2>Enrolled Students ({{ students|length }})</h2>
-    
-    <div class="search-box mb-3">
+
+    <div class="mb-3">
         <input type="text" id="search" class="form-control" placeholder="Search by username, email, or name...">
     </div>
 
     <div class="table-responsive">
-        <table class="table table-striped" id="enrollment-table">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Username</th>
@@ -31,6 +39,8 @@
                     <td>{{ student.enrollment_date|date:"Y-m-d H:i" }}</td>
                     <td>{{ student.mode }}</td>
                 </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center">No enrolled students.</td></tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -40,7 +50,7 @@
 <script>
 document.getElementById('search').addEventListener('keyup', function() {
     const term = this.value.toLowerCase();
-    document.querySelectorAll('#enrollment-table tbody tr').forEach(row => {
+    document.querySelectorAll('tbody tr').forEach(row => {
         row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
     });
 });

@@ -13,6 +13,8 @@ from common.djangoapps.student.roles import CourseInstructorRole, CourseStaffRol
 @login_required
 @xframe_options_exempt
 def enrollment_list_view(request, course_id):
+    print(f" >>>>>> >> >>>>>>> Enrollment List for: {course_id}")
+    
     course_key = CourseKey.from_string(course_id)
 
     # Check permissions: only instructors/staff
@@ -43,7 +45,7 @@ def enrollment_list_view(request, course_id):
     context = {
         'course': course,
         'students': students,
-        'course_id': str(course_key),
+        'course_id': str(course_key)
     }
 
     return render(request, 'openedx_plugin/enrollment_list.html', context)
