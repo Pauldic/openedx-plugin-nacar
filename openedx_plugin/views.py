@@ -1,6 +1,6 @@
 # openedx-plugin-nacac/openedx_plugin/views.py
 # from django.shortcuts import render
-from common.djangoapps.edxmako.shortcuts import render_to_response as render
+from common.djangoapps.edxmako.shortcuts import render_to_response
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
@@ -10,6 +10,7 @@ from opaque_keys.edx.keys import CourseKey
 from common.djangoapps.student.models import CourseEnrollment
 from lms.djangoapps.courseware.courses import get_studio_url
 from lms.djangoapps.courseware.courses import get_course_by_id
+from openedx_filters.learning.filters import InstructorDashboardRenderStarted
 from common.djangoapps.student.roles import CourseInstructorRole, CourseStaffRole
 
 
@@ -51,5 +52,22 @@ def enrollment_list_view(request, course_id):
         'course_id': str(course_key),
         'studio_url': get_studio_url(course, 'course'),
     }
+    instructor_template = 'openedx_plugin/enrollment_list.html'
 
-    return render(request, 'openedx_plugin/enrollment_list.html', context)
+    try:
+        # .. filter_implemented_name: InstructorDashboardRenderStarted
+        # .. filter_type: org.openedx.learning.instructor.dashboard.render.started.v1
+        context, instructor_template = InstructorDashboardRenderStarted.run_filter(
+            context=context, template_name=instructor_template)
+    except InstructorDashboardRenderStarted.RenderInvalidDashboard as exc:
+        response = render_to_response(exc.instructor_template, exc.template_context)
+    except InstructorDashboardRenderStarted.RedirectToPage as exc:
+        response = HttpResponseRedirect(exc.redirect_to)
+    except InstructorDashboardRenderStarted.RenderCustomResponse as exc:
+        response = exc.response
+    else:
+        response = render_to_response(instructor_template, context)
+
+    return response
+
+    # return render(request, instructor_template, context)

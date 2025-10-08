@@ -134,7 +134,7 @@ from openedx.core.djangolib.js_utils import (
             ## This is necessary so we don't scrape 'section_display_name' as a string.
             <% dname = section_data['section_display_name'] %>
             <% 
-              if course_id != 'No Section' && section_data.get('get_grading_config_url', False):
+              if course_id != 'No Section' and section_data.get('get_grading_config_url', False):
                 course_id = section_data.get('get_grading_config_url', '') 
             %>
             % if not is_hidden:
