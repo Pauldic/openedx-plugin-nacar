@@ -127,50 +127,39 @@ from openedx.core.djangolib.js_utils import (
         ## links which are tied to idash-sections below.
         ## the links are activated and handled in instructor_dashboard.js
         ## when the javascript loads, it clicks on the first section
-        <% course_id = 'No Section' %>
-        <h1>${course_id}...</h1>
+        <%
+          # Extract course_id once, before the loop
+          course_id = 'Not Found'
+          if sections:
+            for section_data in sections:
+              for value in section_data.values():
+                if isinstance(value, str) and '/courses/' in value and '/instructor/' in value:
+                  try:
+                    course_id = value.split('/courses/')[1].split('/instructor/')[0]
+                    break
+                  except IndexError:
+                    continue
+              if course_id != 'Not Found':
+                  break
+        %>
         <ul class="instructor-nav">
           % for section_data in sections:
             <% is_hidden = section_data.get('is_hidden', False) %>
             ## This is necessary so we don't scrape 'section_display_name' as a string.
             <% dname = section_data['section_display_name'] %>
-            <% 
-              if course_id == 'No Section':
-                if section_data.get('get_grading_config_url', ''):
-                  course_id = section_data.get('get_grading_config_url', '')
-                elif section_data.get('get_students_features_url', ''):
-                  course_id = section_data.get('get_students_features_url', '')
-            %>
             % if not is_hidden:
                 <li class="nav-item"><button type="button" class="btn-link ${ section_data['section_key'] }${' hidden' if is_hidden else ''}" data-section="${ section_data['section_key'] }">${_(dname)}</button></li>
             % endif       
           % endfor
 
-          ## This is for my Custom Enrollment List Tab        
-          <li class="nav-item">
-            <button class="btn-link enrollment" data-section="enrollment" onclick="window.location.href='/courses/${course_id | u}/instructor/enrollment_list/';">${_("Enrollment List")}</button>
-          </li>
+          ## This is for my Custom Enrollment List Tab  
+          % if course_id != 'Not Found':      
+            <li class="nav-item">
+              <button class="btn-link enrollment" data-section="enrollment" onclick="window.location.href='/courses/${course_id | u}/instructor/enrollment_list/';">${_("Enrollment List")}</button>
+            </li>
+          % endif
         </ul>
 
-        <table>
-          % for section_data in sections:
-            <tr>
-              <td colspan="2">---${len(sections)}-----</td>
-            </tr>
-            <tr>
-              <td>
-                <table>
-                  % for key, value in section_data.items():
-                    <tr>
-                      <td><strong>${key}</strong></td>
-                      <td>${value}</td>
-                    </tr>
-                  % endfor
-                </table>
-              </td>
-            </tr>
-          % endfor
-        </table>
 
         ## each section corresponds to a section_data sub-dictionary provided by the view
         ## to keep this short, sections can be pulled out into their own files
