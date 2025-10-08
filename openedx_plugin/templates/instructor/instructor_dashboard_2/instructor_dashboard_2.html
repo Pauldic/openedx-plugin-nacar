@@ -15,7 +15,7 @@ from openedx.core.djangolib.js_utils import (
 
 ## ----- Tips on adding something to the new instructor dashboard -----
 ## 1. add your input element, e.g. in instructor_dashboard2/data_download.html
-##   the input includes a reference like data-endpoint=iRemoved
+##   the input includes a reference like data-endpoint="${ section_data['get_anon_ids_url'] }"
 ## 2. Go to the old dashboard djangoapps/instructor/views/instructor_dashboard.py and
 ##   add in a definition of 'xxx_url' in the right section_data for whatever page your
 ##   feature is on.
@@ -67,75 +67,91 @@ from openedx.core.djangolib.js_utils import (
   <script type="text/javascript" src="${static.url('js/views/notification.js')}"></script>
   <script type="text/javascript" src="${static.url('js/views/file_uploader.js')}"></script>
   <script type="text/javascript" src="${static.url('js/utils/animation.js')}"></script>
-  
+  % for section_data in sections:
+    % if 'fragment' in section_data:
+      ${HTML(section_data['fragment'].head_html())}
+    % endif
+  % endfor
+</%block>
+
+<%block name="js_extra">
+  % for section_data in sections:
+    % if 'fragment' in section_data:
+      ${HTML(section_data['fragment'].foot_html())}
+    % endif
+  % endfor
+
+   <script>
+	var beamer_config = {
+		product_id : "${settings.BEAMER_PRODUCT_ID | n, js_escaped_string}",
+	};
+</script>
+<script type="text/javascript" src="https://app.getbeamer.com/js/beamer-embed.js" defer="defer"></script>
+</%block>
+
+## Include Underscore templates
+<%block name="header_extras">
+% for template_name in ["cohorts", "discussions", "enrollment-code-lookup-links", "cohort-editor", "cohort-group-header", "cohort-selector", "cohort-form", "notification", "cohort-state", "divided-discussions-inline", "divided-discussions-course-wide", "cohort-discussions-category", "cohort-discussions-subcategory", "certificate-allowlist", "certificate-allowlist-editor", "certificate-bulk-allowlist", "certificate-invalidation", "membership-list-widget"]:
+<script type="text/template" id="${template_name}-tpl">
+  <%static:include path="instructor/instructor_dashboard_2/${template_name}.underscore" />
+</script>
+% endfor
+
+<script type="text/template" id="file-upload-tpl">
+  <%static:include path="file-upload.underscore" />
+</script>
 </%block>
 
 ## NOTE that instructor is set as the active page so that the instructor button lights up, even though this is the instructor_2 page.
 <%include file="/courseware/course_navigation.html" args="active_page='instructor'" />
 
-<style type="text/css"></style>
+<style type="text/css">
+    a.enrollment:hover{
+        text-decoration: none;
+    }
+</style>
 
 <script language="JavaScript" type="text/javascript"></script>
 
 <div class="container">
   <div class="instructor-dashboard-wrapper-2">
-    <main id="main" aria-label="Content" tabindex="-1">
-    <section class="instructor-dashboard-content-2" id="instructor-dashboard-content">
-        <h2 class="hd hd-2 instructor-dashboard-title">${_("Instructor Dashboard")}</h2>
-        <div class="wrap-instructor-info studio-view">
-        %if studio_url:
-        <a class="instructor-info-action" href="${studio_url}">${_("View Course in Studio")}</a>
-        %endif
-        </div>
+        <main id="main" aria-label="Content" tabindex="-1">
+        <section class="instructor-dashboard-content-2" id="instructor-dashboard-content">
+          <h2 class="hd hd-2 instructor-dashboard-title">${_("Instructor Dashboard")}</h2>
+          <div class="wrap-instructor-info studio-view">
+            %if studio_url:
+            <a class="instructor-info-action" href="${studio_url}">${_("View Course in Studio")}</a>
+            %endif
+          </div>
 
+        ## links which are tied to idash-sections below.
+        ## the links are activated and handled in instructor_dashboard.js
+        ## when the javascript loads, it clicks on the first section
+        <ul class="instructor-nav">
+          % for section_data in sections:
+            <% is_hidden = section_data.get('is_hidden', False) %>
+            ## This is necessary so we don't scrape 'section_display_name' as a string.
+            <% dname = section_data['section_display_name'] %>
+            % if not is_hidden:
+              <li class="nav-item"><button type="button" class="btn-link ${ section_data['section_key'] }${' hidden' if is_hidden else ''}" data-section="${ section_data['section_key'] }">${_(dname)}</button></li>
+            % endif
+            ## This is for my Custom Enrollment List Tab
+            <li class="nav-item"><a href="/courses/${section_data.get['course_id']}/instructor/enrollment_list/" class="btn-link enrollment" data-section="enrollment" target="_blank">Enrollment List</a></li>
+          % endfor
+        </ul>
 
+        ## each section corresponds to a section_data sub-dictionary provided by the view
+        ## to keep this short, sections can be pulled out into their own files
 
-        <h2>Enrolled Students (${len(students)}) - </h2>
-
-        <div class="mb-3">
-            <input type="text" id="search" class="form-control" placeholder="Search by username, email, or name...">
-        </div>
-
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Enrollment Date</th>
-                        <th>Mode</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    % for student in students:
-                    <tr>
-                        <td>${student['username']}</td>
-                        <td>${student['full_name']}</td>
-                        <td>${student['email']}</td>
-                        <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>
-                        <td>${student['mode']}</td>
-                    </tr>
-                    % endfor
-                    % if not students:
-                    <tr><td colspan="5" class="text-center">No enrolled students.</td></tr>
-                    % endif
-                </tbody>
-            </table>
-        </div>
-
-        <script>
-        document.getElementById('search').addEventListener('keyup', function() {
-            const term = this.value.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
-            });
-        });
-        </script>
-
-
+        % for section_data in sections:
+          <% is_hidden = section_data.get('is_hidden', False) %>
+          <section id="${ section_data['section_key'] }" class="idash-section${' hidden' if hidden else ''}" aria-labelledby="header-${section_data['section_key']}">
+              <h3 class="hd hd-3" id="header-${ section_data['section_key'] }">${ section_data['section_display_name'] }</h3>
+              <%include file="${ section_data.get('template_path_prefix', '') }${ section_data['section_key'] }.html" args="section_data=section_data" />
+          </section>
+          % endfor
         </section>
-    </main>
+        </main>
   </div>
 
 </div>

@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from opaque_keys.edx.keys import CourseKey
 from common.djangoapps.student.models import CourseEnrollment
+from lms.djangoapps.courseware.courses import get_studio_url
 from lms.djangoapps.courseware.courses import get_course_by_id
 from common.djangoapps.student.roles import CourseInstructorRole, CourseStaffRole
 
@@ -45,7 +46,8 @@ def enrollment_list_view(request, course_id):
     context = {
         'course': course,
         'students': students,
-        'course_id': str(course_key)
+        'course_id': str(course_key),
+        'studio_url': get_studio_url(course, 'course'),
     }
 
     return render(request, 'openedx_plugin/enrollment_list.html', context)
