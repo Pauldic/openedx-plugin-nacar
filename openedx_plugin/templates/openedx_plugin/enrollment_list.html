@@ -74,30 +74,47 @@ from openedx.core.djangolib.js_utils import (
 <%include file="/courseware/course_navigation.html" args="active_page='instructor'" />
 
 <style type="text/css">
-    .table-caption {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
+    .instructor-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
     }
-    .table-caption h2 {
-        margin: 0;
-        flex: 1 1 auto;
+
+    .instructor-header-actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
     }
-    .table-caption .mb-3 {
-        flex: 0 1 auto;
-        width: auto;
+
+    .instructor-header-actions .mb-3 {
+    margin-bottom: 0;
     }
-    /* On small screens, stack vertically */
-    @media (max-width: 576px) {
-        .table-caption {
-            flex-direction: column;
-            align-items: stretch;
-        }
-        .table-caption .mb-3 {
-            width: 100%;
-        }
+
+    /* Mobile: stack vertically */
+    @media (max-width: 768px) {
+    .instructor-header-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .instructor-header-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .instructor-header-actions .mb-3 {
+        width: 100%;
+    }
+
+    .instructor-info-action {
+        text-align: center;
+        width: 100%;
+        display: inline-block;
+    }
     }
     .enrollment-table {
     width: 100%;
@@ -151,22 +168,19 @@ from openedx.core.djangolib.js_utils import (
 <div class="container">
   <div class="instructor-dashboard-wrapper-2">
     <main id="main" aria-label="Content" tabindex="-1">
-    <section class="instructor-dashboard-content-2" id="instructor-dashboard-content">
-        <h2 class="hd hd-2 instructor-dashboard-title">${_("Instructor Dashboard")}</h2>
-        <div class="wrap-instructor-info studio-view">
-        %if studio_url:
-        <a class="instructor-info-action" href="${studio_url}">${_("View Course in Studio")}</a>
-        %endif
+      <section class="instructor-dashboard-content-2" id="instructor-dashboard-content">
+      
+      <div class="instructor-header-container">
+        <h2 class="hd hd-2 instructor-dashboard-title">${_("Enrolled Students")} <b><i>(${len(students)})</i></b></h2>
+        <div class="instructor-header-actions">
+          %if studio_url:
+            <a class="instructor-info-action wrap-instructor-info studio-view" href="${studio_url}">${_("View Course in Studio")}</a>
+          %endif
+          <div class="mb-3">
+            <input type="text" id="search" class="form-control" placeholder="Search by name, email...">
+          </div>
         </div>
-
-
-
-        <div class="table-caption">
-            <h2>Enrolled Students <b><i>(${len(students)})</i></b></h2>
-            <div class="mb-3">
-                <input type="text" id="search" class="form-control" placeholder="Search by name, email...">
-            </div>
-        </div>
+      </div>
 
         <div class="table-responsive">
             <table class="table table-striped table-bordered table-hover enrollment-table">
@@ -180,18 +194,18 @@ from openedx.core.djangolib.js_utils import (
                     </tr>
                 </thead>
                 <tbody>
-                    % for student in students:
+                  % for student in students:
                     <tr>
-                        <td>${student['username']}</td>
-                        <td>${student['full_name']}</td>
-                        <td>${student['email']}</td>
-                        <td>${student['mode']}</td>
+                        <td>${student['username'].lower()}</td>
+                        <td>${student['full_name'].title()}</td>
+                        <td>${student['email'].lower()}</td>
+                        <td>${student['mode'].title()}</td>
                         <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>
                     </tr>
-                    % endfor
-                    % if not students:
+                  % endfor
+                  % if not students:
                     <tr><td colspan="5" class="text-center">No enrolled students yet.</td></tr>
-                    % endif
+                  % endif
                 </tbody>
             </table>
         </div>
