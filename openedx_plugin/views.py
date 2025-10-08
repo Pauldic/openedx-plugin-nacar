@@ -1,5 +1,7 @@
 # openedx-plugin-nacac/openedx_plugin/views.py
-from django.shortcuts import render
+# from django.shortcuts import render
+from common.djangoapps.edxmako.shortcuts import render_to_response as render
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator

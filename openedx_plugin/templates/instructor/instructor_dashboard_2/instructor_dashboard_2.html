@@ -134,16 +134,19 @@ from openedx.core.djangolib.js_utils import (
             <% dname = section_data['section_display_name'] %>
             % if not is_hidden:
               <li class="nav-item"><button type="button" class="btn-link ${ section_data['section_key'] }${' hidden' if is_hidden else ''}" data-section="${ section_data['section_key'] }">${_(dname)}</button></li>
-            % endif
-            
-            ## This is for my Custom Enrollment List Tab
-            <%
-              # Python code block to manipulate the string
-              elink = section_data['get_grading_config_url']
-              elink = elink.replace('api/get_grading_config', 'enrollment_list')
-            %>
-            <li class="nav-item"><a href="${ elink }" class="btn-link enrollment" data-section="enrollment" target="_blank">Enrollment List</a></li>          
+            % endif       
           % endfor
+
+          ## This is for my Custom Enrollment List Tab
+          <%
+            # Python code block to manipulate the string
+            course_id = sections[0].get('get_grading_config_url', '').split('/courses/')[1].split('/instructor/')[0]
+          %>
+          % if course_id:
+            <li class="nav-item">
+              <a href="/courses/${course_id | u}/instructor/enrollment_list/" class="btn-link enrollment" data-section="enrollment" target="_blank">${_("Enrollment List")}</a>
+            </li>  
+          % endif 
         </ul>
 
         ##<table>
