@@ -140,7 +140,10 @@ from openedx.core.djangolib.js_utils import (
           ## This is for my Custom Enrollment List Tab
           <%
             # Python code block to manipulate the string
-            course_id = sections[0].get('get_grading_config_url', '').split('/courses/')[1].split('/instructor/')[0]
+            sample_url = sections[0].get('get_grading_config_url', '')
+            course_id = ''
+            if '/courses/' in sample_url and '/instructor/' in sample_url:
+              course_id = sample_url.split('/courses/')[1].split('/instructor/')[0]
           %>
           % if course_id:
             <li class="nav-item">
