@@ -7,11 +7,16 @@ from django.core.exceptions import PermissionDenied
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from opaque_keys.edx.keys import CourseKey
-from common.djangoapps.student.models import CourseEnrollment
-from lms.djangoapps.courseware.courses import get_studio_url
-from lms.djangoapps.courseware.courses import get_course_by_id
 from openedx_filters.learning.filters import InstructorDashboardRenderStarted
+from common.djangoapps.student.models import CourseEnrollment
 from common.djangoapps.student.roles import CourseInstructorRole, CourseStaffRole
+
+from xmodule.modulestore.django import modulestore
+from lms.djangoapps.courseware.courses import get_studio_url
+from lms.djangoapps.grades.api import CourseGradeFactory
+from lms.djangoapps.course_blocks.api import get_course_blocks
+from lms.djangoapps.courseware.courses import get_course_by_id
+from lms.djangoapps.grades.api import CourseGradeFactory
 
 
 @login_required
@@ -38,11 +43,22 @@ def enrollment_list_view(request, course_id):
     students = []
     for enrollment in enrollments:
         user = enrollment.user
+        
+        # Get grade
+        try:
+            grade = CourseGradeFactory().read(user, course)
+            grade_percent = round(grade.percent * 100, 1)
+        except Exception:
+            grade_percent = None
+
+
         students.append({
-            'username': user.username,
-            'email': user.email,
-            'full_name': f"{user.first_name} {user.last_name}".strip() or user.username,
-            'mode': enrollment.mode,
+            'user_id': user.id,
+            'username': user.username.lower(),
+            'full_name': f"{user.first_name} {user.last_name}".strip().title() or user.username.title(),
+            'email': user.email.lower(),
+            'mode': enrollment.mode.title(),
+            'grade': grade_percent,
             'enrollment_date': enrollment.created,
         })
 

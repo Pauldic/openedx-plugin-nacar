@@ -190,16 +190,22 @@ from openedx.core.djangolib.js_utils import (
                         <th scope="col">Full Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Mode</th>
+                        <th scope="col">Grade (%)</th>
                         <th scope="col">Enrollment Date</th>
                     </tr>
                 </thead>
                 <tbody>
                   % for student in students:
                     <tr>
-                        <td>${student['username'].lower()}</td>
-                        <td>${student['full_name'].title()}</td>
-                        <td>${student['email'].lower()}</td>
-                        <td>${student['mode'].title()}</td>
+                        <td>${student['username']}</td>
+                        <td>${student['full_name']}</td>
+                        <td>${student['email']}</td>
+                        <td>${student['mode']}</td>
+                        <td>
+                          <a href="/learning/course/${course_id | u}/progress/${student['user_id']}">
+                            ${'%.1f' % student['grade'] if student['grade'] is not None else '—'}
+                          </a>
+                        </td>
                         <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>
                     </tr>
                   % endfor
