@@ -3,7 +3,7 @@ import os
 
 # Increment this version number to trigger a new release. See
 # CHANGELOG.md for information on the versioning scheme.
-__version__ = "0.2.71"
+__version__ = "0.2.72"
 
 # The version suffix will be appended to the actual version, separated by a
 # dash. Use this suffix to differentiate between the actual released version and
