@@ -24,7 +24,7 @@ build-backend = "setuptools.build_meta:__legacy__"
 #------------------------------------------------------------------------------
 [project]
 name = "openedx-plugin-nacar"
-version = "0.2.64"
+version = "0.2.65"
 license = {file = "LICENSE.txt"}
 authors = [
   { name="Paul Okeke", email="pauldiconline@gmail.com" }

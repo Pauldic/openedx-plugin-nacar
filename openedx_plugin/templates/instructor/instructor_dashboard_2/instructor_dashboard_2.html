@@ -120,7 +120,7 @@ from openedx.core.djangolib.js_utils import (
           <h2 class="hd hd-2 instructor-dashboard-title">${_("Instructor Dashboard")}</h2>
           <div class="wrap-instructor-info studio-view">
             %if studio_url:
-            <a class="instructor-info-action" href="${studio_url}">${_("View Course in Studio")}</a>
+              <a class="instructor-info-action" href="${studio_url}">${_("View Course in Studio")}</a>
             %endif
           </div>
 
@@ -135,17 +135,25 @@ from openedx.core.djangolib.js_utils import (
             % if not is_hidden:
               <li class="nav-item"><button type="button" class="btn-link ${ section_data['section_key'] }${' hidden' if is_hidden else ''}" data-section="${ section_data['section_key'] }">${_(dname)}</button></li>
             % endif
+            
+            ## This is for my Custom Enrollment List Tab
+            <%
+              # Python code block to manipulate the string
+              elink = section_data['get_grading_config_url']
+              elink = elink.replace('api/get_grading_config', 'enrollment_list')
+            %>
+            <li class="nav-item"><a href="${ elink }" class="btn-link enrollment" data-section="enrollment" target="_blank">Enrollment List</a></li>          
           % endfor
         </ul>
 
-        <table>
-        % for key, value in section_data.items():
-        <tr>
-            <td><strong>${key}</strong></td>
-            <td>${value}</td>
-        </tr>
-        % endfor
-        </table>
+        ##<table>
+        ##  % for key, value in section_data.items():
+        ##    <tr>
+        ##      <td><strong>${key}</strong></td>
+        ##      <td>${value}</td>
+        ##    </tr>
+        ##  % endfor
+        ##</table>
 
         ## each section corresponds to a section_data sub-dictionary provided by the view
         ## to keep this short, sections can be pulled out into their own files
