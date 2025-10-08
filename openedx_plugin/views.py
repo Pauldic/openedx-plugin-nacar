@@ -39,8 +39,8 @@ def enrollment_list_view(request, course_id):
             'username': user.username,
             'email': user.email,
             'full_name': f"{user.first_name} {user.last_name}".strip() or user.username,
-            'enrollment_date': enrollment.created,
             'mode': enrollment.mode,
+            'enrollment_date': enrollment.created,
         })
 
     context = {

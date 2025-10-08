@@ -113,12 +113,12 @@ from openedx.core.djangolib.js_utils import (
                         <td>${student['username']}</td>
                         <td>${student['full_name']}</td>
                         <td>${student['email']}</td>
-                        <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>
                         <td>${student['mode']}</td>
+                        <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>
                     </tr>
                     % endfor
                     % if not students:
-                    <tr><td colspan="5" class="text-center">No enrolled students.</td></tr>
+                    <tr><td colspan="5" class="text-center">No enrolled students yet.</td></tr>
                     % endif
                 </tbody>
             </table>
