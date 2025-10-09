@@ -202,7 +202,7 @@ from openedx.core.djangolib.js_utils import (
                         <td>${student['email']}</td>
                         <td>${student['mode']}</td>
                         <td>
-                          <a href="https://apps.nacarlearning.org//learning/course/${course_id | u}/progress/${student['user_id']}">
+                          <a href="https://apps.nacarlearning.org/learning/course/${course_id | u}/progress/${student['user_id']}">
                             ${'%.1f' % student['grade'] if student['grade'] is not None else '—'}
                           </a>
                         </td>
