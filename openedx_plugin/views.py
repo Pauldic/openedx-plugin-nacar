@@ -18,6 +18,9 @@ from lms.djangoapps.course_blocks.api import get_course_blocks
 from lms.djangoapps.courseware.courses import get_course_by_id
 from lms.djangoapps.grades.api import CourseGradeFactory
 
+from django.contrib.auth.models import User
+from common.djangoapps.student.models import UserProfile
+
 
 @login_required
 @xframe_options_exempt
@@ -38,12 +41,33 @@ def enrollment_list_view(request, course_id):
     enrollments = CourseEnrollment.objects.filter(
         course_id=course_key,
         is_active=True
-    ).select_related('user').order_by('user__username')
+    ).select_related('user__profile').order_by('user__username')
+    
+    # enrollments = CourseEnrollment.objects.filter(
+    #     course_id=course_key,
+    #     is_active=True
+    # ).select_related('user').order_by('user__username')
 
     students = []
     for enrollment in enrollments:
         user = enrollment.user
         
+        full_name = user.profile.name.strip() if hasattr(user, 'profile') else ""
+        
+        # try:
+        #     profile = UserProfile.objects.get(user=user)
+        #     full_name = profile.name.strip()
+        # except UserProfile.DoesNotExist:
+        #     full_name = ""
+            
+        # Fallback to first/last name if profile name is empty
+        if not full_name:
+            full_name = f"{user.first_name} {user.last_name}".strip()
+
+        # Final fallback to username
+        if not full_name:
+            full_name = user.username
+
         # Get grade
         try:
             grade = CourseGradeFactory().read(user, course)
@@ -51,11 +75,10 @@ def enrollment_list_view(request, course_id):
         except Exception:
             grade_percent = None
 
-
         students.append({
             'user_id': user.id,
             'username': user.username.lower(),
-            'full_name': f"{user.first_name} {user.last_name}".strip().title(),
+            'full_name': full_name.title(),
             'email': user.email.lower(),
             'mode': enrollment.mode.title(),
             'grade': grade_percent,
