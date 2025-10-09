@@ -111,9 +111,12 @@ from openedx.core.djangolib.js_utils import (
     border-collapse: collapse;
   }
   .enrollment-table th, .enrollment-table td {
-    padding: 0.75rem;
+    padding: 0.55rem;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
+  }
+  .enrollment-table th{
+    padding: 0.75rem;
   }
   .enrollment-table thead th {
     vertical-align: bottom;
@@ -171,7 +174,6 @@ from openedx.core.djangolib.js_utils import (
           <table class="table table-striped table-bordered table-hover enrollment-table" style="width: 100%;">
             <thead class="table-light">
               <tr>
-                <th data-sort="username">Username ▲▼</th>
                 <th data-sort="full_name">Full Name ▲▼</th>
                 <th data-sort="email">Email ▲▼</th>
                 <th data-sort="mode">Mode ▲▼</th>
@@ -182,7 +184,6 @@ from openedx.core.djangolib.js_utils import (
             <tbody>
               % for student in students:
               <tr>
-                <td>${student['username']}</td>
                 <td>${student['full_name']}</td>
                 <td>${student['email']}</td>
                 <td>${student['mode']}</td>
@@ -195,7 +196,7 @@ from openedx.core.djangolib.js_utils import (
               </tr>
               % endfor
               % if not students:
-              <tr><td colspan="6" class="text-center">No enrolled students yet.</td></tr>
+              <tr><td colspan="5" class="text-center">No enrolled students yet.</td></tr>
               % endif
             </tbody>
           </table>
@@ -225,7 +226,7 @@ from openedx.core.djangolib.js_utils import (
 
                 rows.sort((a, b) => {
                   // Get column index based on data-sort
-                  const cols = ['username', 'full_name', 'email', 'mode', 'grade', 'enrollment_date'];
+                  const cols = ['full_name', 'email', 'mode', 'grade', 'enrollment_date'];
                   const idx = cols.indexOf(column);
                   if (idx === -1) return 0;
 

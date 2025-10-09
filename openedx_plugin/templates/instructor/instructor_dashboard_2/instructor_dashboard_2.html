@@ -156,7 +156,7 @@ from openedx.core.djangolib.js_utils import (
           ## This is for my Custom Enrollment List Tab  
           % if course_id != 'Not Found':      
             <li class="nav-item">
-              <button class="btn-link enrollment" data-section="enrollment" onclick="window.location.href='/courses/${course_id | u}/instructor/enrollment_list/';">${_("Enrollment List")}</button>
+              <button class="btn-link enrollment" data-section="enrollment" onclick="window.location.href='/courses/${course_id}/instructor/enrollment_list/';">${_("Enrollment List")}</button>
             </li>
           % endif
         </ul>
