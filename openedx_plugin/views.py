@@ -55,7 +55,7 @@ def enrollment_list_view(request, course_id):
         students.append({
             'user_id': user.id,
             'username': user.username.lower(),
-            'full_name': f"{user.first_name} {user.last_name}".strip().title() or user.username.title(),
+            'full_name': f"{user.first_name} {user.last_name}".strip().title(),
             'email': user.email.lower(),
             'mode': enrollment.mode.title(),
             'grade': grade_percent,

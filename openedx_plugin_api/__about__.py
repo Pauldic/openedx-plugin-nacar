@@ -7,4 +7,4 @@ date:           sep-2021
 
 usage:          version control for openedx_plugin_api plugin
 """
-__version__ = "0.2.40"
+__version__ = "0.2.80"
