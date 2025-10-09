@@ -101,15 +101,11 @@ from openedx.core.djangolib.js_utils import (
       align-items: stretch;
       gap: 0.75rem;
     }
-    .instructor-header-actions .form-control {
-      width: "100%";
-    }
   }
   .instructor-header-actions .mb-3 {
     margin-bottom: 0;
   }
   .enrollment-table {
-    width: "100%";
     margin-bottom: 1rem;
     color: #212529;
     border-collapse: collapse;
@@ -185,35 +181,29 @@ from openedx.core.djangolib.js_utils import (
             </thead>
             <tbody>
               % for student in students:
-                <tr>
-                  <td>${student['username']}</td>
-                  <td>${student['full_name']}</td>
-                  <td>${student['email']}</td>
-                  <td>${student['mode']}</td>
-                  <td>
-                    <a href="https://apps.nacarlearning.org/learning/course/${course_id | u}/progress/${student['user_id']}">
-                      ${'%.1f' % student['grade'] if student['grade'] is not None else '—'}
-                    </a>
-                  </td>
-                  <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>
-                </tr>
+              <tr>
+                <td>${student['username']}</td>
+                <td>${student['full_name']}</td>
+                <td>${student['email']}</td>
+                <td>${student['mode']}</td>
+                <td>
+                  <a href="https://apps.nacarlearning.org/learning/course/${course_id | u}/progress/${student['user_id']}/">
+                    ${'%.1f' % student['grade'] if student['grade'] is not None else '—'}
+                  </a>
+                </td>
+                <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>
+              </tr>
               % endfor
               % if not students:
-                <tr><td colspan="5" class="text-center">No enrolled students yet.</td></tr>
+              <tr><td colspan="6" class="text-center">No enrolled students yet.</td></tr>
               % endif
             </tbody>
           </table>
         </div>
 
         <script>          
-          document.getElementById('search').addEventListener('keyup', function() {
-            const term = this.value.toLowerCase();
-            document.querySelectorAll('tbody tr').forEach(row => {
-              row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
-            });
-          });
           document.addEventListener('DOMContentLoaded', function () {
-            const table = document.querySelector('table');
+            const table = document.querySelector('.enrollment-table');
             const headers = table.querySelectorAll('th[data-sort]');
             let currentSort = { column: null, direction: 'asc' };
 
@@ -224,22 +214,35 @@ from openedx.core.djangolib.js_utils import (
                 const direction = currentSort.column === column && currentSort.direction === 'asc' ? 'desc' : 'asc';
                 currentSort = { column, direction };
 
-                // Update header text to show sort direction
+                // Update header text
                 headers.forEach(h => {
                   h.textContent = h.textContent.replace(/[ ▲▼]/g, '') + ' ▲▼';
                 });
                 header.textContent = header.textContent.replace(/[ ▲▼]/g, '') + (direction === 'asc' ? ' ▲' : ' ▼');
 
-                // Get rows and sort
                 const tbody = table.querySelector('tbody');
                 const rows = Array.from(tbody.querySelectorAll('tr'));
 
                 rows.sort((a, b) => {
-                  const aValue = a.querySelector(`td:nth-child(${getColumnIndex(column)})`).textContent.trim();
-                  const bValue = b.querySelector(`td:nth-child(${getColumnIndex(column)})`).textContent.trim();
+                  // Get column index based on data-sort
+                  const cols = ['username', 'full_name', 'email', 'mode', 'grade', 'enrollment_date'];
+                  const idx = cols.indexOf(column);
+                  if (idx === -1) return 0;
 
-                  let aVal = parseValue(aValue, column);
-                  let bVal = parseValue(bValue, column);
+                  const aValue = a.cells[idx].textContent.trim();
+                  const bValue = b.cells[idx].textContent.trim();
+
+                  let aVal, bVal;
+                  if (column === 'grade') {
+                      aVal = aValue === '—' ? -1 : parseFloat(aValue);
+                      bVal = bValue === '—' ? -1 : parseFloat(bValue);
+                  } else if (column === 'enrollment_date') {
+                      aVal = new Date(aValue).getTime() || 0;
+                      bVal = new Date(bValue).getTime() || 0;
+                  } else {
+                      aVal = aValue.toLowerCase();
+                      bVal = bValue.toLowerCase();
+                  }
 
                   if (aVal < bVal) return direction === 'asc' ? -1 : 1;
                   if (aVal > bVal) return direction === 'asc' ? 1 : -1;
@@ -251,21 +254,13 @@ from openedx.core.djangolib.js_utils import (
               });
             });
 
-            function getColumnIndex(col) {
-              const cols = ['username', 'full_name', 'email', 'mode', 'grade', 'completion', 'enrollment_date'];
-              return cols.indexOf(col) + 1;
-            }
-
-            function parseValue(value, column) {
-              if (column === 'grade' || column === 'completion') {
-                return value === '—' ? -1 : parseFloat(value);
-              }
-              if (column === 'enrollment_date') {
-                // Parse date like "2025-01-15 14:30"
-                return new Date(value).getTime() || 0;
-              }
-              return value.toLowerCase();
-            }
+            // Add search functionality
+            document.getElementById('search').addEventListener('keyup', function() {
+              const term = this.value.toLowerCase();
+              document.querySelectorAll('tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+              });
+            });
           });
         </script>
       </section>
