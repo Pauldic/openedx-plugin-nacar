@@ -7,4 +7,4 @@ date:           dec-2022
 
 usage:          semantic version control for openedx_plugin_mobile_api
 """
-__version__ = "0.2.40"
+__version__ = "0.2.80
