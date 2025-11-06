@@ -1,0 +1,102 @@
+## coding=utf-8
+## mako
+
+<%page expression_filter="h"/>
+<%inherit file="base.html" />
+
+<%!
+from django.utils.translation import gettext as _
+from django.urls import reverse
+from openedx.core.djangolib.js_utils import js_escaped_string
+%>
+
+<%block name="title">
+  ${_("Bulk Enrollment")}
+</%block>
+
+<%block name="bodyclass">
+  is-signedin view-bulk-enrollment
+</%block>
+
+<%block name="content">
+<div id="content">
+  <div class="wrapper-mast wrapper">
+    <header class="mast mast-wizard has-actions">
+      <h1 class="page-header">
+        <span class="page-header-sub">${_("Bulk Enroll Users into Courses")}</span>
+      </h1>
+    </header>
+  </div>
+
+  <div class="wrapper-content wrapper">
+    <div class="inner-wrapper">
+      <section class="content">
+        <article class="content-primary">
+          <form method="post" class="form-create bulk-enrollment-form">
+            ${csrf_token}
+            <fieldset>
+              <legend class="sr">${_("Select Courses and User Emails")}</legend>
+
+              <!-- Course Selection -->
+              <div class="field field-checkbox-group required">
+                <label class="label">${_("Courses")}</label>
+                <div class="copy">
+                  <p>${_("Select one or more courses to enroll users into.")}</p>
+                </div>
+                <ul class="list-input">
+                % for choice in form.course_ids:
+                  <li class="field checkbox">
+                    <label>
+                      ${choice.tag()} ${choice.choice_label | n}
+                    </label>
+                  </li>
+                % endfor
+                </ul>
+                % if form.course_ids.errors:
+                  <ul class="errorlist">
+                    % for error in form.course_ids.errors:
+                      <li class="error">${error}</li>
+                    % endfor
+                  </ul>
+                % endif
+              </div>
+
+              <!-- Email Input -->
+              <div class="field text required">
+                <label for="id_emails">${form.emails.label}</label>
+                ${form.emails}
+                % if form.emails.help_text:
+                  <span class="tip">${form.emails.help_text}</span>
+                % endif
+                % if form.emails.errors:
+                  <ul class="errorlist">
+                  % for error in form.emails.errors:
+                    <li class="error">${error}</li>
+                  % endfor
+                  </ul>
+                % endif
+              </div>
+            </fieldset>
+
+            <div class="actions">
+              <button type="submit" class="action action-primary">${_("Enroll Users")}</button>
+              <a href="${reverse('home')}" class="action action-secondary">${_("Cancel")}</a>
+            </div>
+          </form>
+        </article>
+
+        <aside class="content-supplementary" role="complementary">
+          <div class="bit">
+            <h3 class="title-3">${_("How it works")}</h3>
+            <ul class="list-details">
+              <li class="item-detail">${_("Enter one email per line.")}</li>
+              <li class="item-detail">${_("Only existing users (by email) can be enrolled.")}</li>
+              <li class="item-detail">${_("All selected courses will receive all valid users.")}</li>
+            </ul>
+          </div>
+        </aside>
+      </section>
+    </div>
+  </div>
+</div>
+</%block>

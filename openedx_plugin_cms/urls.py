@@ -6,7 +6,7 @@ Oct-2021
 CMS App urls
 """
 from django.conf import settings
-from django.urls import re_path
+from django.urls import path, re_path
 
 from .views.change_log import plugin_cms_change_log, plugin_cms_change_csv
 from .views.course_audit import (
@@ -20,7 +20,10 @@ from .views.course_audit_html import (
 )
 from .waffle import waffle_switches, AUDIT_REPORT
 
-urlpatterns = []
+urlpatterns = [    
+    path("bulk/enrollment/", views.bulk_enrollment.bulk_enrollment_view, name="bulk-enrollment"),
+    # path("courses/<str:course_id>/instructor/enrollment_list/", views.enrollment_list_view, name="nacar_enrollment_list"),
+]
 
 if waffle_switches[AUDIT_REPORT]:
     urlpatterns += [
