@@ -6,6 +6,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from opaque_keys.edx.keys import CourseKey
 from common.djangoapps.student.models import CourseEnrollment
+from common.djangoapps.edxmako.shortcuts import render_to_response
+from cms.djangoapps.contentstore.utils import get_home_context
 from django.contrib.auth import get_user_model
 from django.middleware.csrf import get_token
 
@@ -55,4 +57,13 @@ def bulk_enrollment_view(request):
     else:
         form = BulkEnrollmentForm(request)
 
-    return render(request, "openedx_plugin_cms/bulk_enrollment.html", {"form": form, "csrf_token": get_token(request)})
+
+    # return render(request, "openedx_plugin_cms/bulk_enrollment.html", {"form": form, "csrf_token": get_token(request)})
+
+
+    # home_context = get_home_context(request)
+    # return render_to_response('openedx_plugin_cms/bulk_enrollment.html', home_context)
+    
+    return render_to_response('openedx_plugin_cms/bulk_enrollment.html', {"form": form, "csrf_token": get_token(request)})
+
+
