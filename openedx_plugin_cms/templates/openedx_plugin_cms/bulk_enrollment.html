@@ -3,6 +3,7 @@
 
 <%page expression_filter="h"/>
 <%inherit file="/base.html" />
+<%namespace name='static' file='/static_content.html'/>
 
 <%!
 from django.utils.translation import gettext as _
@@ -14,69 +15,172 @@ from django.urls import reverse
 <%block name="bodyclass">is-signedin view-bulk-enrollment</%block>
 
 <%block name="content">
-<div id="content">
-  <div class="wrapper-mast wrapper">
-    <header class="mast mast-wizard has-actions">
-      <h1 class="page-header">
-        <span class="page-header-sub">${_("Bulk Enroll Users into Courses")}</span>
-      </h1>
-    </header>
-  </div>
+<div class="wrapper-mast wrapper">
+  <header class="mast has-actions">
+    <h1 class="page-header">${_("Bulk Enroll Users into Courses")}</h1>
+  </header>
+</div>
 
-  <div class="wrapper-content wrapper">
+<div class="wrapper-content wrapper">
+  % if user.is_active:
     <div class="inner-wrapper">
       <section class="content">
         <article class="content-primary">
           <form method="post">
-            ${csrf_token}
+            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}" />
 
             <!-- Course Selection -->
             % if courses:
-            <div class="field field-checkbox-group">
-              <label class="label">${_("Select Courses")}</label>
-              <ul class="list-input">
+              <label class="label">${_("Select one or more courses")}</label>
+              <div class="bulk-enroll-course-cards">
                 % for course in courses:
-                <li class="field checkbox">
-                  <label>
-                    <input type="checkbox" name="course_ids" value="${course.id}" />
-                    ${course.display_name_with_default} 
-                    <span class="course-org">${course.display_org_with_default}</span>
-                    <span class="course-num">${course.display_number_with_default}</span>
+                  <label class="course-card" data-course-id="${course.id}">
+                    <input type="checkbox" name="course_ids" value="${course.id}" class="course-checkbox" />
+                    <div class="course-card-inner">
+                      <h3 class="course-title">${course.display_name_with_default}</h3>
+                      <div class="course-meta">
+                        <span class="course-org">${course.display_org_with_default}</span>
+                        <span class="course-num">${course.display_number_with_default}</span>
+                      </div>
+                    </div>
                   </label>
-                </li>
                 % endfor
-              </ul>
-            </div>
+              </div>
+              
+              <!-- Email Input -->
+              <div class="field text required">
+                <label for="emails">${_("User Emails")}</label>
+                <textarea id="emails" name="emails" rows="6" placeholder="${_('user1@example.com\nuser2@example.com')}"></textarea>
+                <span class="tip">${_("Enter one email per line.")}</span>
+              </div>
+
+              <div class="actions">
+                <button type="submit" class="action action-primary">${_("Enroll Users")}</button>
+                <a href="${reverse('home')}" class="action action-secondary">${_("Cancel")}</a>
+              </div>
             % else:
-            <p>${_("You do not have access to any courses.")}</p>
+              <p>${_("You do not have access to any courses.")}</p>
             % endif
 
-            <!-- Email Input -->
-            <div class="field text required">
-              <label for="emails">${_("User Emails")}</label>
-              <textarea id="emails" name="emails" rows="6" placeholder="${_('user1@example.com\nuser2@example.com')}"></textarea>
-              <span class="tip">${_("Enter one email per line.")}</span>
-            </div>
-
-            <div class="actions">
-              <button type="submit" class="action action-primary">${_("Enroll Users")}</button>
-              <a href="${reverse('home')}" class="action action-secondary">${_("Cancel")}</a>
-            </div>
           </form>
         </article>
 
-        <aside class="content-supplementary">
-          <div class="bit">
-            <h3 class="title-3">${_("How it works")}</h3>
-            <ul class="list-details">
-              <li>${_("Select one or more courses.")}</li>
-              <li>${_("Enter existing user emails (one per line).")}</li>
-              <li>${_("All selected users will be enrolled in all selected courses.")}</li>
-            </ul>
-          </div>
-        </aside>
       </section>
     </div>
-  </div>
+  % else:
+    <section class="content">
+      <article class="content-primary" role="main">
+        <div class="introduction">
+          <h2 class="title">${_("Thanks for signing up, {name}!").format(name=user.username)}</h2>
+        </div>
+
+        <div class="notice notice-incontext notice-instruction notice-instruction-verification">
+          <div class="msg">
+            <h3 class="title">${_("We need to verify your email address")}</h3>
+            <div class="copy">
+              <p>${_('Almost there! In order to complete your sign up we need you to verify your email address ({email}). An activation message and next steps should be waiting for you there.').format(email=user.email)}</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <aside class="content-supplementary" role="complementary">
+        <div class="bit">
+          <h3 class="title title-3">${_('Need help?')}</h3>
+          <p>${_('Please check your Junk or Spam folders in case our email isn\'t in your INBOX. Still can\'t find the verification email? Request help via the link below.')}</p>
+        </div>
+      </aside>
+    </section>
+  %endif
+
+  <style>
+    .bulk-enroll-course-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .course-card {
+      display: block;
+      position: relative;
+      cursor: pointer;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: 16px;
+      text-decoration: none;
+    }
+
+    .course-card:hover {
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transform: translateY(-2px);
+      border-color: #0077c2;
+    }
+
+    .course-card.selected {
+      background-color: #f0f8ff;
+      border-color: #0077c2;
+      box-shadow: 0 2px 6px rgba(0,119,194,0.2);
+    }
+
+    /* Hide the actual checkbox */
+    .course-checkbox {
+      position: absolute !important;
+      width: 1px !important;
+      height: 1px !important;
+      padding: 0 !important;
+      margin: -1px !important;
+      overflow: hidden !important;
+      clip: rect(0,0,0,0) !important;
+      white-space: nowrap !important;
+      border: 0 !important;
+    }
+
+    .course-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0 0 8px 0;
+      color: #1b4d82;
+    }
+
+    .course-meta {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .course-meta span {
+      display: inline-block;
+    }
+
+    .course-meta .course-org {
+      font-weight: bold;
+    }
+  </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const cards = document.querySelectorAll('.course-card');
+      cards.forEach(card => {
+        const checkbox = card.querySelector('.course-checkbox');
+        
+        // Sync initial state (in case of pre-checked)
+        if (checkbox.checked) {
+          card.classList.add('selected');
+        }
+
+        card.addEventListener('click', function(e) {
+          // Ignore clicks on links or buttons inside
+          if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') return;
+
+          checkbox.checked = !checkbox.checked;
+          card.classList.toggle('selected', checkbox.checked);
+        });
+      });
+    });
+  </script>
 </div>
 </%block>
