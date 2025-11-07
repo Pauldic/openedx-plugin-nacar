@@ -1,7 +1,7 @@
 # openedx_plugin_cms/views/bulk_enrollment.py
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from opaque_keys.edx.keys import CourseKey
@@ -11,6 +11,9 @@ from cms.djangoapps.contentstore.views.course import get_courses_accessible_to_u
 from django.contrib.auth import get_user_model
 from django.middleware.csrf import get_token
 
+import logging
+
+log = logging.getLogger(__name__)
 
 @login_required
 def bulk_enrollment_view(request):
@@ -40,16 +43,15 @@ def bulk_enrollment_view(request):
                     CourseEnrollment.enroll(user, course_key, mode="honor", check_access=False)
                     enrolled_count += 1
                 except Exception as exc:
-                    errors.append(f"Failed to enroll {email} in {cid}: {exc}")
+                    log.error(f"Failed to enroll {email} in {cid}: {exc}")
+                    errors.append(f"Failed to enroll {email} in {cid})
 
         if enrolled_count:
             messages.success(request, f"Successfully enrolled {enrolled_count} user(s).")
         for err in errors:
             messages.error(request, err)
 
-        # Redirect to avoid re-post on refresh
-        from django.shortcuts import redirect
-        return redirect("openedx_plugin_cms:bulk_enrollment")
+        return redirect("openedx_plugin_cms:bulk-enrollment")
 
     # For GET: just pass courses
     context = {
