@@ -15,11 +15,11 @@ class BulkEnrollmentForm(forms.Form):
         label="User Emails"
     )
 
-    def __init__(self, user, *args, **kwargs):
+    def __init__(self, request, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Get courses the user can access in Studio
         from cms.djangoapps.contentstore.views.course import get_courses_accessible_to_user
-        courses, _ = get_courses_accessible_to_user(user)
+        courses, _ = get_courses_accessible_to_user(request)
         self.fields['course_ids'].choices = [
             (str(course.id), course.display_name)
             for course in courses

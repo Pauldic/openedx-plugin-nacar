@@ -39,7 +39,8 @@ class CustomPluginCMSConfig(AppConfig):
         PluginURLs.CONFIG: {
             ProjectType.CMS: {
                 PluginURLs.NAMESPACE: name,
-                PluginURLs.REGEX: "^openedx_plugin/cms/",
+                # PluginURLs.REGEX: "^openedx_plugin/cms/",
+                PluginURLs.REGEX: r"^",
                 PluginURLs.RELATIVE_PATH: "urls",
             }
         },

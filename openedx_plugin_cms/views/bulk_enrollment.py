@@ -15,7 +15,7 @@ User = get_user_model()
 @login_required
 def bulk_enrollment_view(request):
     if request.method == "POST":
-        form = BulkEnrollmentForm(request.user, request.POST)
+        form = BulkEnrollmentForm(request, request.POST)
         if form.is_valid():
             course_id_strings = form.cleaned_data["course_ids"]
             emails = [e.strip() for e in form.cleaned_data["emails"].splitlines() if e.strip()]
@@ -52,6 +52,6 @@ def bulk_enrollment_view(request):
 
             return HttpResponseRedirect(reverse("openedx_plugin_cms:bulk_enrollment"))
     else:
-        form = BulkEnrollmentForm(request.user)
+        form = BulkEnrollmentForm(request)
 
     return render(request, "openedx_plugin_cms/bulk_enrollment.html", {"form": form, "csrf_token": get_token(request)})
