@@ -8,7 +8,7 @@ from opaque_keys.edx.keys import CourseKey
 from common.djangoapps.student.models import CourseEnrollment
 from django.contrib.auth import get_user_model
 
-from ../forms import BulkEnrollmentForm
+from ..forms import BulkEnrollmentForm
 
 User = get_user_model()
 
