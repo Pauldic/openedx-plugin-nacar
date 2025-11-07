@@ -11,11 +11,8 @@ from django.urls import reverse
 %>
 
 <%
-from openedx.core.djangoapps.util.user_messages import PageLevelMessages
-all_messages = list(PageLevelMessages.user_messages(request))
-
-success_msgs = [m for m in all_messages if m.css_class and 'success' in m.css_class]
-error_msgs = [m for m in all_messages if m.css_class and 'error' in m.css_class]
+success_msgs = [m for m in messages if m.level_tag == 'success']
+error_msgs = [m for m in messages if m.level_tag == 'error']
 %>
 
 
@@ -37,28 +34,26 @@ error_msgs = [m for m in all_messages if m.css_class and 'error' in m.css_class]
         <article class="content-primary">
           <form method="post">
             <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}" />
-            
             % if success_msgs or error_msgs:
               <div class="bulk-enroll-alerts">
                 % for message in success_msgs:
-                  <div class="alert alert-success alert-dismissible" role="alert">
-                    <span class="alert-icon">✅</span>
-                    ${message.message_html | n}
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                  </div>
+                <div class="alert alert-success alert-dismissible" role="alert">
+                  <span class="alert-icon">✅</span>
+                  ${message.message | n}
+                  <button type="button" class="btn-close" aria-label="Close"></button>
+                </div>
                 % endfor
 
                 % for message in error_msgs:
-                  <div class="alert alert-danger alert-dismissible" role="alert">
-                    <span class="alert-icon">⚠️</span>
-                    ${message.message_html | n}
-                    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                  </div>
+                <div class="alert alert-danger alert-dismissible" role="alert">
+                  <span class="alert-icon">⚠️</span>
+                  ${message.message | n}
+                  <button type="button" class="btn-close" aria-label="Close"></button>
+                </div>
                 % endfor
               </div>
             % endif
-
-            <!-- Course Selection -->
+            
             % if courses:
               
               <!-- Email Input -->
@@ -67,7 +62,8 @@ error_msgs = [m for m in all_messages if m.css_class and 'error' in m.css_class]
                 <textarea id="emails" name="emails" rows="6" placeholder="${_('user1@example.com\nuser2@example.com')}"></textarea>
               </div>
 
-              <h3>${_("Select one or more courses")}</h3>
+              <!-- Course Selection -->
+              <h3 style="margin-top: 20px;">${_("Select one or more courses")}</h3>
               <div class="bulk-enroll-course-cards">
                 % for course in courses:
                   <label class="course-card" data-course-id="${course.id}">
@@ -130,6 +126,7 @@ error_msgs = [m for m in all_messages if m.css_class and 'error' in m.css_class]
   <style>
     .bulk-enroll-actions {
       display: flex;
+      float: right;
       gap: 12px;
       margin-top: 24px;
       justify-content: flex-start;
@@ -267,7 +264,7 @@ error_msgs = [m for m in all_messages if m.css_class and 'error' in m.css_class]
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 16px;
-      margin: 20px 0;
+      margin: 0 0 20px 0;;
     }
 
     .course-card {

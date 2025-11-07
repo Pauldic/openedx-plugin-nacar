@@ -1,5 +1,6 @@
 # openedx_plugin_cms/views/bulk_enrollment.py
 from django.contrib import messages
+from django.contrib.messages import get_messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
@@ -57,6 +58,7 @@ def bulk_enrollment_view(request):
     context = {
         "courses": courses,
         "csrf_token": get_token(request),
+        "messages": get_messages(request)
     }
     return render_to_response("openedx_plugin_cms/bulk_enrollment.html", context, request)
 
