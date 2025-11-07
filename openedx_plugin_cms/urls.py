@@ -18,10 +18,11 @@ from .views.course_audit_html import (
     plugin_cms_course_audit_html,
     plugin_cms_course_audit_html_csv,
 )
+from .views.bulk_enrollment import bulk_enrollment_view
 from .waffle import waffle_switches, AUDIT_REPORT
 
 urlpatterns = [    
-    path("bulk/enrollment/", views.bulk_enrollment.bulk_enrollment_view, name="bulk-enrollment"),
+    path("bulk/enrollment/", bulk_enrollment_view, name="bulk-enrollment"),
     # path("courses/<str:course_id>/instructor/enrollment_list/", views.enrollment_list_view, name="nacar_enrollment_list"),
 ]
 
