@@ -44,7 +44,7 @@ def bulk_enrollment_view(request):
                     enrolled_count += 1
                 except Exception as exc:
                     log.error(f"Failed to enroll {email} in {cid}: {exc}")
-                    errors.append(f"Failed to enroll {email} in {cid})
+                    errors.append(f"Failed to enroll {email} in {cid}")
 
         if enrolled_count:
             messages.success(request, f"Successfully enrolled {enrolled_count} user(s).")
