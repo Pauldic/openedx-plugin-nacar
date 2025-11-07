@@ -60,7 +60,6 @@ error_msgs = [m for m in all_messages if m.css_class and 'error' in m.css_class]
 
             <!-- Course Selection -->
             % if courses:
-              <h3>${_("Select one or more courses")}</h3>
               
               <!-- Email Input -->
               <div class="field text required">
@@ -68,6 +67,7 @@ error_msgs = [m for m in all_messages if m.css_class and 'error' in m.css_class]
                 <textarea id="emails" name="emails" rows="6" placeholder="${_('user1@example.com\nuser2@example.com')}"></textarea>
               </div>
 
+              <h3>${_("Select one or more courses")}</h3>
               <div class="bulk-enroll-course-cards">
                 % for course in courses:
                   <label class="course-card" data-course-id="${course.id}">
