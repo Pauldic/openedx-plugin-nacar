@@ -7,6 +7,7 @@ from django.urls import reverse
 from opaque_keys.edx.keys import CourseKey
 from common.djangoapps.student.models import CourseEnrollment
 from django.contrib.auth import get_user_model
+from django.middleware.csrf import get_token
 
 from ..forms import BulkEnrollmentForm
 
