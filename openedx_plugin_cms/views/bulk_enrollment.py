@@ -7,55 +7,56 @@ from django.urls import reverse
 from opaque_keys.edx.keys import CourseKey
 from common.djangoapps.student.models import CourseEnrollment
 from common.djangoapps.edxmako.shortcuts import render_to_response
-from cms.djangoapps.contentstore.utils import get_home_context
+from cms.djangoapps.contentstore.views.course import get_courses_accessible_to_user
 from django.contrib.auth import get_user_model
 from django.middleware.csrf import get_token
 
-from ..forms import BulkEnrollmentForm
-
-User = get_user_model()
 
 @login_required
 def bulk_enrollment_view(request):
+    # Get the same course data as Studio home
+    courses, _ = get_courses_accessible_to_user(request)
+    
     if request.method == "POST":
-        form = BulkEnrollmentForm(request, request.POST)
-        if form.is_valid():
-            course_id_strings = form.cleaned_data["course_ids"]
-            emails = [e.strip() for e in form.cleaned_data["emails"].splitlines() if e.strip()]
+        # Parse selected course IDs and emails from request.POST
+        selected_course_ids = request.POST.getlist("course_ids")
+        emails_raw = request.POST.get("emails", "")
+        emails = [e.strip() for e in emails_raw.splitlines() if e.strip()]
 
-            course_keys = []
-            for cid in course_id_strings:
+        User = get_user_model()
+        enrolled_count = 0
+        errors = []
+
+        for email in emails:
+            try:
+                user = User.objects.get(email=email)
+            except User.DoesNotExist:
+                errors.append(f"User with email `{email}` not found.")
+                continue
+
+            for cid in selected_course_ids:
                 try:
-                    course_keys.append(CourseKey.from_string(cid))
-                except Exception:
-                    messages.error(request, f"Invalid course ID: {cid}")
-                    return HttpResponseRedirect(reverse("openedx_plugin_cms:bulk-enrollment"))
+                    course_key = CourseKey.from_string(cid)
+                    CourseEnrollment.enroll(user, course_key, mode="honor", check_access=False)
+                    enrolled_count += 1
+                except Exception as exc:
+                    errors.append(f"Failed to enroll {email} in {cid}: {exc}")
 
-            enrolled_count = 0
-            errors = []
+        if enrolled_count:
+            messages.success(request, f"Successfully enrolled {enrolled_count} user(s).")
+        for err in errors:
+            messages.error(request, err)
 
-            for email in emails:
-                try:
-                    user = User.objects.get(email=email)
-                except User.DoesNotExist:
-                    errors.append(f"User with email `{email}` not found.")
-                    continue
+        # Redirect to avoid re-post on refresh
+        from django.shortcuts import redirect
+        return redirect("openedx_plugin_cms:bulk_enrollment")
 
-                for course_key in course_keys:
-                    try:
-                        CourseEnrollment.enroll(user, course_key, mode="honor", check_access=False)
-                        enrolled_count += 1
-                    except Exception as exc:
-                        errors.append(f"Failed to enroll {email} in {course_key}: {str(exc)}")
-
-            if enrolled_count:
-                messages.success(request, f"Successfully created {enrolled_count} enrollment(s).")
-            for err in errors:
-                messages.error(request, err)
-
-            return HttpResponseRedirect(reverse("openedx_plugin_cms:bulk_enrollment"))
-    else:
-        form = BulkEnrollmentForm(request)
+    # For GET: just pass courses
+    context = {
+        "courses": courses,
+        "csrf_token": get_token(request),
+    }
+    return render_to_response("openedx_plugin_cms/bulk_enrollment.html", context, request)
 
 
     # return render(request, "openedx_plugin_cms/bulk_enrollment.html", {"form": form, "csrf_token": get_token(request)})
@@ -64,6 +65,6 @@ def bulk_enrollment_view(request):
     # home_context = get_home_context(request)
     # return render_to_response('openedx_plugin_cms/bulk_enrollment.html', home_context)
     
-    return render_to_response('openedx_plugin_cms/bulk_enrollment.html', {"form": form, "csrf_token": get_token(request)})
+    # return render_to_response('openedx_plugin_cms/bulk_enrollment.html', {"form": form, "csrf_token": get_token(request)})
 
 

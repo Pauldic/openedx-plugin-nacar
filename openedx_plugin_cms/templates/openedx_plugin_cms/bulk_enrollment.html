@@ -7,16 +7,11 @@
 <%!
 from django.utils.translation import gettext as _
 from django.urls import reverse
-from openedx.core.djangolib.js_utils import js_escaped_string
 %>
 
-<%block name="title">
-  ${_("Bulk Enrollment")}
-</%block>
+<%block name="title">${_("Bulk Enrollment")}</%block>
 
-<%block name="bodyclass">
-  is-signedin view-bulk-enrollment
-</%block>
+<%block name="bodyclass">is-signedin view-bulk-enrollment</%block>
 
 <%block name="content">
 <div id="content">
@@ -32,51 +27,36 @@ from openedx.core.djangolib.js_utils import js_escaped_string
     <div class="inner-wrapper">
       <section class="content">
         <article class="content-primary">
-          <form method="post" class="form-create bulk-enrollment-form">
+          <form method="post">
             ${csrf_token}
-            <fieldset>
-              <legend class="sr">${_("Select Courses and User Emails")}</legend>
 
-              <!-- Course Selection -->
-              <div class="field field-checkbox-group required">
-                <label class="label">${_("Courses")}</label>
-                <div class="copy">
-                  <p>${_("Select one or more courses to enroll users into.")}</p>
-                </div>
-                <ul class="list-input">
-                % for choice in form.course_ids:
-                  <li class="field checkbox">
-                    <label>
-                      ${choice.tag()} ${choice.choice_label | n}
-                    </label>
-                  </li>
+            <!-- Course Selection -->
+            % if courses:
+            <div class="field field-checkbox-group">
+              <label class="label">${_("Select Courses")}</label>
+              <ul class="list-input">
+                % for course in courses:
+                <li class="field checkbox">
+                  <label>
+                    <input type="checkbox" name="course_ids" value="${course.id}" />
+                    ${course.display_name_with_default} 
+                    <span class="course-org">${course.display_org_with_default}</span>
+                    <span class="course-num">${course.display_number_with_default}</span>
+                  </label>
+                </li>
                 % endfor
-                </ul>
-                % if form.course_ids.errors:
-                  <ul class="errorlist">
-                    % for error in form.course_ids.errors:
-                      <li class="error">${error}</li>
-                    % endfor
-                  </ul>
-                % endif
-              </div>
+              </ul>
+            </div>
+            % else:
+            <p>${_("You do not have access to any courses.")}</p>
+            % endif
 
-              <!-- Email Input -->
-              <div class="field text required">
-                <label for="id_emails">${form.emails.label}</label>
-                ${form.emails}
-                % if form.emails.help_text:
-                  <span class="tip">${form.emails.help_text}</span>
-                % endif
-                % if form.emails.errors:
-                  <ul class="errorlist">
-                  % for error in form.emails.errors:
-                    <li class="error">${error}</li>
-                  % endfor
-                  </ul>
-                % endif
-              </div>
-            </fieldset>
+            <!-- Email Input -->
+            <div class="field text required">
+              <label for="emails">${_("User Emails")}</label>
+              <textarea id="emails" name="emails" rows="6" placeholder="${_('user1@example.com\nuser2@example.com')}"></textarea>
+              <span class="tip">${_("Enter one email per line.")}</span>
+            </div>
 
             <div class="actions">
               <button type="submit" class="action action-primary">${_("Enroll Users")}</button>
@@ -85,13 +65,13 @@ from openedx.core.djangolib.js_utils import js_escaped_string
           </form>
         </article>
 
-        <aside class="content-supplementary" role="complementary">
+        <aside class="content-supplementary">
           <div class="bit">
             <h3 class="title-3">${_("How it works")}</h3>
             <ul class="list-details">
-              <li class="item-detail">${_("Enter one email per line.")}</li>
-              <li class="item-detail">${_("Only existing users (by email) can be enrolled.")}</li>
-              <li class="item-detail">${_("All selected courses will receive all valid users.")}</li>
+              <li>${_("Select one or more courses.")}</li>
+              <li>${_("Enter existing user emails (one per line).")}</li>
+              <li>${_("All selected users will be enrolled in all selected courses.")}</li>
             </ul>
           </div>
         </aside>
