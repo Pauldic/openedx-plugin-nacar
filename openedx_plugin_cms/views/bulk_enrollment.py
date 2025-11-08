@@ -1,6 +1,7 @@
 # openedx_plugin_cms/views/bulk_enrollment.py
 # from django.contrib import messages
-from openedx.core.djangoapps.util.user_messages import PageLevelMessages  # Import this instead
+from openedx.core.djangoapps.util.user_messages import PageLevelMessages
+from openedx.core.djangolib.markup import HTML, Text
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.shortcuts import render, redirect
@@ -53,18 +54,14 @@ def bulk_enrollment_view(request):
         # for err in errors:
         #     messages.error(request, err)
         if enrolled_count:
-            # Use PageLevelMessages instead of Django's messages
-            PageLevelMessages.add_message(
+            PageLevelMessages.register_success_message(
                 request, 
-                PageLevelMessages.SUCCESS, 
-                f"Successfully enrolled {enrolled_count} user(s)."
+                Text(f"Successfully enrolled {enrolled_count} user(s).")
             )
         for err in errors:
-            # Use PageLevelMessages for errors too
-            PageLevelMessages.add_message(
+            PageLevelMessages.register_error_message(
                 request,
-                PageLevelMessages.ERROR,
-                err
+                Text(err)
             )
 
 
