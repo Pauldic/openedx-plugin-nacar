@@ -30,6 +30,7 @@ def bulk_enrollment_view(request):
         emails = [e.strip() for e in emails_raw.splitlines() if e.strip()]
 
         User = get_user_model()
+        users = set()
         enrolled_count = 0
         errors = []
 
@@ -61,6 +62,7 @@ def bulk_enrollment_view(request):
                     course_key = CourseKey.from_string(cid)
                     CourseEnrollment.enroll(user, course_key, mode="honor", check_access=False)
                     enrolled_count += 1
+                    users.add(email)
                 except Exception as exc:
                     log.error(f">>> Failed to enroll {email} in {cid}: {exc}")
                     errors.append(f"Failed to enroll {email} in {cid}")
@@ -68,7 +70,7 @@ def bulk_enrollment_view(request):
         if enrolled_count:
             PageLevelMessages.register_success_message(
                 request, 
-                Text(f"Successfully enrolled {enrolled_count} user(s).")
+                Text(f"Total of {enrolled_count} enrollments successful for {users} users")
             )
         for err in errors:
             PageLevelMessages.register_error_message(
