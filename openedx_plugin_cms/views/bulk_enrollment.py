@@ -20,9 +20,6 @@ log = logging.getLogger(__name__)
 @login_required
 @ensure_csrf_cookie
 def bulk_enrollment_view(request):
-    # Get the same course data as Studio home
-    courses, _ = get_courses_accessible_to_user(request)
-    
     if request.method == "POST":
         # Parse selected course IDs and emails from request.POST
         selected_course_ids = request.POST.getlist("course_ids")
@@ -57,13 +54,12 @@ def bulk_enrollment_view(request):
             messages.error(request, err)
 
         log.info(f">>> The Redirect link: {redirect('openedx_plugin_cms:bulk-enrollment')}")
-        # return redirect("openedx_plugin_cms:bulk-enrollment")
+        return redirect("openedx_plugin_cms:bulk-enrollment")
 
     courses, _ = get_courses_accessible_to_user(request)
     # For GET: just pass courses
     context = {
         "courses": courses,
-        "csrf_token": get_token(request),
-        "messages": get_messages(request)
+        "csrf_token": get_token(request)
     }
     return render_to_response("openedx_plugin_cms/bulk_enrollment.html", context, request)

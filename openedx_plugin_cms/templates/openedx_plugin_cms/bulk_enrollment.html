@@ -10,12 +10,6 @@ from django.utils.translation import gettext as _
 from django.urls import reverse
 %>
 
-<%
-success_msgs = [m for m in messages if m.level_tag == 'success']
-error_msgs = [m for m in messages if m.level_tag == 'error']
-%>
-
-
 <%block name="title">${_("Bulk Enrollment")}</%block>
 
 <%block name="bodyclass">is-signedin view-bulk-enrollment</%block>
@@ -33,27 +27,7 @@ error_msgs = [m for m in messages if m.level_tag == 'error']
       <section class="content">
         <article class="content-primary">
           <form method="post">
-            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}" />
-            % if success_msgs or error_msgs:
-              <div class="bulk-enroll-alerts">
-                % for message in success_msgs:
-                <div class="alert alert-success alert-dismissible" role="alert">
-                  <span class="alert-icon">✅</span>
-                  ${message.message | n}
-                  <button type="button" class="btn-close" aria-label="Close"></button>
-                </div>
-                % endfor
-
-                % for message in error_msgs:
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                  <span class="alert-icon">⚠️</span>
-                  ${message.message | n}
-                  <button type="button" class="btn-close" aria-label="Close"></button>
-                </div>
-                % endfor
-              </div>
-            % endif
-            
+            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}" />            
             % if courses:
               
               <!-- Email Input -->
