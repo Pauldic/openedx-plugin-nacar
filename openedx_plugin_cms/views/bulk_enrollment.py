@@ -57,8 +57,9 @@ def bulk_enrollment_view(request):
             messages.error(request, err)
 
         log.info(f">>> The Redirect link: {redirect('openedx_plugin_cms:bulk-enrollment')}")
-        return redirect("openedx_plugin_cms:bulk-enrollment")
+        # return redirect("openedx_plugin_cms:bulk-enrollment")
 
+    courses, _ = get_courses_accessible_to_user(request)
     # For GET: just pass courses
     context = {
         "courses": courses,
