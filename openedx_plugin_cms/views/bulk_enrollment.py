@@ -63,14 +63,3 @@ def bulk_enrollment_view(request):
         "messages": get_messages(request)
     }
     return render_to_response("openedx_plugin_cms/bulk_enrollment.html", context, request)
-
-
-    # return render(request, "openedx_plugin_cms/bulk_enrollment.html", {"form": form, "csrf_token": get_token(request)})
-
-
-    # home_context = get_home_context(request)
-    # return render_to_response('openedx_plugin_cms/bulk_enrollment.html', home_context)
-    
-    # return render_to_response('openedx_plugin_cms/bulk_enrollment.html', {"form": form, "csrf_token": get_token(request)})
-
-
