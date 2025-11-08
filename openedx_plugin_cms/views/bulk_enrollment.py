@@ -21,6 +21,8 @@ log = logging.getLogger(__name__)
 @login_required
 @ensure_csrf_cookie
 def bulk_enrollment_view(request):
+    courses, _ = get_courses_accessible_to_user(request)
+    
     if request.method == "POST":
         # Parse selected course IDs and emails from request.POST
         selected_course_ids = request.POST.getlist("course_ids")
@@ -31,7 +33,21 @@ def bulk_enrollment_view(request):
         enrolled_count = 0
         errors = []
 
-        log.info(f"Emails: {emails}")
+        # Validation check first
+        if len(emails) == 0 or len(selected_course_ids) == 0:
+            PageLevelMessages.register_error_message(
+                request,
+                Text("At least 1 email and 1 course are required")
+            )
+            # Re-render the form with current data instead of redirecting
+            context = {
+                "courses": courses,
+                "csrf_token": get_token(request),
+                "pre_selected_course_ids": selected_course_ids,  # For repopulating checkboxes
+                "pre_entered_emails": emails_raw,  # For repopulating textarea
+            }
+            return render_to_response("openedx_plugin_cms/bulk_enrollment.html", context, request)
+
         for email in emails:
             try:
                 user = User.objects.get(email=email)
@@ -49,10 +65,6 @@ def bulk_enrollment_view(request):
                     log.error(f">>> Failed to enroll {email} in {cid}: {exc}")
                     errors.append(f"Failed to enroll {email} in {cid}")
 
-        # if enrolled_count:
-        #     messages.success(request, f"Successfully enrolled {enrolled_count} user(s).")
-        # for err in errors:
-        #     messages.error(request, err)
         if enrolled_count:
             PageLevelMessages.register_success_message(
                 request, 
@@ -68,7 +80,6 @@ def bulk_enrollment_view(request):
         log.info(f">>> The Redirect link: {redirect('openedx_plugin_cms:bulk-enrollment')}")
         return redirect("openedx_plugin_cms:bulk-enrollment")
 
-    courses, _ = get_courses_accessible_to_user(request)
     # For GET: just pass courses
     context = {
         "courses": courses,
