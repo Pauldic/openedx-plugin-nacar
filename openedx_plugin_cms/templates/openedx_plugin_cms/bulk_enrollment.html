@@ -33,7 +33,9 @@ from django.urls import reverse
               <!-- Email Input -->
               <div class="field text required">
                 <h3 for="emails">${_("List of User Emails (one email per line)")}</h3>
-                <textarea id="emails" name="emails" rows="6" placeholder="${_('user1@example.com\nuser2@example.com')}">${pre_entered_emails if 'pre_entered_emails' in context else ''}</textarea>
+                <textarea id="emails" name="emails" rows="6" placeholder="${_('user1@example.com\nuser2@example.com')}">
+                  ${context.get('pre_entered_emails', '')}
+                </textarea>
               </div>
 
               <!-- Course Selection -->
@@ -42,7 +44,7 @@ from django.urls import reverse
                 % for course in courses:
                   <label class="course-card" data-course-id="${course.id}">
                     <input type="checkbox" name="course_ids" value="${course.id}" class="course-checkbox"
-                      % if 'pre_selected_course_ids' in context and course.id in pre_selected_course_ids:
+                      % if context.get('pre_selected_course_ids') and course.id in context.get('pre_selected_course_ids', []):
                         checked="checked"
                       % endif
                     />
