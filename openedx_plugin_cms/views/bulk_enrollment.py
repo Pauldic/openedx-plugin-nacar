@@ -2,6 +2,7 @@
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -17,6 +18,7 @@ import logging
 log = logging.getLogger(__name__)
 
 @login_required
+@ensure_csrf_cookie
 def bulk_enrollment_view(request):
     # Get the same course data as Studio home
     courses, _ = get_courses_accessible_to_user(request)
@@ -54,6 +56,7 @@ def bulk_enrollment_view(request):
         for err in errors:
             messages.error(request, err)
 
+        log.info(f">>> The Redirect link: {redirect('openedx_plugin_cms:bulk-enrollment')}")
         return redirect("openedx_plugin_cms:bulk-enrollment")
 
     # For GET: just pass courses
