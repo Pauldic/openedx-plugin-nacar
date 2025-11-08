@@ -31,11 +31,13 @@ def bulk_enrollment_view(request):
         enrolled_count = 0
         errors = []
 
+        log.info(f"Emails: {emails}")
         for email in emails:
             try:
                 user = User.objects.get(email=email)
             except User.DoesNotExist:
                 errors.append(f"User with email `{email}` not found.")
+                log.info(f">>> User with email `{email}` not found.")
                 continue
 
             for cid in selected_course_ids:
@@ -44,7 +46,7 @@ def bulk_enrollment_view(request):
                     CourseEnrollment.enroll(user, course_key, mode="honor", check_access=False)
                     enrolled_count += 1
                 except Exception as exc:
-                    log.error(f"Failed to enroll {email} in {cid}: {exc}")
+                    log.error(f">>> Failed to enroll {email} in {cid}: {exc}")
                     errors.append(f"Failed to enroll {email} in {cid}")
 
         if enrolled_count:
