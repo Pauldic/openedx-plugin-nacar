@@ -163,56 +163,26 @@ from django.urls import reverse
       color: #545b62;
       box-shadow: 0 2px 4px rgba(0,0,0,0.08);
     }
-
-/*
-    .bulk-enroll-alerts {
-      margin: 0 0 20px 0;
-    }
-
+    
     .alert {
-      position: relative;
-      padding: 12px 40px 12px 16px;
-      margin-bottom: 12px;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      font-size: 14px;
+      border-radius: 5px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 12px 16px;
+    }
+
+    .alert .icon.icon-alert {
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .alert .message-content {
+      display: inline-block;
       line-height: 1.4;
+      margin: 0;
     }
 
-    .alert-success {
-      color: #155724;
-      background-color: #d4edda;
-      border-color: #c3e6cb;
-    }
-
-    .alert-danger {
-      color: #721c24;
-      background-color: #f8d7da;
-      border-color: #f5c6cb;
-    }
-
-    .alert-icon {
-      margin-right: 8px;
-    }
-
-    .btn-close {
-      position: absolute;
-      top: 8px;
-      right: 12px;
-      width: 20px;
-      height: 20px;
-      padding: 0;
-      background: transparent;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-      opacity: 0.6;
-    }
-
-    .btn-close:hover {
-      opacity: 1;
-    }
-*/
     /* Styled textarea matching Studio aesthetics */
     #emails {
       width: 100%;
