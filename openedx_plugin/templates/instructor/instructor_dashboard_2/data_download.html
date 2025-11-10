@@ -7,17 +7,6 @@ from openedx.core.djangolib.markup import HTML, Text
 
 <div class="data-download-container action-type-container">
   <div class="request-response-error msg msg-error copy" id="data-request-response-error"></div>
-
-
-  <br>
-  <p>${_("Click to display the grading configuration for the course. The grading configuration is the breakdown of graded subsections of the course (such as exams and problem sets), and can be changed on the 'Grading' page (under 'Settings') in Studio.")}</p>
-  <p><input type="button" name="dump-gradeconf" value="${_("Grading Configuration")}" data-endpoint="${ section_data['get_grading_config_url'] }"></p>
-
-  <div class="data-display-text" id="data-grade-config-text"></div>
-  <br>
-
-  <p>${_("The CSV of anonymized student IDs download has been relocated to the Reports section below.")}</p>
-
  </div>
 
 %if settings.FEATURES.get('ENABLE_GRADE_DOWNLOADS'):
