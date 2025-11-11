@@ -78,7 +78,7 @@ def plugin_settings(settings):
 
     # 2. Django templates (for render_to_string / email templates)
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        print(f"\n\n ------ Here {type(settings.TEMPLATES[0]["DIRS"])}\n{settings.TEMPLATES[0]["DIRS"]}")
+        print(f"\n\n ------ Here {type(settings.TEMPLATES[0]['DIRS'])}\n{settings.TEMPLATES[0]['DIRS']}")
         # Create a new Derived instance that properly combines template directories
         settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: get_template_dirs(settings))
         
@@ -86,11 +86,11 @@ def plugin_settings(settings):
         # First, get the existing template directories from the Derived object
         try:
             if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):
-                print(f"Org A: {settings.TEMPLATES[0]["DIRS"]}")
+                print(f"Org A: {settings.TEMPLATES[0]['DIRS']}")
                 # Handle the Derived object properly                
                 original_dirs = list(settings.TEMPLATES[0]["DIRS"])
             else:
-                print(f"Org B: {settings.TEMPLATES[0]["DIRS"]}")
+                print(f"Org B: {settings.TEMPLATES[0]['DIRS']}")
                 # Fallback to standard list handling
                 original_dirs = list(settings.TEMPLATES[0]["DIRS"])
         except as e:
