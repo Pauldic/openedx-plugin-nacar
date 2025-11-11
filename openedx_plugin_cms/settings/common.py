@@ -77,7 +77,8 @@ def plugin_settings(settings):
     #     settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
 
     # 2. Django templates (for render_to_string / email templates)
-    if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:        
+    if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
+        print("\n\n ------ Here")
         # Create a new Derived instance that properly combines template directories
         settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: get_template_dirs(settings))
         
