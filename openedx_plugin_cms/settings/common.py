@@ -35,18 +35,41 @@ def plugin_settings(settings):
     # settings.MAKO_TEMPLATE_DIRS_BASE.extend([TEMPLATES_DIR])    
     # 1. Mako templates (keep this if you have any Mako-based templates)
     if hasattr(settings, "MAKO_TEMPLATE_DIRS_BASE"):
-        print(f"\n\n>>>>>>>>>>>>>>>>>>>>>>>>>> Adding AA {list(settings.MAKO_TEMPLATE_DIRS_BASE)} to {settings.MAKO_TEMPLATE_DIRS_BASE}")
         settings.MAKO_TEMPLATE_DIRS_BASE = list(settings.MAKO_TEMPLATE_DIRS_BASE)  # ensure mutable
-        print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Result: {settings.MAKO_TEMPLATE_DIRS_BASE}")
+        print(f"\n\n>>>>>>>>>>>>>>>>>>>>>>>>>> Found: {list(settings.MAKO_TEMPLATE_DIRS_BASE)}")
         settings.MAKO_TEMPLATE_DIRS_BASE.insert(0, TEMPLATES_DIR)  # prepend to have priority
         print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding {TEMPLATES_DIR} to {settings.MAKO_TEMPLATE_DIRS_BASE}")
 
+    # # 2. Django templates (for render_to_string / email templates)t 
+    # if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
+    #     print(f"\n\n>>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]['DIRS']}")
+    #     settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
+    #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
+    #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
+
     # 2. Django templates (for render_to_string / email templates)t 
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        print(f"\n\n>>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]['DIRS']}")
-        settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
-        # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
-        # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
+        # print(f"TEMPLATES 1: >>>>>>>>>>>>>>>  settings.TEMPLATES ", settings.TEMPLATES)  
+        # if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):      
+        #     dirs = list(settings.TEMPLATES[0]["DIRS"])
+        #     print(f"TEMPLATES 2: >>>>>>>>>>>>>>>  settings.TEMPLATES (List): ", dirs)
+        #     dirs.insert(0, str(TEMPLATES_DIR))
+        #     settings.TEMPLATES[0]["DIRS"] = dirs
+        # else:            
+        #     # print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]['DIRS']}")
+        #     settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
+        #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
+        #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
+        def prepend_plugin_dir(settings):
+            print(f">>>>>>>>>>>>>>>  settings.TEMPLATES ", settings.TEMPLATES) 
+            print(f"isDrived: {isinstance(settings.TEMPLATES[0]["DIRS"], Derived)}")
+            # Ensure settings.TEMPLATES[0]["DIRS"] is a list
+            dirs = list(settings.TEMPLATES[0]["DIRS"]) if isinstance(settings.TEMPLATES[0]["DIRS"], list) else []
+            if str(TEMPLATES_DIR) not in dirs:
+                dirs.insert(0, str(TEMPLATES_DIR))
+            return dirs
+
+        settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
 
 
 #     # settings.MAKO_TEMPLATE_DIRS_BASE.extend([TEMPLATES_DIR])    
