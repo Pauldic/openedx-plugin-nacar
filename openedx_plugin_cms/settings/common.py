@@ -100,15 +100,13 @@ def plugin_settings(settings):
         
         # Convert all paths to strings for comparison
         original_dirs_str = [str(d) for d in original_dirs]
-        print(f"\nOrg: {original_dirs}")
-        plugin_dir_str = str(TEMPLATES_DIR)
         
         # Only add our template directory if it's not already present
-        if plugin_dir_str not in original_dirs_str:
-            print(f"Adding: {plugin_dir_str} to {original_dirs}")
-            return [TEMPLATES_DIR] + original_dirs
+        if TEMPLATES_DIR not in original_dirs_str:
+            print(f"Adding: {TEMPLATES_DIR} to {original_dirs}")
+            original_dirs = [TEMPLATES_DIR] + original_dirs
         
-        print(f">>>>>>>>>>>>>>>  Dir: {original_dirs}")
+        print(f">>>>>>>>>>>>>>>  Dir 2: {original_dirs}")
         return original_dirs
     
     
