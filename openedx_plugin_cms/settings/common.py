@@ -39,9 +39,9 @@ def plugin_settings(settings):
     # 1. Mako templates (keep this if you have any Mako-based templates)
     if hasattr(settings, "MAKO_TEMPLATE_DIRS_BASE"):
         settings.MAKO_TEMPLATE_DIRS_BASE = list(settings.MAKO_TEMPLATE_DIRS_BASE)  # ensure mutable
-        print(f"\n\n>>>>>>>>>>>>>>>>>>>>>>>>>> Found: {list(settings.MAKO_TEMPLATE_DIRS_BASE)}")
+        # print(f"\n\n>>>>>>>>>>>>>>>>>>>>>>>>>> Found: {list(settings.MAKO_TEMPLATE_DIRS_BASE)}")
         settings.MAKO_TEMPLATE_DIRS_BASE.insert(0, TEMPLATES_DIR)  # prepend to have priority
-        print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding {TEMPLATES_DIR} to {settings.MAKO_TEMPLATE_DIRS_BASE}")
+        # print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding {TEMPLATES_DIR} to {settings.MAKO_TEMPLATE_DIRS_BASE}")
 
     # # 2. Django templates (for render_to_string / email templates)t 
     # if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
