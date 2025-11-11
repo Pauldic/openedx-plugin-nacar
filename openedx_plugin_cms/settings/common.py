@@ -61,12 +61,13 @@ def plugin_settings(settings):
         #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
         #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
         def prepend_plugin_dir(settings):
-            print(f">>>>>>>>>>>>>>>  settings.TEMPLATES ", settings.TEMPLATES) 
+            print(f">>>>>>>>>>>>>>>  settings.TEMPLATES: ", settings.TEMPLATES) 
             print(f"isDrived: {isinstance(settings.TEMPLATES[0]['DIRS'], Derived)}")
             # Ensure settings.TEMPLATES[0]["DIRS"] is a list
             dirs = list(settings.TEMPLATES[0]["DIRS"]) if isinstance(settings.TEMPLATES[0]["DIRS"], list) else []
             if str(TEMPLATES_DIR) not in dirs:
                 dirs.insert(0, str(TEMPLATES_DIR))
+            print(f"Dirs: {dirs}")
             return dirs
 
         settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
