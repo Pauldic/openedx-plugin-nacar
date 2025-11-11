@@ -78,7 +78,7 @@ def plugin_settings(settings):
 
     # 2. Django templates (for render_to_string / email templates)
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        print("\n\n ------ Here")
+        print(f"\n\n ------ Here {type(settings.TEMPLATES[0]["DIRS"])}\n{settings.TEMPLATES[0]["DIRS"]}")
         # Create a new Derived instance that properly combines template directories
         settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: get_template_dirs(settings))
         
@@ -86,22 +86,26 @@ def plugin_settings(settings):
         # First, get the existing template directories from the Derived object
         try:
             if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):
-                # Handle the Derived object properly
+                print(f"Org A: {settings.TEMPLATES[0]["DIRS"]}")
+                # Handle the Derived object properly                
                 original_dirs = list(settings.TEMPLATES[0]["DIRS"])
             else:
+                print(f"Org B: {settings.TEMPLATES[0]["DIRS"]}")
                 # Fallback to standard list handling
                 original_dirs = list(settings.TEMPLATES[0]["DIRS"])
-        except:
+        except as e:
+            print(f">>> {e}")
             # Default to empty list if there's an error
             original_dirs = []
         
         # Convert all paths to strings for comparison
         original_dirs_str = [str(d) for d in original_dirs]
+        print(f"\nOrg: {original_dirs}")
         plugin_dir_str = str(TEMPLATES_DIR)
         
         # Only add our template directory if it's not already present
         if plugin_dir_str not in original_dirs_str:
-            print(f"Adding plugin template directory: {plugin_dir_str}")
+            print(f"Adding: {plugin_dir_str} to {original_dirs}")
             return [TEMPLATES_DIR] + original_dirs
         
         print(f">>>>>>>>>>>>>>>  Dir: {original_dirs}")
