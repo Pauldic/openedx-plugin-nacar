@@ -29,6 +29,9 @@ def plugin_settings(settings):
         see: https://stackoverflow.com/questions/56129708/how-to-force-redirect-uri-to-use-https-with-python-social-app
     """
 
+    settings.NACAR_FEATURES = getattr(settings, 'NACAR_FEATURES', {})
+    settings.NACAR_FEATURES['BULK_ENROLLMENT'] = True
+    
     # settings.SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
     # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     
@@ -47,32 +50,66 @@ def plugin_settings(settings):
     #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
     #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
 
-    # 2. Django templates (for render_to_string / email templates)t 
-    if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        # print(f"TEMPLATES 1: >>>>>>>>>>>>>>>  settings.TEMPLATES ", settings.TEMPLATES)  
-        # if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):      
-        #     dirs = list(settings.TEMPLATES[0]["DIRS"])
-        #     print(f"TEMPLATES 2: >>>>>>>>>>>>>>>  settings.TEMPLATES (List): ", dirs)
-        #     dirs.insert(0, str(TEMPLATES_DIR))
-        #     settings.TEMPLATES[0]["DIRS"] = dirs
-        # else:            
-        #     # print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]['DIRS']}")
-        #     settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
-        #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
-        #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
-        def prepend_plugin_dir(settings):
-            print(f">>>>>>>>>>>>>>>  settings.TEMPLATES: ", settings.TEMPLATES) 
-            print(f"isDrived: {isinstance(settings.TEMPLATES[0]['DIRS'], Derived)}")
-            # Ensure settings.TEMPLATES[0]["DIRS"] is a list
-            dirs = list(settings.TEMPLATES[0]["DIRS"]) if isinstance(settings.TEMPLATES[0]["DIRS"], list) else []
-            if str(TEMPLATES_DIR) not in dirs:
-                dirs.insert(0, str(TEMPLATES_DIR))
-            print(f"Dirs: {dirs}")
-            return dirs
 
-        settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
+    # # 2. Django templates (for render_to_string / email templates)
+    # if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
+    #     # print(f"TEMPLATES 1: >>>>>>>>>>>>>>>  settings.TEMPLATES ", settings.TEMPLATES)  
+    #     # if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):      
+    #     #     dirs = list(settings.TEMPLATES[0]["DIRS"])
+    #     #     print(f"TEMPLATES 2: >>>>>>>>>>>>>>>  settings.TEMPLATES (List): ", dirs)
+    #     #     dirs.insert(0, str(TEMPLATES_DIR))
+    #     #     settings.TEMPLATES[0]["DIRS"] = dirs
+    #     # else:            
+    #     #     # print(f">>>>>>>>>>>>>>>>>>>>>>>>>> Adding BB {TEMPLATES_DIR} to {settings.TEMPLATES[0]['DIRS']}")
+    #     #     settings.TEMPLATES[0]["DIRS"].insert(0, str(TEMPLATES_DIR))
+    #     #     # settings.TEMPLATES[0]["DIRS"].append(str(TEMPLATES_DIR))
+    #     #     # settings.TEMPLATES[0]["DIRS"] = [str(TEMPLATES_DIR)] + list(settings.TEMPLATES[0]["DIRS"])
+    #     def prepend_plugin_dir(settings):
+    #         print(f">>>>>>>>>>>>>>>  settings.TEMPLATES: ", settings.TEMPLATES) 
+    #         print(f"isDrived: {isinstance(settings.TEMPLATES[0]['DIRS'], Derived)}")
+    #         # Ensure settings.TEMPLATES[0]["DIRS"] is a list
+    #         dirs = list(settings.TEMPLATES[0]["DIRS"]) if isinstance(settings.TEMPLATES[0]["DIRS"], list) else []
+    #         if str(TEMPLATES_DIR) not in dirs:
+    #             dirs.insert(0, str(TEMPLATES_DIR))
+    #         print(f"Dirs: {dirs}")
+    #         return dirs
 
+    #     settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
 
+    # 2. Django templates (for render_to_string / email templates)
+    if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:        
+        # Create a new Derived instance that properly combines template directories
+        settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: get_template_dirs(settings))
+        
+    def get_template_dirs(settings):
+        # First, get the existing template directories from the Derived object
+        try:
+            if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):
+                # Handle the Derived object properly
+                original_dirs = list(settings.TEMPLATES[0]["DIRS"])
+            else:
+                # Fallback to standard list handling
+                original_dirs = list(settings.TEMPLATES[0]["DIRS"])
+        except:
+            # Default to empty list if there's an error
+            original_dirs = []
+        
+        # Convert all paths to strings for comparison
+        original_dirs_str = [str(d) for d in original_dirs]
+        plugin_dir_str = str(TEMPLATES_DIR)
+        
+        # Only add our template directory if it's not already present
+        if plugin_dir_str not in original_dirs_str:
+            print(f"Adding plugin template directory: {plugin_dir_str}")
+            return [TEMPLATES_DIR] + original_dirs
+        
+        print(f">>>>>>>>>>>>>>>  Dir: {original_dirs}")
+        return original_dirs
+    
+    
+    
+    
+    
 #     # settings.MAKO_TEMPLATE_DIRS_BASE.extend([TEMPLATES_DIR])    
 #     # 1. Mako templates (keep this if you have any Mako-based templates)
 #     if hasattr(settings, "MAKO_TEMPLATE_DIRS_BASE"):
