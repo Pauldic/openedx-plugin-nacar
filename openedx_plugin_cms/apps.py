@@ -57,6 +57,9 @@ class CustomPluginCMSConfig(AppConfig):
                 SettingsType.COMMON: {PluginSettings.RELATIVE_PATH: "settings.common"},
             }
         },
+        PluginSettings.APPEND_TEMPLATE_DIRS: {
+            ProjectType.CMS: ["openedx_plugin_cms/templates"]
+        }
     }
     
 
