@@ -93,7 +93,7 @@ def plugin_settings(settings):
                 print(f"Org B: {settings.TEMPLATES[0]['DIRS']}")
                 # Fallback to standard list handling
                 original_dirs = list(settings.TEMPLATES[0]["DIRS"])
-        except as e:
+        except Exception as e:
             print(f">>> {e}")
             # Default to empty list if there's an error
             original_dirs = []
