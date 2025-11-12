@@ -79,3 +79,5 @@ class CustomPluginCMSConfig(AppConfig):
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         waffle_init()
         IS_READY = True
+        
+        print(f"plugin_app: {plugin_app}")
