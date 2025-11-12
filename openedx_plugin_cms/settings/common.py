@@ -76,38 +76,78 @@ def plugin_settings(settings):
 
     #     settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: prepend_plugin_dir(settings))
 
-    # 2. Django templates (for render_to_string / email templates)
+
+
+
+    
+    # Handle Django templates with proper Derived object handling
     if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-        print(f"\n\n ------ Here {type(settings.TEMPLATES[0]['DIRS'])}\n{settings.TEMPLATES[0]['DIRS']}")
-        # Create a new Derived instance that properly combines template directories
-        settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: get_template_dirs(settings))
+        # Define a function that will generate the template directories
+        def get_template_dirs(settings_obj):
+            # Get the existing template directories
+            existing_dirs = settings_obj.TEMPLATES[0]["DIRS"]
+            
+            # If it's still a Derived object, we need to evaluate it
+            if isinstance(existing_dirs, Derived):
+                print(f" >>> D: {existing_dirs}")
+                existing_dirs = existing_dirs.calculate_value(settings_obj)
+            
+            # Convert to list if it's not already one
+            if not isinstance(existing_dirs, list):
+                print(f" >>> L: {existing_dirs}")
+                existing_dirs = list(existing_dirs)
+            
+            # Convert all paths to strings for comparison
+            existing_dirs_str = [str(d) for d in existing_dirs]
+            print(f"Existing Dirs: {existing_dirs_str}")
+            plugin_dir_str = str(TEMPLATES_DIR)
+            
+            # Only add our template directory if it's not already present
+            if plugin_dir_str not in existing_dirs_str:
+                print(f"Prepending plugin template directory: {plugin_dir_str}")
+                existing_dirs = [TEMPLATES_DIR] + existing_dirs
+            print(f"Final Dirs: {existing_dirs_str}")
+            return existing_dirs
         
-    def get_template_dirs(settings):
-        # First, get the existing template directories from the Derived object
-        try:
-            if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):
-                print(f"Org A: {settings.TEMPLATES[0]['DIRS']}")
-                # Handle the Derived object properly                
-                original_dirs = list(settings.TEMPLATES[0]["DIRS"])
-            else:
-                print(f"Org B: {settings.TEMPLATES[0]['DIRS']}")
-                # Fallback to standard list handling
-                original_dirs = list(settings.TEMPLATES[0]["DIRS"])
-        except Exception as e:
-            print(f">>> {e}")
-            # Default to empty list if there's an error
-            original_dirs = []
+        # Create a new Derived instance with our function
+        settings.TEMPLATES[0]["DIRS"] = Derived(get_template_dirs)
+
+
+
+
+
+    # # 2. Django templates (for render_to_string / email templates)
+    # if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
+    #     print(f"\n\n ------ Here {type(settings.TEMPLATES[0]['DIRS'])}\n{settings.TEMPLATES[0]['DIRS']}")
+    #     # Create a new Derived instance that properly combines template directories
+    #     settings.TEMPLATES[0]["DIRS"] = Derived(lambda settings: get_template_dirs(settings))
         
-        # Convert all paths to strings for comparison
-        original_dirs_str = [str(d) for d in original_dirs]
+    # def get_template_dirs(settings):
+    #     # First, get the existing template directories from the Derived object
+    #     try:
+    #         if isinstance(settings.TEMPLATES[0]["DIRS"], Derived):
+    #             print(f"Org A: {settings.TEMPLATES[0]['DIRS']}")
+    #             # Handle the Derived object properly                
+    #             original_dirs = list(settings.TEMPLATES[0]["DIRS"])
+    #         else:
+    #             print(f"Org B: {settings.TEMPLATES[0]['DIRS']}")
+    #             # Fallback to standard list handling
+    #             original_dirs = list(settings.TEMPLATES[0]["DIRS"])
+    #     except Exception as e:
+    #         print(f">>> {e}")
+    #         # Default to empty list if there's an error
+    #         original_dirs = []
         
-        # Only add our template directory if it's not already present
-        if TEMPLATES_DIR not in original_dirs_str:
-            print(f"Adding: {TEMPLATES_DIR} to {original_dirs}")
-            original_dirs = [TEMPLATES_DIR] + original_dirs
+    #     # Convert all paths to strings for comparison
+    #     original_dirs_str = [str(d) for d in original_dirs]
         
-        print(f">>>>>>>>>>>>>>>  Dir 2: {original_dirs}")
-        return original_dirs
+    #     # Only add our template directory if it's not already present
+    #     if TEMPLATES_DIR not in original_dirs_str:
+    #         print(f"Adding: {TEMPLATES_DIR} to {original_dirs}")
+    #         original_dirs = [TEMPLATES_DIR] + original_dirs
+        
+    #     print(f">>>>>>>>>>>>>>>  Dir 2: {original_dirs}")
+    #     return original_dirs
     
     
     
