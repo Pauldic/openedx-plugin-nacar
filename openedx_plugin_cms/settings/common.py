@@ -94,7 +94,7 @@ def plugin_settings(settings):
                 try:
                     dirs = dirs.calculate_value(settings_obj)
                 except Exception as e:
-                    log.error(f" Error D: {e}")
+                    print(f" Error D: {e}")
                     dirs = []
             
             # Convert to list if it's not already one
@@ -103,7 +103,7 @@ def plugin_settings(settings):
                 try:
                     dirs = list(dirs)
                 except Exception as e:
-                    log.error(f"Error L: {e}")
+                    print(f"Error L: {e}")
                     dirs = []
                     
             # Convert all paths to strings for comparison
