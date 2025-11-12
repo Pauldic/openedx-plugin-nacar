@@ -80,37 +80,42 @@ def plugin_settings(settings):
 
 
     
-    # # Handle Django templates with proper Derived object handling
-    # if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
-    #     # Define a function that will generate the template directories
-    #     def get_template_dirs(settings_obj):
-    #         # Get the existing template directories
-    #         existing_dirs = settings_obj.TEMPLATES[0]["DIRS"]
+    # Handle Django templates with proper Derived object handling
+    if hasattr(settings, "TEMPLATES") and settings.TEMPLATES:
+        print(f"\n\n\n==================================\n{settings.TEMPLATES}")
+        # Define a function that will generate the template directories
+        def get_template_dirs(settings_obj):
+            # Get the existing template directories
+            dirs = settings_obj.TEMPLATES[0]["DIRS"]
             
-    #         # If it's still a Derived object, we need to evaluate it
-    #         if isinstance(existing_dirs, Derived):
-    #             print(f" >>> D: {existing_dirs}")
-    #             existing_dirs = existing_dirs.calculate_value(settings_obj)
+            # Convert to list if it's not already one
+            if not isinstance(dirs, list):
+                print(f" >>> L: {dirs}")
+                dirs = list(dirs)
             
-    #         # Convert to list if it's not already one
-    #         if not isinstance(existing_dirs, list):
-    #             print(f" >>> L: {existing_dirs}")
-    #             existing_dirs = list(existing_dirs)
+            # If it's still a Derived object, we need to evaluate it
+            if isinstance(dirs, Derived):
+                print(f" >>> D: {dirs}")
+                try:
+                    dirs = dirs.calculate_value(settings_obj)
+                except Exception as e:
+                    log.error(f" *** Error: {e}")
+                    dirs = []
             
-    #         # Convert all paths to strings for comparison
-    #         existing_dirs_str = [str(d) for d in existing_dirs]
-    #         print(f"Existing Dirs: {existing_dirs_str}")
-    #         plugin_dir_str = str(TEMPLATES_DIR)
+            # Convert all paths to strings for comparison
+            dirs_str = [str(d) for d in dirs]
+            print(f"Existing Dirs: {dirs_str}")
+            plugin_dir_str = str(TEMPLATES_DIR)
             
-    #         # Only add our template directory if it's not already present
-    #         if plugin_dir_str not in existing_dirs_str:
-    #             print(f"Prepending plugin template directory: {plugin_dir_str}")
-    #             existing_dirs = [TEMPLATES_DIR] + existing_dirs
-    #         print(f"Final Dirs: {existing_dirs_str}")
-    #         return existing_dirs
+            # Only add our template directory if it's not already present
+            if plugin_dir_str not in dirs_str:
+                print(f"Prepending plugin template directory: {plugin_dir_str}")
+                dirs = [TEMPLATES_DIR] + dirs
+            print(f"Final Dirs: {dirs_str}")
+            return dirs
         
-    #     # Create a new Derived instance with our function
-    #     settings.TEMPLATES[0]["DIRS"] = Derived(get_template_dirs)
+        # Create a new Derived instance with our function
+        settings.TEMPLATES[0]["DIRS"] = Derived(get_template_dirs)
 
 
 

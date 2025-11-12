@@ -56,9 +56,6 @@ class CustomPluginCMSConfig(AppConfig):
                 SettingsType.PRODUCTION: {PluginSettings.RELATIVE_PATH: "settings.production"},
                 SettingsType.COMMON: {PluginSettings.RELATIVE_PATH: "settings.common"},
             }
-        },
-        PluginSettings.APPEND_TEMPLATE_DIRS: {
-            ProjectType.CMS: ["openedx_plugin_cms/templates"]
         }
     }
     
@@ -79,5 +76,3 @@ class CustomPluginCMSConfig(AppConfig):
         log.info("{label} {version} is ready.".format(label=self.label, version=__version__))
         waffle_init()
         IS_READY = True
-        
-        print(f"plugin_app: {plugin_app}")
