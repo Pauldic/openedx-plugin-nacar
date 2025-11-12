@@ -88,20 +88,24 @@ def plugin_settings(settings):
             # Get the existing template directories
             dirs = settings_obj.TEMPLATES[0]["DIRS"]
             
-            # Convert to list if it's not already one
-            if not isinstance(dirs, list):
-                print(f" >>> L: {dirs}")
-                dirs = list(dirs)
-            
             # If it's still a Derived object, we need to evaluate it
             if isinstance(dirs, Derived):
                 print(f" >>> D: {dirs}")
                 try:
                     dirs = dirs.calculate_value(settings_obj)
                 except Exception as e:
-                    log.error(f" *** Error: {e}")
+                    log.error(f" Error D: {e}")
                     dirs = []
             
+            # Convert to list if it's not already one
+            if not isinstance(dirs, list):
+                print(f" >>> L: {dirs}")
+                try:
+                    dirs = list(dirs)
+                except Exception as e:
+                    log.error(f"Error L: {e}")
+                    dirs = []
+                    
             # Convert all paths to strings for comparison
             dirs_str = [str(d) for d in dirs]
             print(f"Existing Dirs: {dirs_str}")
