@@ -338,41 +338,24 @@ from django.urls import reverse
           });
 
           if (!response.ok) {
-            // If the API returns an error, get the error details
-            let errorDetail = 'Unknown error';
-            try {
-              const errorJson = await response.json();
-              errorDetail = JSON.stringify(errorJson, null, 2);
-            } catch (e) {
-              // If response is not JSON, get the text
-              errorDetail = await response.text();
-            }
-            throw new Error("API error! status: "+ response.status + ", details: " +errorDetail);
+            // If it's an error, show the raw text or try to parse if it's JSON
+            throw new Error(`API error! status: ${response.status}, details: ${responseText}`);
+          }
+          // If it's successful, parse as JSON
+          let results;
+          try {
+            results = JSON.parse(responseText);
+          } catch (e) {
+            throw new Error("Invalid JSON response from API");
           }
 
-          // Read the successful response from the API
-          const results = await response.json();
-
-          // Display the results in the pre element
-          const resultsContentElement = document.getElementById('results-content');
-          resultsContentElement.textContent = JSON.stringify(results, null, 2);
-
-          // Show the results section
-          const resultsSection = document.getElementById('results');
-          resultsSection.style.display = 'block';
-
-          // Optionally, hide the form inputs if you don't want them visible anymore
-          // form.style.display = 'none';
+          // Now use `results` safely
+          document.getElementById('results-content').textContent = JSON.stringify(results, null, 2);
+          document.getElementById('results').style.display = 'block';
 
         } catch (error) {
           console.error('Bulk enrollment failed:', error);
-          alert("Bulk enrollment failed: " + error.message);
-
-          // Optionally, display the error in the results div
-          const resultsContentElement = document.getElementById('results-content');
-          resultsContentElement.textContent = "Error: " + error.message;
-          const resultsSection = document.getElementById('results');
-          resultsSection.style.display = 'block';
+          alert(`Bulk enrollment failed: ${error.message}`);
         }
       });
 
