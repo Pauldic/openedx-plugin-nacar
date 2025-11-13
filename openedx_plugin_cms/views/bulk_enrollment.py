@@ -1,4 +1,4 @@
-uu# openedx_plugin_cms/views/bulk_enrollment.py
+# openedx_plugin_cms/views/bulk_enrollment.py
 # from django.contrib import messages
 from openedx.core.djangoapps.util.user_messages import PageLevelMessages
 from openedx.core.djangolib.markup import HTML, Text
