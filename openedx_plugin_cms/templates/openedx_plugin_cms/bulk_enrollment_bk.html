@@ -26,13 +26,13 @@ from django.urls import reverse
     <div class="inner-wrapper">
       <section class="content">
         <article class="content-primary">
-          <form method="post">
-            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}" />            
+          <form id="bulk-enrollment-form" method="post"> <!-- Give the form an ID for JS -->
+            <input type="hidden" name="csrfmiddlewaretoken" value="${csrf_token}" />
+
             % if courses:
-              
               <!-- Email Input -->
               <div class="field text required">
-                <h3 for="emails">${_("List of User Emails (one email per line)")}</h3>
+                <h3>${_("List of User Emails (one email per line)")}</h3>
                 <textarea id="emails" name="emails" rows="6" placeholder="${_('user1@example.com\nuser2@example.com')}">
                   ${context.get('pre_entered_emails', '')}
                 </textarea>
@@ -71,10 +71,15 @@ from django.urls import reverse
             % else:
               <p>${_("You do not have access to any courses.")}</p>
             % endif
-
           </form>
-        </article>
 
+          <!-- Results Section (Initially Hidden) -->
+          <div id="results" style="display:none; margin-top: 20px;">
+            <h3>${_("Results")}</h3>
+            <pre id="results-content"></pre>
+          </div>
+
+        </article>
       </section>
     </div>
   % else:
@@ -101,9 +106,10 @@ from django.urls import reverse
         </div>
       </aside>
     </section>
-  %endif
+  % endif
 
   <style>
+    /* Your existing CSS remains the same */
     .bulk-enroll-actions {
       display: flex;
       float: right;
@@ -137,7 +143,6 @@ from django.urls import reverse
       transform: translateY(0);
     }
 
-    /* Primary (Success) Button */
     .btn-success {
       background-color: #28a745;
       border-color: #28a745;
@@ -150,7 +155,6 @@ from django.urls import reverse
       box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
     }
 
-    /* Outline Secondary Button */
     .btn-outline-secondary {
       background-color: transparent;
       border-color: #6c757d;
@@ -163,7 +167,7 @@ from django.urls import reverse
       color: #545b62;
       box-shadow: 0 2px 4px rgba(0,0,0,0.08);
     }
-    
+
     .alert {
       border-radius: 5px;
       display: flex;
@@ -182,15 +186,13 @@ from django.urls import reverse
       line-height: 1.4;
       margin: 0;
     }
-    
+
     .alert .message-content ul li i{
       font-size: 0.8em;
       font-style: italic;
       color: #545b627a;
     }
-    
 
-    /* Styled textarea matching Studio aesthetics */
     #emails {
       width: 100%;
       min-height: 120px;
@@ -221,7 +223,7 @@ from django.urls import reverse
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 16px;
-      margin: 0 0 20px 0;;
+      margin: 0 0 20px 0;
     }
 
     .course-card {
@@ -249,7 +251,6 @@ from django.urls import reverse
       box-shadow: 0 2px 6px rgba(0,119,194,0.2);
     }
 
-    /* Hide the actual checkbox */
     .course-checkbox {
       position: absolute !important;
       width: 1px !important;
@@ -284,24 +285,86 @@ from django.urls import reverse
       font-weight: bold;
     }
   </style>
-  <script>
 
-  document.addEventListener('DOMContentLoaded', function() {
-      const dismissButtons = document.querySelectorAll('.btn-close');
-      dismissButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const alert = this.closest('.alert');
-          if (alert) {
-            alert.style.opacity = '0';
-            setTimeout(() => alert.remove(), 150);
+  <script>
+    // Wait for the DOM to load before attaching the event listener
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get the form element
+      const form = document.getElementById('bulk-enrollment-form');
+
+      // Attach submit listener to the form
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault(); // Prevent the standard form submission
+
+        // Get the CSRF token
+        const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+        // Collect data from the form elements
+        const emailsTextarea = document.getElementById('emails');
+        const selectedCourseCheckboxes = document.querySelectorAll('input[name="course_ids"]:checked');
+
+        // Process emails
+        const emails = emailsTextarea.value.trim().split('\n').map(email => email.trim()).filter(email => email !== '');
+
+        // Process course IDs
+        const courseIds = Array.from(selectedCourseCheckboxes).map(cb => cb.value);
+
+        // Prepare the payload for the BulkEnroll API
+        const apiPayload = {
+          auto_enroll: false, // Set based on your requirements or add a checkbox
+          email_students: true, // Set based on your requirements or add a checkbox
+          action: 'enroll', // Always 'enroll' for this form
+          courses: courseIds, // Array of course IDs
+          identifiers: emails, // Array of email addresses
+          // cohorts: [] // Optional: Add cohort logic if needed
+        };
+
+        try {
+          // Call the official BulkEnroll API
+          // Use the LMS root URL as the base for the API endpoint
+          // This assumes the LMS and Studio share session/auth or you have a way to authenticate this call.
+          // For simplicity in a plugin context within the same deployment, using session auth is often viable.
+          const response = await fetch('/api/bulk_enroll/v1/bulk_enroll/', { // Relative path to the API
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrftoken, // Include the CSRF token
+              // Note: This assumes session-based authentication works from Studio to LMS.
+              // If the LMS API requires JWT or Bearer token, you'll need to generate one server-side
+              // and pass it to the template context, then use it here.
+              // For Tutor setups with shared session stores, session auth often works.
+            },
+            body: JSON.stringify(apiPayload),
+          });
+
+          if (!response.ok) {
+            // If it's an error, show the raw text or try to parse if it's JSON
+            throw new Error(`API error! status: ${response.status}, details: ${responseText}`);
           }
-        });
+          // If it's successful, parse as JSON
+          let results;
+          try {
+            results = JSON.parse(responseText);
+          } catch (e) {
+            throw new Error("Invalid JSON response from API");
+          }
+
+          // Now use `results` safely
+          document.getElementById('results-content').textContent = JSON.stringify(results, null, 2);
+          document.getElementById('results').style.display = 'block';
+
+        } catch (error) {
+          console.error('Bulk enrollment failed:', error);
+          alert(`Bulk enrollment failed: ${error.message}`);
+        }
       });
 
+      // Keep your existing event listeners for checkboxes and dismiss buttons if needed
+      // Example for checkbox sync (adapted from your original script)
       const cards = document.querySelectorAll('.course-card');
       cards.forEach(card => {
         const checkbox = card.querySelector('.course-checkbox');
-        
+
         // Sync initial state (in case of pre-checked)
         if (checkbox.checked) {
           card.classList.add('selected');
@@ -315,7 +378,20 @@ from django.urls import reverse
           card.classList.toggle('selected', checkbox.checked);
         });
       });
-    });
+
+      // Example for dismiss buttons (if you add alerts that can be dismissed)
+      // const dismissButtons = document.querySelectorAll('.btn-close'); // Add a class like 'btn-close' to your dismiss buttons if you have them
+      // dismissButtons.forEach(button => {
+      //   button.addEventListener('click', function() {
+      //     const alert = this.closest('.alert');
+      //     if (alert) {
+      //       alert.style.opacity = '0';
+      //       setTimeout(() => alert.remove(), 150);
+      //     }
+      //   });
+      // });
+
+    }); // End of DOMContentLoaded listener
   </script>
 </div>
 </%block>
