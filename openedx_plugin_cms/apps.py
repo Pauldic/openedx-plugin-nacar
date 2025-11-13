@@ -60,8 +60,7 @@ class CustomPluginCMSConfig(AppConfig):
         # CORRECT TEMPLATE CONFIGURATION FOR TEAK.2
         "templates": {
             ProjectType.CMS: {
-                # This is the proper way to add template directories in Teak.2
-                "relative_path": "templates"
+                PluginURLs.RELATIVE_PATH: "templates"
             }
         }
     }
