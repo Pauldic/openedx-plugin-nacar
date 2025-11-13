@@ -5,6 +5,7 @@ from openedx.core.djangolib.markup import HTML, Text
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.shortcuts import render, redirect
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from opaque_keys.edx.keys import CourseKey
