@@ -143,6 +143,7 @@ from django.conf import settings
 from django.middleware.csrf import get_token
 from cms.djangoapps.contentstore.views.course import get_courses_accessible_to_user
 from openedx.core.djangoapps.util.user_messages import PageLevelMessages
+from common.djangoapps.edxmako.shortcuts import render_to_response
 from openedx.core.djangolib.markup import Text
 
 
