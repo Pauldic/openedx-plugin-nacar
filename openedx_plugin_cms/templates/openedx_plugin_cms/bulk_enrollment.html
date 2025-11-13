@@ -366,11 +366,11 @@ from django.urls import reverse
 
         } catch (error) {
           console.error('Bulk enrollment failed:', error);
-          alert(`Bulk enrollment failed: ${error.message}`);
+          alert("Bulk enrollment failed: " + error.message);
 
           // Optionally, display the error in the results div
           const resultsContentElement = document.getElementById('results-content');
-          resultsContentElement.textContent = "Error: "+error.message;
+          resultsContentElement.textContent = "Error: " + error.message;
           const resultsSection = document.getElementById('results');
           resultsSection.style.display = 'block';
         }
