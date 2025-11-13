@@ -122,9 +122,9 @@ def bulk_enrollment_view(request):
             for email, v in users_processed.items():
                 msg += f"<b>{email}</b>:<ul>"
                 if len(v["skipped"]) > 0:
-                    msg += " ".join([f'<li>Skipped: <a href="{settings.LMS_ROOT_URL.rstrip('/')}/courses/{cid}/about" target="_blank">{get_course_name(cid)}</a> <i>(user is already enrolled)</i></li>' for cid in v['skipped']])
+                    msg += " ".join([f"""<li>Skipped: <a href="{settings.LMS_ROOT_URL.rstrip('/')}/courses/{cid}/about" target="_blank">{get_course_name(cid)}</a> <i>(user is already enrolled)</i></li>""" for cid in v['skipped']])
                 if len(v["enrolled"]) > 0:
-                    msg += " ".join([f'<li>Enrolled: <a href="{settings.LMS_ROOT_URL.rstrip('/')}/courses/{cid}/about" target="_blank">{get_course_name(cid)}</a></li>' for cid in v['enrolled']])
+                    msg += " ".join([f"""<li>Enrolled: <a href="{settings.LMS_ROOT_URL.rstrip('/')}/courses/{cid}/about" target="_blank">{get_course_name(cid)}</a></li>""" for cid in v['enrolled']])
                 msg += "</ul>"
             PageLevelMessages.register_success_message(request, HTML(msg))
         for err in errors:
