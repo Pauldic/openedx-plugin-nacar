@@ -163,4 +163,4 @@ def bulk_enrollment_view(request):
     }
 
     # For now, just render the form
-    return TemplateResponse(request, "openedx_plugin_cms/bulk_enrollment.html", context)
+    return render_to_response("openedx_plugin_cms/bulk_enrollment.html", context, request)
