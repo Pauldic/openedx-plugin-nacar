@@ -159,7 +159,7 @@ from openedx.core.djangolib.js_utils import (
     <main id="main" aria-label="Content" tabindex="-1">
       <section class="instructor-dashboard-content-2" id="instructor-dashboard-content">      
         <div class="instructor-header-container">
-          <h2 class="hd hd-2 instructor-dashboard-title">${_("Enrolled Students")} <b><i>(${len(students)})</i></b></h2>
+          <h2 class="hd hd-2 instructor-dashboard-title">${_("Enrolled Learners")} <b><i>(${len(students)})</i></b></h2>
           <div class="instructor-header-actions">
             %if studio_url:
               <a class="btn btn-primary mb-3" href="${studio_url}">${_("View Course in Studio")}</a>
@@ -178,6 +178,7 @@ from openedx.core.djangolib.js_utils import (
                 <th data-sort="email">Email ▲▼</th>
                 <th data-sort="mode">Mode ▲▼</th>
                 <th data-sort="grade">Grade (%) ▲▼</th>
+                <th data-sort="grade">Progress (%) ▲▼</th>
                 <th data-sort="enrollment_date">Enrollment Date ▲▼</th>
               </tr>
             </thead>
@@ -190,6 +191,11 @@ from openedx.core.djangolib.js_utils import (
                 <td>
                   <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress/${student['user_id']}/">
                     ${'%.1f' % student['grade'] if student['grade'] is not None else '—'}
+                  </a>
+                </td>
+                <td>
+                  <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress/${student['user_id']}/">
+                    ${'%.1f' % student['progress'] if student['progress'] is not None else '—'}
                   </a>
                 </td>
                 <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>

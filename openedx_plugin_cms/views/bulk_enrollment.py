@@ -116,7 +116,7 @@ def bulk_enrollment_view(request):
         #             Text("Course enrollments were successful, but failed to send some welcome emails.")
         #         )
 
-        # --- REPORT RESULTS ---
+        # --- REPORT RESULTS: 70753828////70755450 ---
         if users_processed:
             msg = ""
             for email, v in users_processed.items():
