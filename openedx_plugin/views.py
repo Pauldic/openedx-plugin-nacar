@@ -29,6 +29,15 @@ from django.contrib.auth.models import User
 from common.djangoapps.student.models import UserProfile
 
 
+def getNewVerbiage (name):
+    if name == "honor":
+      return "Learner"
+    elif name == "audit":
+      return "Auditor"
+    
+    return name.title()
+  
+
 
 @login_required
 @xframe_options_exempt
@@ -116,7 +125,7 @@ def enrollment_list_view(request, course_id):
             'username': user.username.lower(),
             'full_name': full_name.title(),
             'email': user.email.lower(),
-            'mode': enrollment.mode.title(),
+            'mode': getNewVerbiage(enrollment.mode),
             'grade': grade_percent,
             'progress': progress_percent, # Add the calculated progress,
             'enrollment_date': enrollment.created,

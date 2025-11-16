@@ -176,7 +176,7 @@ from openedx.core.djangolib.js_utils import (
               <tr>
                 <th data-sort="full_name">Full Name ▲▼</th>
                 <th data-sort="email">Email ▲▼</th>
-                <th data-sort="mode">Mode ▲▼</th>
+                <th data-sort="mode">Type ▲▼</th>
                 <th data-sort="grade">Grade (%) ▲▼</th>
                 <th data-sort="grade">Progress (%) ▲▼</th>
                 <th data-sort="enrollment_date">Enrollment Date ▲▼</th>
@@ -194,7 +194,7 @@ from openedx.core.djangolib.js_utils import (
                   </a>
                 </td>
                 <td>
-                  <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress/${student['user_id']}/">
+                  <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress">
                     ${'%.1f' % student['progress'] if student['progress'] is not None else '—'}
                   </a>
                 </td>
