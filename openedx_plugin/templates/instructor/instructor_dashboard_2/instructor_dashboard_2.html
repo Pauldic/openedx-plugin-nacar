@@ -142,7 +142,7 @@ from openedx.core.djangolib.js_utils import (
           % for section_data in sections:
             <% is_hidden = section_data.get('is_hidden', False) %>
             ## This is necessary so we don't scrape 'section_display_name' as a string.
-            <% dname = "Member Admin" if section_data['section_display_name'] == "Student Admin" else section_data['section_display_name'] %>
+            <% dname = "Learner Admin" if section_data['section_display_name'] == "Student Admin" else section_data['section_display_name'] %>
             % if not is_hidden:
                 <li class="nav-item">
                   <button type="button" class="btn-link ${ section_data['section_key'] }${' hidden' if is_hidden else ''}" data-section="${ section_data['section_key'] }">${_(dname)}
@@ -165,8 +165,9 @@ from openedx.core.djangolib.js_utils import (
 
         % for section_data in sections:
           <% is_hidden = section_data.get('is_hidden', False) %>
+          <% dname = "Learner Admin" if section_data['section_display_name'] == "Student Admin" else section_data['section_display_name'] %>
           <section id="${ section_data['section_key'] }" class="idash-section${' hidden' if hidden else ''}" aria-labelledby="header-${section_data['section_key']}">
-              <h3 class="hd hd-3" id="header-${ section_data['section_key'] }">${ section_data['section_display_name'] }</h3>
+              <h3 class="hd hd-3" id="header-${ section_data['section_key'] }">${ dname }</h3>
               <%include file="${ section_data.get('template_path_prefix', '') }${ section_data['section_key'] }.html" args="section_data=section_data" />
           </section>
           % endfor
