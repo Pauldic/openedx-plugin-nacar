@@ -40,14 +40,14 @@ def getNewVerbiage(mode_name):
 
 @login_required
 @xframe_options_exempt
-def enrollment_list_view(request, course_id_str):
+def enrollment_list_view(request, course_id):
     """
     Renders a list of enrolled students for a given course, including grades and progress.
     """
-    print(f" >>>>>> >> >>>>>>> Enrollment List for: {course_id_str}")
+    print(f" >>>>>> >> >>>>>>> Enrollment List for: {course_id}")
 
     try:
-        course_key = CourseKey.from_string(course_id_str)
+        course_key = CourseKey.from_string(course_id)
     except (ValueError, InvalidKeyError):
         # Handle invalid course ID string gracefully, e.g., return 404 or redirect
         # For now, let it raise if key is invalid
@@ -87,11 +87,11 @@ def enrollment_list_view(request, course_id_str):
             if grade_record:
                 grade_percent = round(grade_record.percent * 100, 1) # Percent is a float between 0 and 1
         except Exception as e:
-            print(f"Error fetching grade for {user.email} in {course_id_str}: {e}")
+            print(f"Error fetching grade for {user.email} in {course_id}: {e}")
             # Optionally log the error using Django's logging
             # import logging
             # log = logging.getLogger(__name__)
-            # log.error(f"Error fetching grade for {user.email} in {course_id_str}: {e}")
+            # log.error(f"Error fetching grade for {user.email} in {course_id}: {e}")
 
         # --- CALCULATE PROGRESS PERCENTAGE (Based on Graded Subsections) ---
         # In most standard configurations, grade_record.percent *is* the progress on graded items.
