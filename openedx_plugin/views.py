@@ -109,7 +109,7 @@ def enrollment_list_view(request, course_id):
             'email': user.email.lower(),
             'mode': getNewVerbiage(enrollment.mode),
             'grade': grade_percent,
-            'progress': progress_percent,  # Now calculated properly based on unit completion
+            'progress': int(round(progress_percent, 0)),  # Now calculated properly based on unit completion
             'enrollment_date': enrollment.created,
         })
 
