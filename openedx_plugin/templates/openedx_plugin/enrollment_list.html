@@ -227,16 +227,14 @@ from openedx.core.djangolib.js_utils import (
     margin-bottom: 1rem;
   }
   
-  /* Card view for very small screens */
-  @media (max-width: 576px) {
+  /* Card view for small screens */
+  @media (max-width: 768px) {
     .table-responsive {
-      display: block;
-      width: 100%;
-      overflow-x: hidden;
+      display: none;
     }
     
-    .enrollment-table {
-      display: none;
+    #card-view {
+      display: block;
     }
     
     .student-card {
@@ -278,6 +276,17 @@ from openedx.core.djangolib.js_utils import (
     }
   }
   
+  /* For larger mobile screens, keep the table but make it horizontally scrollable */
+  @media (min-width: 577px) and (max-width: 768px) {
+    .table-responsive {
+      display: block;
+    }
+    
+    #card-view {
+      display: none;
+    }
+  }
+
   .text-center {
     text-align: center !important;
   }
@@ -373,7 +382,7 @@ from openedx.core.djangolib.js_utils import (
           </table>
         </div>
 
-        <div id="card-view" class="d-none">
+        <div id="card-view">
           % for student in students:
           <div class="student-card">
             <div class="student-card-header">
@@ -412,15 +421,11 @@ from openedx.core.djangolib.js_utils import (
 
         <script>          
           document.addEventListener('DOMContentLoaded', function () {
-            const isMobile = window.innerWidth <= 576;
-            
-            // Toggle between table and card view based on screen size
+            // Set up initial view based on screen size
             function updateView() {
-              const isNowMobile = window.innerWidth <= 576;
-              if (isNowMobile !== isMobile) {
-                document.getElementById('table-view').classList.toggle('d-none', isNowMobile);
-                document.getElementById('card-view').classList.toggle('d-none', !isNowMobile);
-              }
+              const isMobile = window.innerWidth <= 768;
+              document.getElementById('table-view').style.display = isMobile ? 'none' : 'block';
+              document.getElementById('card-view').style.display = isMobile ? 'block' : 'none';
             }
             
             // Initial view setup
@@ -490,7 +495,10 @@ from openedx.core.djangolib.js_utils import (
             
             searchInput.addEventListener('keyup', function() {
               const term = this.value.toLowerCase();
-              const rows = document.querySelectorAll('tbody tr');
+              const isMobile = window.innerWidth <= 768;
+              
+              // Handle table view
+              const rows = document.querySelectorAll('#table-view tbody tr');
               let visible = 0;
               
               rows.forEach(row => {
@@ -503,18 +511,19 @@ from openedx.core.djangolib.js_utils import (
                 } else {
                   row.style.display = 'none';
                 }
-                
-                // Also update card view if visible
-                const cardView = document.getElementById('card-view');
-                if (!cardView.classList.contains('d-none')) {
-                  const cards = document.querySelectorAll('.student-card');
-                  cards.forEach((card, i) => {
-                    if (i === Array.from(rows).indexOf(row)) {
-                      card.style.display = shouldShow ? 'block' : 'none';
-                    }
-                  });
-                }
               });
+              
+              // Handle card view
+              if (isMobile) {
+                const cards = document.querySelectorAll('.student-card');
+                cards.forEach((card, i) => {
+                  // Match card with corresponding row
+                  if (i < rows.length) {
+                    const row = rows[i];
+                    card.style.display = row.style.display === 'none' ? 'none' : 'block';
+                  }
+                });
+              }
               
               visibleCount.textContent = visible;
             });
