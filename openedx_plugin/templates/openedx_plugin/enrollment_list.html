@@ -80,75 +80,236 @@ from openedx.core.djangolib.js_utils import (
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    margin-bottom: 1.5rem;
   }
+  
+  .instructor-header-title {
+    flex: 1;
+    min-width: 200px;
+  }
+  
   .instructor-header-actions {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* space between button and input */
+    gap: 0.75rem;
+    flex-wrap: wrap;
   }
+  
   /* Ensure input doesn't grow too much */
   .instructor-header-actions .form-control {
-    width: 240px; /* or min-width, adjust as needed */
+    width: 240px;
+    min-width: 200px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
   }
+  
+  .instructor-header-actions .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
   /* Mobile: stack vertically */
   @media (max-width: 768px) {
     .instructor-header-container {
       flex-direction: column;
       align-items: stretch;
     }
+    
+    .instructor-header-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .instructor-header-actions .form-control {
+      flex: 1;
+      min-width: 150px;
+      margin-bottom: 0;
+    }
+    
+    .instructor-header-actions .btn {
+      margin-left: 0.5rem;
+      white-space: nowrap;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .instructor-header-container {
+      margin-bottom: 1rem;
+    }
+    
     .instructor-header-actions {
       flex-direction: column;
       align-items: stretch;
       gap: 0.75rem;
     }
+    
+    .instructor-header-actions .btn {
+      width: 100%;
+      margin-left: 0;
+    }
+    
+    .instructor-header-actions .form-control {
+      width: 100%;
+    }
+    
+    .hd.hd-2.instructor-dashboard-title {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .table-responsive {
+      font-size: 0.85rem;
+    }
+    
+    .enrollment-table td, .enrollment-table th {
+      padding: 0.4rem;
+    }
+    
+    .enrollment-table th {
+      font-size: 0.8rem;
+      padding: 0.5rem;
+    }
   }
-  .instructor-header-actions .mb-3 {
-    margin-bottom: 0;
-  }
+  
   .enrollment-table {
     margin-bottom: 1rem;
     color: #212529;
     border-collapse: collapse;
+    width: 100%;
+    min-width: 600px; /* Ensures table has minimum width for readability */
   }
-  .enrollment-table th, .enrollment-table td {
+  
+  .enrollment-table th, 
+  .enrollment-table td {
     padding: 0.55rem;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
+    word-break: break-word;
   }
-  .enrollment-table th{
+  
+  .enrollment-table th {
     padding: 0.75rem;
+    text-align: left;
   }
+  
   .enrollment-table thead th {
     vertical-align: bottom;
     border-bottom: 2px solid #dee2e6;
     background-color: #f8f9fa;
     font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
+  
   .enrollment-table tbody tr:nth-of-type(odd) {
     background-color: rgba(0, 0, 0, 0.05);
   }
+  
   .enrollment-table tbody tr:hover {
     background-color: rgba(0, 0, 0, 0.075);
   }
+  
   .enrollment-table-bordered {
     border: 1px solid #dee2e6;
   }
-  .enrollment-table-bordered th, .enrollment-table-bordered td {
+  
+  .enrollment-table-bordered th, 
+  .enrollment-table-bordered td {
     border: 1px solid #dee2e6;
   }
+  
   .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
   }
+  
+  /* Card view for very small screens */
+  @media (max-width: 576px) {
+    .table-responsive {
+      display: block;
+      width: 100%;
+      overflow-x: hidden;
+    }
+    
+    .enrollment-table {
+      display: none;
+    }
+    
+    .student-card {
+      border: 1px solid #dee2e6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      background-color: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .student-card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    
+    .student-card-body {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.25rem 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .student-card-label {
+      font-weight: 500;
+      color: #6c757d;
+    }
+    
+    .student-card-value {
+      font-weight: 400;
+    }
+    
+    .no-records {
+      padding: 1.5rem;
+      text-align: center;
+      color: #6c757d;
+    }
+  }
+  
   .text-center {
     text-align: center !important;
   }
+  
   .text-muted {
     color: #6c757d !important;
   }
+  
   .py-3 {
     padding-top: 1rem !important;
     padding-bottom: 1rem !important;
+  }
+  
+  .sort-indicator {
+    margin-left: 0.25rem;
+    font-size: 0.8em;
+    color: #6c757d;
+  }
+  
+  th[aria-sort="ascending"] .sort-indicator,
+  th[aria-sort="descending"] .sort-indicator {
+    color: #000;
+  }
+  
+  .search-container {
+    margin-bottom: 1rem;
+  }
+  
+  .results-count {
+    margin-bottom: 1rem;
+    color: #6c757d;
+    font-size: 0.9rem;
   }
 </style>
 
@@ -159,27 +320,31 @@ from openedx.core.djangolib.js_utils import (
     <main id="main" aria-label="Content" tabindex="-1">
       <section class="instructor-dashboard-content-2" id="instructor-dashboard-content">      
         <div class="instructor-header-container">
-          <h2 class="hd hd-2 instructor-dashboard-title">${_("Enrolled Learners")} <b><i>(${len(students)})</i></b></h2>
+          <div class="instructor-header-title">
+            <h2 class="hd hd-2 instructor-dashboard-title">${_("Enrolled Learners")} <b><i>(${len(students)})</i></b></h2>
+          </div>
           <div class="instructor-header-actions">
             %if studio_url:
-              <a class="btn btn-primary mb-3" href="${studio_url}">${_("View Course in Studio")}</a>
+              <a class="btn btn-primary" href="${studio_url}">${_("View Course in Studio")}</a>
             %endif
-            <div class="mb-3">
-              <input type="text" id="search" class="form-control" placeholder="Search by name, email...">
-            </div>
+            <input type="text" id="search" class="form-control" placeholder="Search by name, email...">
           </div>
         </div>
 
-        <div class="table-responsive">
-          <table class="table table-striped table-bordered table-hover enrollment-table" style="width: 100%;">
+        <div class="results-count">
+          <span id="visible-count">${len(students)}</span> of ${len(students)} students shown
+        </div>
+
+        <div class="table-responsive" id="table-view">
+          <table class="table table-striped table-bordered table-hover enrollment-table">
             <thead class="table-light">
               <tr>
-                <th data-sort="full_name">Full Name ▲▼</th>
-                <th data-sort="email">Email ▲▼</th>
-                <th data-sort="mode">Type ▲▼</th>
-                <th data-sort="grade">Grade (%) ▲▼</th>
-                <th data-sort="grade">Progress (%) ▲▼</th>
-                <th data-sort="enrollment_date">Enrollment Date ▲▼</th>
+                <th data-sort="full_name" aria-sort="none">Full Name <span class="sort-indicator">▲▼</span></th>
+                <th data-sort="email" aria-sort="none">Email <span class="sort-indicator">▲▼</span></th>
+                <th data-sort="mode" aria-sort="none">Type <span class="sort-indicator">▲▼</span></th>
+                <th data-sort="grade" aria-sort="none">Grade (%) <span class="sort-indicator">▲▼</span></th>
+                <th data-sort="progress" aria-sort="none">Progress (%) <span class="sort-indicator">▲▼</span></th>
+                <th data-sort="enrollment_date" aria-sort="none">Enrollment Date <span class="sort-indicator">▲▼</span></th>
               </tr>
             </thead>
             <tbody>
@@ -202,71 +367,156 @@ from openedx.core.djangolib.js_utils import (
               </tr>
               % endfor
               % if not students:
-              <tr><td colspan="5" class="text-center">No enrolled students yet.</td></tr>
+              <tr><td colspan="6" class="text-center py-3">No enrolled students yet.</td></tr>
               % endif
             </tbody>
           </table>
         </div>
 
+        <div id="card-view" class="d-none">
+          % for student in students:
+          <div class="student-card">
+            <div class="student-card-header">
+              <span>${student['full_name']}</span>
+              <span class="badge bg-primary">${student['mode']}</span>
+            </div>
+            <div class="student-card-body">
+              <span class="student-card-label">Email:</span>
+              <span class="student-card-value">${student['email']}</span>
+              
+              <span class="student-card-label">Grade:</span>
+              <span class="student-card-value">
+                <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress/${student['user_id']}/">
+                  ${'%.1f' % student['grade'] if student['grade'] is not None else '—'}
+                </a>%
+              </span>
+              
+              <span class="student-card-label">Progress:</span>
+              <span class="student-card-value">
+                <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress">
+                  ${'%.1f' % student['progress'] if student['progress'] is not None else '—'}
+                </a>%
+              </span>
+              
+              <span class="student-card-label">Enrolled:</span>
+              <span class="student-card-value">${student['enrollment_date'].strftime('%Y-%m-%d')}</span>
+            </div>
+          </div>
+          % endfor
+          % if not students:
+          <div class="no-records">
+            No enrolled students yet.
+          </div>
+          % endif
+        </div>
+
         <script>          
           document.addEventListener('DOMContentLoaded', function () {
+            const isMobile = window.innerWidth <= 576;
+            
+            // Toggle between table and card view based on screen size
+            function updateView() {
+              const isNowMobile = window.innerWidth <= 576;
+              if (isNowMobile !== isMobile) {
+                document.getElementById('table-view').classList.toggle('d-none', isNowMobile);
+                document.getElementById('card-view').classList.toggle('d-none', !isNowMobile);
+              }
+            }
+            
+            // Initial view setup
+            updateView();
+            window.addEventListener('resize', updateView);
+            
+            // Table sorting functionality
             const table = document.querySelector('.enrollment-table');
-            const headers = table.querySelectorAll('th[data-sort]');
+            const headers = table ? table.querySelectorAll('th[data-sort]') : [];
             let currentSort = { column: null, direction: 'asc' };
-
+            
             headers.forEach(header => {
               header.style.cursor = 'pointer';
               header.addEventListener('click', () => {
                 const column = header.getAttribute('data-sort');
                 const direction = currentSort.column === column && currentSort.direction === 'asc' ? 'desc' : 'asc';
                 currentSort = { column, direction };
-
-                // Update header text
+                
+                // Update header sort indicators
                 headers.forEach(h => {
-                  h.textContent = h.textContent.replace(/[ ▲▼]/g, '') + ' ▲▼';
+                  h.setAttribute('aria-sort', 'none');
+                  const indicator = h.querySelector('.sort-indicator');
+                  if (indicator) indicator.textContent = '▲▼';
                 });
-                header.textContent = header.textContent.replace(/[ ▲▼]/g, '') + (direction === 'asc' ? ' ▲' : ' ▼');
-
+                
+                header.setAttribute('aria-sort', direction === 'asc' ? 'ascending' : 'descending');
+                const indicator = header.querySelector('.sort-indicator');
+                if (indicator) indicator.textContent = direction === 'asc' ? '▲' : '▼';
+                
                 const tbody = table.querySelector('tbody');
                 const rows = Array.from(tbody.querySelectorAll('tr'));
-
+                
                 rows.sort((a, b) => {
                   // Get column index based on data-sort
-                  const cols = ['full_name', 'email', 'mode', 'grade', 'enrollment_date'];
+                  const cols = ['full_name', 'email', 'mode', 'grade', 'progress', 'enrollment_date'];
                   const idx = cols.indexOf(column);
                   if (idx === -1) return 0;
-
+                  
                   const aValue = a.cells[idx].textContent.trim();
                   const bValue = b.cells[idx].textContent.trim();
-
+                  
                   let aVal, bVal;
-                  if (column === 'grade') {
-                      aVal = aValue === '—' ? -1 : parseFloat(aValue);
-                      bVal = bValue === '—' ? -1 : parseFloat(bValue);
+                  if (column === 'grade' || column === 'progress') {
+                    aVal = aValue === '—' ? -1 : parseFloat(aValue.replace(/[^\d.-]/g, ''));
+                    bVal = bValue === '—' ? -1 : parseFloat(bValue.replace(/[^\d.-]/g, ''));
                   } else if (column === 'enrollment_date') {
-                      aVal = new Date(aValue).getTime() || 0;
-                      bVal = new Date(bValue).getTime() || 0;
+                    aVal = new Date(aValue.replace(/\s+\d{2}:\d{2}$/, '')).getTime() || 0;
+                    bVal = new Date(bValue.replace(/\s+\d{2}:\d{2}$/, '')).getTime() || 0;
                   } else {
-                      aVal = aValue.toLowerCase();
-                      bVal = bValue.toLowerCase();
+                    aVal = aValue.toLowerCase();
+                    bVal = bValue.toLowerCase();
                   }
-
+                  
                   if (aVal < bVal) return direction === 'asc' ? -1 : 1;
                   if (aVal > bVal) return direction === 'asc' ? 1 : -1;
                   return 0;
                 });
-
+                
                 // Re-append sorted rows
                 rows.forEach(row => tbody.appendChild(row));
               });
             });
-
+            
             // Add search functionality
-            document.getElementById('search').addEventListener('keyup', function() {
+            const searchInput = document.getElementById('search');
+            const visibleCount = document.getElementById('visible-count');
+            
+            searchInput.addEventListener('keyup', function() {
               const term = this.value.toLowerCase();
-              document.querySelectorAll('tbody tr').forEach(row => {
-                row.style.display = row.textContent.toLowerCase().includes(term) ? '' : 'none';
+              const rows = document.querySelectorAll('tbody tr');
+              let visible = 0;
+              
+              rows.forEach(row => {
+                const rowText = row.textContent.toLowerCase();
+                const shouldShow = rowText.includes(term);
+                
+                if (shouldShow) {
+                  row.style.display = '';
+                  visible++;
+                } else {
+                  row.style.display = 'none';
+                }
+                
+                // Also update card view if visible
+                const cardView = document.getElementById('card-view');
+                if (!cardView.classList.contains('d-none')) {
+                  const cards = document.querySelectorAll('.student-card');
+                  cards.forEach((card, i) => {
+                    if (i === Array.from(rows).indexOf(row)) {
+                      card.style.display = shouldShow ? 'block' : 'none';
+                    }
+                  });
+                }
               });
+              
+              visibleCount.textContent = visible;
             });
           });
         </script>
