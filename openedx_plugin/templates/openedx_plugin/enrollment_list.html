@@ -354,8 +354,8 @@ from openedx.core.djangolib.js_utils import (
                 <th data-sort="full_name" aria-sort="none">Full Name <span class="sort-indicator">▲▼</span></th>
                 <th data-sort="email" aria-sort="none">Email <span class="sort-indicator">▲▼</span></th>
                 <th data-sort="mode" aria-sort="none">Type <span class="sort-indicator">▲▼</span></th>
-                <th data-sort="grade" aria-sort="none">Grade (%) <span class="sort-indicator">▲▼</span></th>
-                <th data-sort="progress" aria-sort="none">Progress (%) <span class="sort-indicator">▲▼</span></th>
+                <th data-sort="grade" aria-sort="none">Grade <span class="sort-indicator">▲▼</span></th>
+                <th data-sort="progress" aria-sort="none">Progress <span class="sort-indicator">▲▼</span></th>
                 <th data-sort="enrollment_date" aria-sort="none">Enrollment Date <span class="sort-indicator">▲▼</span></th>
               </tr>
             </thead>
@@ -367,12 +367,12 @@ from openedx.core.djangolib.js_utils import (
                 <td>${student['mode']}</td>
                 <td>
                   <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress/${student['user_id']}/">
-                    ${'%.1f' % student['grade'] if student['grade'] is not None else '—'}
+                    ${'%.1f%%' % student['grade'] if student['grade'] is not None else '—'}
                   </a>
                 </td>
                 <td>
                   <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress">
-                    ${'%d' % int(student['progress']) if student['progress'] is not None else '—'}
+                    ${'%d%%' % int(student['progress']) if student['progress'] is not None else '—'}
                   </a>
                 </td>
                 <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>

@@ -73,7 +73,7 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
         current_invitation = getattr(course_block, 'invitation_only', False)
         current_visibility = getattr(course_block, 'catalog_visibility', 'both')
 
-        # log.info(f"1. >>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}")
+        log.info(f"1. >>>>>>>>>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}")
 
         # Only apply defaults if still using system defaults
         needs_update = False
@@ -85,7 +85,7 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
             needs_update = True
 
         # Set course start & enrollment start date
-        if not hasattr(course_block, 'enrollment_start') or course_block.enrollment_start is None:
+        if not hasattr(course_block, 'enrollment_start') or course_block.enrollment_start is None or course_block.enrollment_start == "":
             # Calculate date 30 days ago at midnight UTC
             thirty_days_ago = datetime.now(pytz.utc) - timedelta(days=30)
             default_start_date = datetime(
@@ -101,12 +101,12 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
             course_block.start = default_start_date
             course_block.enrollment_start = default_start_date            
             needs_update = True
-            log.info(f"Set course start & enrollment start date to {default_start_date} for course {course_key}")
+            log.info(f"2.  >>>>>>>  Set course start & enrollment start date to {default_start_date} for course {course_key}")
         
         if needs_update:
             user_id = kwargs.get('user_id') or 0  # 0 is safe fallback for system actions
             store.update_item(course_block, user_id=user_id)
-            log.info(f"2. >>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'")
+            log.info(f"3. >>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'")
     except Exception as e:
         log.exception(f"Failed to apply default settings to course {course_key}: {e}")
     
