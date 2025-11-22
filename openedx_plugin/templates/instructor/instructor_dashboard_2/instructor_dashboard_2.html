@@ -144,7 +144,7 @@ from openedx.core.djangolib.js_utils import (
             ## This is necessary so we don't scrape 'section_display_name' as a string.
             <% dname = "Learner Admin" if section_data['section_display_name'] == "Student Admin" else section_data['section_display_name'] %>
             % if not is_hidden:
-                <li class="nav-item">
+                <li class="nav-item ${ section_data['section_key'] }-tab">
                   <button type="button" class="btn-link ${ section_data['section_key'] }${' hidden' if is_hidden else ''}" data-section="${ section_data['section_key'] }">${_(dname)}
                   </button>
                 </li>
@@ -176,7 +176,11 @@ from openedx.core.djangolib.js_utils import (
   </div>
 
 </div>
-
+<style>
+  .cohort_management-tab {
+    display: none !important;
+  }
+</style>
 <%static:require_module_async module_name="js/dateutil_factory" class_name="DateUtilFactory">
     DateUtilFactory.transform(iterationKey=".localized-datetime");
 </%static:require_module_async>

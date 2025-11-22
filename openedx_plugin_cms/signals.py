@@ -83,6 +83,25 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
             course_block.catalog_visibility = 'about'
             needs_update = True
 
+        # Set course start & enrollment start date
+        if not hasattr(course_block, 'enrollment_start') or course_block.enrollment_start is None:
+            # Calculate date 30 days ago at midnight UTC
+            thirty_days_ago = datetime.now(pytz.utc) - timedelta(days=30)
+            default_start_date = datetime(
+                year=thirty_days_ago.year,
+                month=thirty_days_ago.month,
+                day=thirty_days_ago.day,
+                hour=0,
+                minute=0,
+                second=0,
+                tzinfo=pytz.utc
+            )
+            
+            course_block.start = default_start_date
+            course_block.enrollment_start = default_start_date            
+            needs_update = True
+            log.info(f"Set course start & enrollment start date to {default_start_date} for course {course_key}")
+        
         if needs_update:
             user_id = kwargs.get('user_id') or 0  # 0 is safe fallback for system actions
             store.update_item(course_block, user_id=user_id)
