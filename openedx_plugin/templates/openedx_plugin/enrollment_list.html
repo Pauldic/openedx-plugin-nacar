@@ -365,16 +365,8 @@ from openedx.core.djangolib.js_utils import (
                 <td>${student['full_name']}</td>
                 <td>${student['email']}</td>
                 <td>${student['mode']}</td>
-                <td>
-                  <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress/${student['user_id']}/">
-                    ${'%.1f%%' % student['grade'] if student['grade'] is not None else '—'}
-                  </a>
-                </td>
-                <td>
-                  <a href="https://apps.nacarlearning.org/learning/course/${course_id}/progress">
-                    ${'%d%%' % int(student['progress']) if student['progress'] is not None else '—'}
-                  </a>
-                </td>
+                <td>${'%.1f%%' % student['grade'] if student['grade'] is not None else '—'}</td>
+                <td>${'%d%%' % int(student['progress']) if student['progress'] is not None else '—'}</td>
                 <td>${student['enrollment_date'].strftime('%Y-%m-%d %H:%M')}</td>
               </tr>
               % endfor
