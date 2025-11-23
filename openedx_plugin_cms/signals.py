@@ -84,8 +84,10 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
             course_block.catalog_visibility = 'about'
             needs_update = True
 
+        default_course_start = datetime(2030, 1, 1, tzinfo=pytz.utc)
         # Set course start & enrollment start date
-        if not hasattr(course_block, 'enrollment_start') or course_block.enrollment_start is None or course_block.enrollment_start == "":
+        if not hasattr(course_block, 'enrollment_start') or course_block.enrollment_start is None or course_block.enrollment_start == "";
+            # or  not hasattr(course_block, 'start') or course_block.start is None or course_block.start == default_course_start:
             # Calculate date 30 days ago at midnight UTC
             thirty_days_ago = datetime.now(pytz.utc) - timedelta(days=30)
             default_start_date = datetime(
@@ -106,13 +108,14 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
         if needs_update:
             user_id = kwargs.get('user_id') or 0  # 0 is safe fallback for system actions
             store.update_item(course_block, user_id=user_id)
-            log.info(f"3. >>>>> Applied default visibility settings to course {course_key}, invitation_only=True, catalog_visibility='about'")
+            log.info(f"3. >>>>> Applied default visibility settings to course {course_key}, invitation_only={course_block.invitation_only}, catalog_visibility='{course_block.catalog_visibility}', start={course_block.start}, enrollment_start={course_block.enrollment_start}")
     except Exception as e:
         log.exception(f"Failed to apply default settings to course {course_key}: {e}")
     
     try:
         user_id = kwargs.get("user_id")
-        eval_course_block_changes(course_key, get_user(user_id))
+        if user_id is not None and user_id != "":
+            eval_course_block_changes(course_key, get_user(user_id))
     except Exception as e:
         log.exception(f"Failed to apply eval_course_block_changes({course_key}, {user_id}): {e}")
         

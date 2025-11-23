@@ -198,6 +198,7 @@ def get_user(user_id):
     try:
         return User.objects.get(id=user_id)
     except User.DoesNotExist:
+        log.info(f" >>>E>>> User with user id: '{user_id}' not found")
         return ""
 
 
