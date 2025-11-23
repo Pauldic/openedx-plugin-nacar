@@ -86,7 +86,7 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
 
         default_course_start = datetime(2030, 1, 1, tzinfo=pytz.utc)
         # Set course start & enrollment start date
-        if not hasattr(course_block, 'enrollment_start') or course_block.enrollment_start is None or course_block.enrollment_start == "";
+        if not hasattr(course_block, 'enrollment_start') or course_block.enrollment_start is None or course_block.enrollment_start == "":
             # or  not hasattr(course_block, 'start') or course_block.start is None or course_block.start == default_course_start:
             # Calculate date 30 days ago at midnight UTC
             thirty_days_ago = datetime.now(pytz.utc) - timedelta(days=30)
