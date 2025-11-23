@@ -17,6 +17,7 @@ import pytz
 from datetime import datetime, timedelta
 from django.dispatch import receiver
 from celery import shared_task
+from django.core.cache import cache
 from edx_django_utils.monitoring import set_code_owner_attribute
 
 # Open edX stuff
@@ -60,64 +61,90 @@ def _plugin_listen_for_course_publish(sender, course_key, **kwargs):  # pylint: 
         On course publish, set default values for:
         - catalog_visibility = 'about'        (Course Visibility in Catalog)
         - invitation_only = True              (Invitation Only)
+        - start date = 30 days ago
+        - enrollment_start date = 30 days ago
         But only if the course still uses the default settings.
-        This ensures new courses are private by default. 
-        Receives publishing signal and logs block meta data and the user 
+        This ensures new courses are private by default and have reasonable dates.
     """
     try:
+        cache_key = f"course_defaults_applied_{course_key}"
+        if cache.get(cache_key):
+            log.info(f" >>>>>>>>>>>> skipping >>>>>>>>> Default settings already applied to course {course_key}")
+            return
         store = modulestore()
         course_usage_key = course_key.make_usage_key('course', 'course')
         course_block = store.get_item(course_usage_key)
 
-        # Check current values (with defaults if missing)
+        # Get current values with defaults if missing
         current_invitation = getattr(course_block, 'invitation_only', False)
         current_visibility = getattr(course_block, 'catalog_visibility', 'both')
+        current_start = getattr(course_block, 'start', None)
+        current_enrollment_start = getattr(course_block, 'enrollment_start', None)
 
-        log.info(f"1. >>>>>>>>>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}")
+        # Define default values we're checking against
+        default_course_start_date = datetime(2030, 1, 1, tzinfo=pytz.utc)
+        
+        # Calculate date 30 days ago at midnight UTC
+        thirty_days_ago = datetime.now(pytz.utc) - timedelta(days=30)
+        default_start_date = datetime(
+            year=thirty_days_ago.year,
+            month=thirty_days_ago.month,
+            day=thirty_days_ago.day,
+            hour=0,
+            minute=0,
+            second=0,
+            tzinfo=pytz.utc
+        )
+        
+        log.info(f"1. >>>>>>>>>>>> Course {course_key} settings: invitation_only={current_invitation}, catalog_visibility={current_visibility}, start={current_start}, enrollment_start={current_enrollment_start}")
 
         # Only apply defaults if still using system defaults
         needs_update = False
         if current_invitation == False:
             course_block.invitation_only = True
             needs_update = True
+            log.info(f" 1a >>>> Setting invitation_only=True for course {course_key}")
         if current_visibility == 'both':
             course_block.catalog_visibility = 'about'
             needs_update = True
+            log.info(f" 1b >>>> Setting catalog_visibility='about' for course {course_key}")
 
-        default_course_start = datetime(2030, 1, 1, tzinfo=pytz.utc)
-        # Set course start & enrollment start date
-        if not hasattr(course_block, 'enrollment_start') or course_block.enrollment_start is None or course_block.enrollment_start == "":
-            # or  not hasattr(course_block, 'start') or course_block.start is None or course_block.start == default_course_start:
-            # Calculate date 30 days ago at midnight UTC
-            thirty_days_ago = datetime.now(pytz.utc) - timedelta(days=30)
-            default_start_date = datetime(
-                year=thirty_days_ago.year,
-                month=thirty_days_ago.month,
-                day=thirty_days_ago.day,
-                hour=0,
-                minute=0,
-                second=0,
-                tzinfo=pytz.utc
-            )
+        # Check if dates are set to system defaults (2030-01-01)
+        is_default_start = False
+        is_default_enrollment_start = False
+        
+        if current_start is None or (hasattr(current_start, 'date') and current_start.date() == default_course_start_date.date()):
+            is_default_start = True
             
-            course_block.start = default_start_date
-            course_block.enrollment_start = default_start_date            
-            needs_update = True
-            log.info(f"2.  >>>>>>>  Set course start & enrollment start date to {default_start_date} for course {course_key}")
+        if current_enrollment_start is None or (hasattr(current_enrollment_start, 'date') and current_enrollment_start.date() == default_course_start_date.date()):
+            is_default_enrollment_start = True
+
+        # Only set dates if they're using default values
+        if is_default_start or is_default_enrollment_start:
+            if is_default_start:
+                course_block.start = default_start_date
+                needs_update = True
+                log.info(f" 1c >>>> Setting course start date to {default_start_date} for course {course_key}")
+            
+            if is_default_enrollment_start:
+                course_block.enrollment_start = default_start_date
+                needs_update = True
+                log.info(f" 1d >>>> Setting enrollment start date to {default_start_date} for course {course_key}")
         
         if needs_update:
             user_id = kwargs.get('user_id') or 0  # 0 is safe fallback for system actions
             store.update_item(course_block, user_id=user_id)
-            log.info(f"3. >>>>> Applied default visibility settings to course {course_key}, invitation_only={course_block.invitation_only}, catalog_visibility='{course_block.catalog_visibility}', start={course_block.start}, enrollment_start={course_block.enrollment_start}")
+            cache.set(cache_key, True, timeout=120)  # 2 minute cache
+            log.info(f"2. >>>>> Applied default visibility settings to course {course_key}, invitation_only={course_block.invitation_only}, catalog_visibility='{course_block.catalog_visibility}', start={course_block.start}, enrollment_start={course_block.enrollment_start}")
     except Exception as e:
-        log.exception(f"Failed to apply default settings to course {course_key}: {e}")
+        log.exception(f" >>>E<<< Failed to apply default settings to course {course_key}: {e}")
     
     try:
         user_id = kwargs.get("user_id")
-        if user_id is not None and user_id != "":
+        if user_id and str(user_id).strip() and len(str(user_id).strip()) != 0:
             eval_course_block_changes(course_key, get_user(user_id))
     except Exception as e:
-        log.exception(f"Failed to apply eval_course_block_changes({course_key}, {user_id}): {e}")
+        log.exception(f" >>>E<<< Failed to apply eval_course_block_changes({course_key}, {user_id}): {e}")
         
   
 @receiver(SignalHandler.course_deleted, dispatch_uid="plugin_course_delete")
